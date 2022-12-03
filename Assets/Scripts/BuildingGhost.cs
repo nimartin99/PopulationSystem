@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Timeline;
 
 public class BuildingGhost : MonoBehaviour {
 
-    private Transform _visual;
+    public Transform _visual;
     private BuildingObject _buildingObject;
     [SerializeField] private Camera camera;
 
@@ -49,20 +51,33 @@ public class BuildingGhost : MonoBehaviour {
 
         if (currentBuildingObject != null) {
             _visual = Instantiate(currentBuildingObject.visual, Vector3.zero, Quaternion.identity);
+            SetLayerRecursive(_visual.gameObject, 6);
             _visual.parent = transform;
             _visual.localPosition = Vector3.zero;
             _visual.localEulerAngles = Vector3.zero;
+            // SetStaticRecursive(_visual.gameObject);
             // SetLayerRecursive(_visual.gameObject, 11);
         }
     }
 
     private void SetLayerRecursive(GameObject go, int layer) {
+        foreach (Transform trans in go.GetComponentsInChildren<Transform>(true))
+        {
+            trans.gameObject.layer = layer;
+        }
+    }
+
+    private void SetStaticRecursive(GameObject go) {
         if (go == null) {
             return;
         }
-        gameObject.layer = layer;
+        
+        StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(go);
+        flags = flags & ~(StaticEditorFlags.NavigationStatic);
+        GameObjectUtility.SetStaticEditorFlags(go, flags);
+        
         foreach (Transform child in go.transform) {
-            SetLayerRecursive(child.gameObject, layer);
+            SetStaticRecursive(child.gameObject);
         }
     }
 }

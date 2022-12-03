@@ -3,15 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class GridBuildingSystem : MonoBehaviour {
+    // Singleton
+    public static GridBuildingSystem Instance { get; private set; }
+    
     // Grid related stuff
     [SerializeField] private int width;
     [SerializeField] private int height;
     [SerializeField] public float cellSize;
     
     // Buildings
-    [SerializeField] private List<BuildingObject> buildingList;
+    [SerializeField] private List<TwoDimensionalListHelper> buildingList;
+    // [SerializeField] private List<BuildingObject> buildingList;
     [FormerlySerializedAs("_building")] public BuildingObject building;
     [FormerlySerializedAs("defaultDirection")] [SerializeField] public BuildingObject.Direction direction = BuildingObject.Direction.Down;
     
@@ -19,13 +24,21 @@ public class GridBuildingSystem : MonoBehaviour {
     [SerializeField] private LayerMask groundLayerMask;
     
     public event EventHandler OnSelectedChanged;
+    public event EventHandler OnGridChanged;
 
     public Grid<GridObject> _grid;
 
     private void Awake() {
+        if (Instance != null && Instance != this) { 
+            Destroy(this); 
+        } 
+        else { 
+            Instance = this; 
+        } 
+        
         _grid = new Grid<GridObject>(width, height, cellSize, Vector3.zero,
             (Grid<GridObject> g, int x, int z) => new GridObject(g, x, z));
-        building = buildingList[0];
+        building = buildingList[0].buildingVariants[0];
     }
 
     private void Update() {
@@ -64,6 +77,8 @@ public class GridBuildingSystem : MonoBehaviour {
                         GridObject gridObject = _grid.GetGridObject(position.x, position.y);
                         gridObject.SetPlacedObject(placedObject);
                     }
+                    // Trigger OnGridChanged event
+                    OnGridChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -79,6 +94,8 @@ public class GridBuildingSystem : MonoBehaviour {
                     foreach (Vector2Int position in occupyingGridObjectCoordinates) {
                         _grid.GetGridObject(position.x, position.y).ClearPlacedObject();
                     }
+                    // Trigger OnGridChanged event
+                    OnGridChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -88,17 +105,28 @@ public class GridBuildingSystem : MonoBehaviour {
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            building = buildingList[0];
-            OnSelectedChanged?.Invoke(this, EventArgs.Empty);
+            SelectBuilding(0);
         }
         if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            building = buildingList[1];
-            OnSelectedChanged?.Invoke(this, EventArgs.Empty);
+            SelectBuilding(1);
         }
         if (Input.GetKeyDown(KeyCode.Alpha3)) {
-            building = buildingList[2];
-            OnSelectedChanged?.Invoke(this, EventArgs.Empty);
+            SelectBuilding(2);
         }
+    }
+
+    private void SelectBuilding(int typeIndex) {
+        if (building.nameString != buildingList[typeIndex].buildingVariants[0].nameString) {
+            building = buildingList[typeIndex].buildingVariants[Random.Range(0, buildingList[typeIndex].buildingVariants.Count)];
+        }
+        else {
+            int nextBuildingVariant = 0;
+            if (building.variant != buildingList[typeIndex].buildingVariants.Count - 1) {
+                nextBuildingVariant = building.variant + 1;
+            }
+            building = buildingList[typeIndex].buildingVariants[nextBuildingVariant];
+        }
+        OnSelectedChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public class GridObject {
@@ -114,8 +142,8 @@ public class GridBuildingSystem : MonoBehaviour {
         }
 
         public override string ToString() {
-            // return "(" + _x + ", " + _z + ")";
-            return "(" + _x + ", " + _z + "): " + _placedObject;
+            return "(" + _x + ", " + _z + ")";
+            // return "(" + _x + ", " + _z + "): " + _placedObject;
         }
 
         public void SetPlacedObject(PlacedObject placedObject) {

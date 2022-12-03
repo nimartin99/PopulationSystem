@@ -10,6 +10,7 @@ public class Grid<TGridObject> {
     private readonly Vector3 _originPosition;
     private readonly TGridObject[,] _gridArray; // 2D Array
     private TextMesh[,] _gridTextArray;
+    private bool debug = false;
 
     public Grid(int width, int height, float cellSize, Vector3 originPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
         _width = width;
@@ -19,7 +20,7 @@ public class Grid<TGridObject> {
 
         _gridArray = new TGridObject[width, height];
         _gridTextArray = new TextMesh[width, height];
-
+        
         for (var x = 0; x < _gridArray.GetLength(0); x++) {
             for (var z = 0; z < _gridArray.GetLength(1); z++) {
                 // Create Objects
@@ -27,8 +28,12 @@ public class Grid<TGridObject> {
                 // Debug lines
                 Debug.DrawLine(GetWorldPosition(x, z), GetWorldPosition(x, z + 1), Color.grey, 100f);
                 Debug.DrawLine(GetWorldPosition(x, z), GetWorldPosition(x + 1, z), Color.grey, 100f);
-                _gridTextArray[x, z] = Utils.CreateWorldText(_gridArray[x, z].ToString(), null, GetWorldPosition(x, z) + new Vector3(cellSize / 2, 0, cellSize / 2), 20, Color.white,
-                    TextAnchor.MiddleCenter);
+                if (debug) {
+                    _gridTextArray[x, z] = Utils.CreateWorldText(_gridArray[x, z].ToString(), null,
+                        GetWorldPosition(x, z) + new Vector3(cellSize / 2, 0, cellSize / 2), 1, Color.white,
+                        TextAnchor.MiddleCenter);
+                }
+
                 if (x == _gridArray.GetLength(0) - 1) {
                     Debug.DrawLine(GetWorldPosition(x + 1, z), GetWorldPosition(x + 1, z + 1), Color.grey, 100f);
                 }
@@ -36,6 +41,8 @@ public class Grid<TGridObject> {
                 if (z == _gridArray.GetLength(1) - 1) {
                     Debug.DrawLine(GetWorldPosition(x, z + 1), GetWorldPosition(x + 1, z + 1), Color.grey, 100f);
                 }
+                
+                
             }
         }
     }
@@ -98,6 +105,8 @@ public class Grid<TGridObject> {
     }
 
     public void TriggerGridObjectChanged(int x, int z) {
-        _gridTextArray[x, z].text = _gridArray[x, z].ToString();
+        if (debug) {
+            _gridTextArray[x, z].text = _gridArray[x, z].ToString();
+        }
     }
 }

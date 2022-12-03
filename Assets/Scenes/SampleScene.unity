@@ -106,15 +106,15 @@ NavMeshSettings:
   m_BuildSettings:
     serializedVersion: 2
     agentTypeID: 0
-    agentRadius: 0.5
-    agentHeight: 2
+    agentRadius: 0.05
+    agentHeight: 1
     agentSlope: 45
     agentClimb: 0.4
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
     manualCellSize: 0
-    cellSize: 0.16666667
+    cellSize: 0.016666668
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
@@ -168,13 +168,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cinemachineVirtualCamera: {fileID: 1850079792}
-  moveSpeed: 100
+  moveSpeed: 25
   rotateSpeed: 200
   dragPanSpeed: 2
   useEdgeScrolling: 0
   useDragPan: 0
-  followOffsetMin: 20
-  followOffsetMax: 150
+  followOffsetMin: 2
+  followOffsetMax: 40
   zoomSpeed: 25
   zoomAmount: 5
 --- !u!1 &638140294
@@ -206,13 +206,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6329fae554cf3cc448cb81ca06bbb0a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 20
-  height: 20
-  cellSize: 20
+  width: 40
+  height: 40
+  cellSize: 1
   buildingList:
-  - {fileID: 11400000, guid: 01fd28ca72f285a4895737b4658ef3d7, type: 2}
-  - {fileID: 11400000, guid: 5aaed89ff30a4b647ae72fc7ff582642, type: 2}
-  - {fileID: 11400000, guid: bd1c1171c6bc10b41b37c78bdc345bc4, type: 2}
+  - buildingVariants:
+    - {fileID: 11400000, guid: 01fd28ca72f285a4895737b4658ef3d7, type: 2}
+  - buildingVariants:
+    - {fileID: 11400000, guid: 5aaed89ff30a4b647ae72fc7ff582642, type: 2}
+    - {fileID: 11400000, guid: 40e905838ecd11641811e05d1e9dace5, type: 2}
+    - {fileID: 11400000, guid: ab8a78a6b5f454d4f84c0c86844c9c0e, type: 2}
+  - buildingVariants:
+    - {fileID: 11400000, guid: bd1c1171c6bc10b41b37c78bdc345bc4, type: 2}
   building: {fileID: 0}
   direction: 0
   camera: {fileID: 963194227}
@@ -405,8 +410,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.33100694, y: -0.000000016236429, z: 0.0000000056954317, w: 0.9436283}
-  m_LocalPosition: {x: 5.34, y: 88.16, z: -110.58}
+  m_LocalRotation: {x: 0.28978413, y: -0.00000001646809, z: 0.000000004986136, w: 0.95709205}
+  m_LocalPosition: {x: 5.34, y: 18.16, z: -25.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -597,6 +602,82 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1231450015
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1231450016}
+  - component: {fileID: 1231450017}
+  - component: {fileID: 1231450018}
+  m_Layer: 0
+  m_Name: NavMesh
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1231450016
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231450015}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1231450017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231450015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ec9f9f82542dc84c82fd19d4da9eb24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridBuildingSystem: {fileID: 638140295}
+--- !u!114 &1231450018
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231450015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.016666668
+  m_MinRegionArea: 0.01
+  m_NavMeshData: {fileID: 23800000, guid: bf02223ca8989214298ebb7515b6201e, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &1333337953
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,6 +707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f055ae8233985a4197ee7a5e5687425, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _visual: {fileID: 0}
   camera: {fileID: 963194227}
   gridBuildingSystem: {fileID: 638140295}
   groundLayerMask:
@@ -664,7 +746,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1476055729
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -805,8 +887,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1850079791}
-  m_LocalRotation: {x: 0.33100694, y: -0.000000016236429, z: 0.0000000056954317, w: 0.9436283}
-  m_LocalPosition: {x: 5.34, y: 88.16, z: -110.58}
+  m_LocalRotation: {x: 0.28978413, y: -0.00000001646809, z: 0.000000004986136, w: 0.95709205}
+  m_LocalPosition: {x: 5.34, y: 18.16, z: -25.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -861,7 +943,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 80, z: -100}
+  m_FollowOffset: {x: 0, y: 10, z: -15}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0

@@ -15,5 +15,6 @@ MonoBehaviour:
   nameString: Church
   prefab: {fileID: 3971612383876367890, guid: 7d55cd2128b5f5948ba0e3a83e827624, type: 3}
   visual: {fileID: 3971612383876367890, guid: 7d55cd2128b5f5948ba0e3a83e827624, type: 3}
-  width: 1
-  height: 2
+  variant: 0
+  width: 4
+  height: 8
