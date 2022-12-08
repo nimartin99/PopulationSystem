@@ -9,7 +9,7 @@ public class NavMeshManager : MonoBehaviour
     [SerializeField] private GridBuildingSystem gridBuildingSystem;
     private NavMeshSurface _navMeshSurface;
     private bool _buildNavMeshAfterUpdate;
-    
+
     // Start is called before the first frame update
     void Start() {
         _navMeshSurface = GetComponent<NavMeshSurface>();
@@ -19,6 +19,7 @@ public class NavMeshManager : MonoBehaviour
     private void LateUpdate() {
         if (_buildNavMeshAfterUpdate) {
             _navMeshSurface.BuildNavMesh();
+            _buildNavMeshAfterUpdate = false;
         }
     }
 

@@ -10,6 +10,8 @@ public class Resident : MonoBehaviour {
     private NavMeshAgent _navMeshAgent;
     [SerializeField] private SkinnedMeshRenderer skinnedMeshRenderer;
     private House _home;
+    
+    public event EventHandler OnTaskAdded;
 
     private void Awake() {
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -28,6 +30,7 @@ public class Resident : MonoBehaviour {
     public void AddTask(Transform destinationTransform) {
         tasks.Add(destinationTransform);
         _navMeshAgent.destination = tasks[0].position;
+        OnTaskAdded?.Invoke(this, EventArgs.Empty);
     }
 
     public void RemoveTask(int index) {

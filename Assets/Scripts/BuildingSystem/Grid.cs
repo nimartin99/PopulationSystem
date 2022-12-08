@@ -8,16 +8,17 @@ public class Grid<TGridObject> {
     private readonly int _height;
     private readonly float _cellSize;
     private readonly Vector3 _originPosition;
+    private LineRenderer _lineRenderer;
     private readonly TGridObject[,] _gridArray; // 2D Array
     private TextMesh[,] _gridTextArray;
     private bool debug = false;
 
-    public Grid(int width, int height, float cellSize, Vector3 originPosition, Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
+    public Grid(int width, int height, float cellSize, Vector3 originPosition, GridHelper gridHelper,
+        Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
         _width = width;
         _height = height;
         _cellSize = cellSize;
         _originPosition = originPosition;
-
         _gridArray = new TGridObject[width, height];
         _gridTextArray = new TextMesh[width, height];
         
@@ -25,24 +26,14 @@ public class Grid<TGridObject> {
             for (var z = 0; z < _gridArray.GetLength(1); z++) {
                 // Create Objects
                 _gridArray[x, z] = createGridObject(this, x, z);
-                // Debug lines
-                Debug.DrawLine(GetWorldPosition(x, z), GetWorldPosition(x, z + 1), Color.grey, 100f);
-                Debug.DrawLine(GetWorldPosition(x, z), GetWorldPosition(x + 1, z), Color.grey, 100f);
+
                 if (debug) {
                     _gridTextArray[x, z] = Utils.CreateWorldText(_gridArray[x, z].ToString(), null,
                         GetWorldPosition(x, z) + new Vector3(cellSize / 2, 0, cellSize / 2), 1, Color.white,
                         TextAnchor.MiddleCenter);
                 }
 
-                if (x == _gridArray.GetLength(0) - 1) {
-                    Debug.DrawLine(GetWorldPosition(x + 1, z), GetWorldPosition(x + 1, z + 1), Color.grey, 100f);
-                }
-
-                if (z == _gridArray.GetLength(1) - 1) {
-                    Debug.DrawLine(GetWorldPosition(x, z + 1), GetWorldPosition(x + 1, z + 1), Color.grey, 100f);
-                }
-                
-                
+                gridHelper.DrawLine(x, z, GetWorldPosition(x, z), _gridArray.GetLength(0), _gridArray.GetLength(1));
             }
         }
     }

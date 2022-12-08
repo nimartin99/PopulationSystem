@@ -1,0 +1,8 @@
+.toolButton {
+    width: 100px;
+    height: auto;
+    background-image: url('project://database/Assets/UI%20Toolkit/Icons/ExploreIcon.png?fileID=2800000&guid=bf2138e5183d01b489f44543e1430484&type=3#ExploreIcon');
+    -unity-background-scale-mode: scale-to-fit;
+    min-width: 48px;
+    background-color: rgba(156, 102, 68, 255);
+}
