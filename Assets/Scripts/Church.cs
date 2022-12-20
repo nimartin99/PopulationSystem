@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Church : MonoBehaviour, IBuilding
 {
     private List<Transform> _visitors;
     [SerializeField] private int churchDuration;
     [SerializeField] private Transform entrance;
+
+    [SerializeField] public static float ChurchRange = 20;
     
     // Start is called before the first frame update
     void Start()
@@ -21,27 +24,27 @@ public class Church : MonoBehaviour, IBuilding
     }
 
     public void BuildingPlaced() {
-        foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("Resident"))
-        {
-            Debug.Log("Found Resident: " + fooObj);
-            fooObj.GetComponent<Resident>().AddTask(entrance);
-        }
+        
     }
 
     public void ResidentEnter(Collider other) {
         Debug.Log("Resident Enter");
         Resident resident = other.GetComponent<Resident>();
-        if (resident.tasks[0] == entrance) {
+        if (resident.tasks[0] == Resident.AvailableTasks.Church) {
             resident.DisableVisual();
-            StartCoroutine(ResidentLeave(resident));
+            StartCoroutine(CompleteReligionTask(resident));
         }
     }
 
-    IEnumerator ResidentLeave(Resident resident) {
-        Debug.Log("Resident Leave start");
+    IEnumerator CompleteReligionTask(Resident resident) {
         yield return new WaitForSeconds(churchDuration);
-        Debug.Log("Resident Leave Execute");
-        resident.RemoveTask(0);
+        resident.religionSatisfaction = 100f;
+        resident.CompleteTask();
+        
+    }
+
+    public void ResidentLeave(Collider other) {
+        Resident resident = other.GetComponent<Resident>();
         resident.EnableVisual();
     }
 }

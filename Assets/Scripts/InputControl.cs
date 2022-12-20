@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputControl : MonoBehaviour {
-    public InputModes currentMode;
+    public InputModes currentMode = InputModes.ExploreMode;
     
     public enum InputModes {
         ExploreMode,
@@ -14,10 +14,18 @@ public class InputControl : MonoBehaviour {
     [SerializeField] private Camera currentCamera;
     [SerializeField] private LayerMask groundLayerMask;
 
+    [SerializeField] private UIControl uiControl;
     [SerializeField] private GridBuildingSystem gridBuildingSystem;
     
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.O)) {
+            foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("Resident"))
+            {
+                Debug.Log("Found Resident: " + fooObj);
+                fooObj.GetComponent<Resident>().AddTask(Resident.AvailableTasks.Church);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.M)) {
             switch (currentMode) {
                 case InputModes.ExploreMode:
@@ -29,6 +37,20 @@ public class InputControl : MonoBehaviour {
                 case InputModes.DeleteMode:
                     currentMode = InputModes.ExploreMode;
                     break;
+            }
+        }
+
+        if (currentMode == InputModes.ExploreMode) {
+            if (Input.GetMouseButtonDown(0)) {
+                Transform hitTransform = GetMouseObject(out bool hitSomething);
+                if (hitSomething) {
+                    if (hitTransform.GetComponent<Resident>() != null) {
+                        uiControl.SetToInspector(hitTransform, "Resident");
+                    }
+                }
+            }
+            if (Input.GetMouseButtonDown(1)) {
+                uiControl.HideInspector();
             }
         }
 
@@ -82,6 +104,17 @@ public class InputControl : MonoBehaviour {
             hitSomething = false;
         }
         return hit.point;
+    }
+    
+    private Transform GetMouseObject(out bool hitSomething) {
+        Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue)) {
+            hitSomething = true;
+        }
+        else {
+            hitSomething = false;
+        }
+        return hit.transform;
     }
 
     private void ResetToExploreMode() {

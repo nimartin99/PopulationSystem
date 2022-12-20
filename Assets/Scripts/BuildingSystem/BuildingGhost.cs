@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Timeline;
 
@@ -18,7 +17,6 @@ public class BuildingGhost : MonoBehaviour {
     // Start is called before the first frame update
     void Start()
     {
-        RefreshVisual();
         gridBuildingSystem.OnSelectedChanged += BuildingSystemOnSelectedChanged;
     }
 
@@ -41,14 +39,9 @@ public class BuildingGhost : MonoBehaviour {
         }
     }
 
-    private void RefreshVisual() {
-        if (_visual != null) {
-            Destroy(_visual.gameObject);
-            _visual = null;
-        }
-
+    public void RefreshVisual() {
+        DestroyVisual();
         BuildingObject currentBuildingObject = gridBuildingSystem.building;
-
         if (currentBuildingObject != null) {
             _visual = Instantiate(currentBuildingObject.visual, Vector3.zero, Quaternion.identity);
             SetLayerRecursive(_visual.gameObject, 6);
@@ -67,17 +60,10 @@ public class BuildingGhost : MonoBehaviour {
         }
     }
 
-    private void SetStaticRecursive(GameObject go) {
-        if (go == null) {
-            return;
-        }
-        
-        StaticEditorFlags flags = GameObjectUtility.GetStaticEditorFlags(go);
-        flags = flags & ~(StaticEditorFlags.NavigationStatic);
-        GameObjectUtility.SetStaticEditorFlags(go, flags);
-        
-        foreach (Transform child in go.transform) {
-            SetStaticRecursive(child.gameObject);
+    public void DestroyVisual() {
+        if (_visual != null) {
+            Destroy(_visual.gameObject);
+            _visual = null;
         }
     }
 }

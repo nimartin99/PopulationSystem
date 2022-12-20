@@ -1,13 +1,23 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/Styles.uss?fileID=7433441132597879392&amp;guid=45ea93da90c071e419d59a24f8c4afa4&amp;type=3#Styles" />
-    <ui:VisualElement style="position: absolute; bottom: 0; width: 100%; height: 25%; align-items: center;">
+    <ui:VisualElement name="toolbar" style="position: absolute; bottom: 0; width: 100%; height: 25%; align-items: center;">
         <ui:VisualElement style="height: 100%; width: 75%; border-top-left-radius: 8px; border-bottom-left-radius: 0; border-top-right-radius: 8px; border-bottom-right-radius: 0; background-color: rgb(127, 85, 57); padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px;">
             <ui:VisualElement name="Tools" style="width: 100%; height: 20%; flex-direction: row;">
-                <ui:Button display-tooltip-when-elided="true" name="exploreButton" class="toolButton" />
-                <ui:Button display-tooltip-when-elided="true" name="buildButton" class="toolButton" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/EditIcon.png?fileID=2800000&amp;guid=4fdbf61b1736c9e40915001bc38f905b&amp;type=3#EditIcon&apos;);" />
-                <ui:Button display-tooltip-when-elided="true" name="deleteButton" class="toolButton" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/DeleteIcon.png?fileID=2800000&amp;guid=c3b8e4b6c5d1c164899d79e6defe13cb&amp;type=3#DeleteIcon&apos;);" />
+                <ui:Button display-tooltip-when-elided="true" name="exploreButton" class="toolButton" style="background-color: rgb(156, 102, 68); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;" />
+                <ui:Button display-tooltip-when-elided="true" name="buildButton" class="toolButton" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/EditIcon.png?fileID=2800000&amp;guid=4fdbf61b1736c9e40915001bc38f905b&amp;type=3#EditIcon&apos;); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);" />
+                <ui:Button display-tooltip-when-elided="true" name="deleteButton" class="toolButton" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/DeleteIcon.png?fileID=2800000&amp;guid=c3b8e4b6c5d1c164899d79e6defe13cb&amp;type=3#DeleteIcon&apos;); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);" />
             </ui:VisualElement>
             <ui:VisualElement name="Buildinng" style="width: 100%; height: 100%;" />
         </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="inspector" style="position: absolute; right: 0; top: 0; width: 20%; height: 74%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(127, 85, 57); padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; align-items: center; display: flex;">
+        <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" style="width: auto; height: auto; font-size: 30px; border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; padding-left: 3px; padding-right: 3px; padding-top: 3px; padding-bottom: 3px; background-color: rgb(156, 102, 68); margin-bottom: 8px;" />
+        <ui:VisualElement name="divider" style="width: 75%; background-color: rgb(0, 0, 0); height: 1px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 8px;" />
+        <ui:ScrollView style="width: 100%; height: 100%; align-items: flex-start;">
+            <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                <ui:Label text="Religion" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%;" />
+                <ui:ProgressBar title="0/100" name="inspectorReligion" low-value="0" style="width: 50%;" />
+            </ui:VisualElement>
+        </ui:ScrollView>
     </ui:VisualElement>
 </ui:UXML>

@@ -148,7 +148,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 471839328}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.34, y: 8.16, z: -10.58}
+  m_LocalPosition: {x: 5.34, y: 0, z: -10.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -173,7 +173,7 @@ MonoBehaviour:
   dragPanSpeed: 2
   useEdgeScrolling: 0
   useDragPan: 0
-  followOffsetMin: 2
+  followOffsetMin: 4
   followOffsetMax: 40
   zoomSpeed: 25
   zoomAmount: 5
@@ -462,7 +462,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.28978413, y: 0.000000016468093, z: -0.0000000049861373, w: 0.95709205}
-  m_LocalPosition: {x: 5.34, y: 18.16, z: -25.58}
+  m_LocalPosition: {x: 5.34, y: 10, z: -25.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -860,6 +860,7 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 8
+  uiControl: {fileID: 1769621183}
   gridBuildingSystem: {fileID: 638140295}
 --- !u!4 &1769621181
 Transform:
@@ -904,6 +905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0dc5010074b4844891c4a799f9c41a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingGhost: {fileID: 1333337954}
 --- !u!1 &1850079791
 GameObject:
   m_ObjectHideFlags: 0
@@ -967,7 +969,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1850079791}
   m_LocalRotation: {x: 0.28978413, y: 0.000000016468093, z: -0.0000000049861373, w: 0.95709205}
-  m_LocalPosition: {x: 5.34, y: 18.16, z: -25.58}
+  m_LocalPosition: {x: 5.34, y: 10, z: -25.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
