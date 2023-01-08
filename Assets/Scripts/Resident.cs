@@ -28,27 +28,33 @@ public class Resident : MonoBehaviour {
     }
 
     private void Update() {
-        if (currentTask == AvailableTasks.None && tasks.Count > 0) {
+        if (currentTask == AvailableTasks.None && tasks.Count > 0)
+        {
+            Debug.Log("Get the next task: " + tasks[0]);
             currentTask = tasks[0];
             switch (currentTask) {
                 case AvailableTasks.Church:
-                    Transform nextChurchTransform = _home.FindNextChurch();
-                    if (nextChurchTransform != null) {
-                        _navMeshAgent.destination = nextChurchTransform.position;
+                    Transform nextChurchEntranceTransform = _home.FindNextChurch(this);
+                    if (nextChurchEntranceTransform != null) {
+                        _navMeshAgent.destination = nextChurchEntranceTransform.position;
+                        Debug.Log("Next task is church, found at " + nextChurchEntranceTransform.position);
                     }
                     else {
                         RemoveTask(0);
                         currentTask = AvailableTasks.None;
                         religionSatisfaction = 0f;
+                        Debug.Log("Next task is church, but none was found");
                     }
                     break;
                 case AvailableTasks.Home:
                 default:
                     _navMeshAgent.destination = _home.entrance.position;
+                    Debug.Log("Next task is home, go to " + _home.entrance.position);
                     break;
             }
         }
         else if(currentTask == AvailableTasks.None && tasks.Count == 0 && !_home._residentsCurrentlyInHome.Contains(transform)) {
+            Debug.Log("no tasks, no current task and not in home -> so add add task Home");
             AddTask(AvailableTasks.Home);
         }
         
@@ -70,8 +76,8 @@ public class Resident : MonoBehaviour {
     }
 
     public void CompleteTask() {
-        currentTask = AvailableTasks.None;
         tasks.RemoveAt(0);
+        currentTask = AvailableTasks.None;
     }
 
     public void DisableVisual() {

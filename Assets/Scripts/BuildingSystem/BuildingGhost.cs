@@ -9,7 +9,7 @@ public class BuildingGhost : MonoBehaviour {
 
     public Transform _visual;
     private BuildingObject _buildingObject;
-    [SerializeField] private Camera camera;
+    [SerializeField] private Camera mainCamera;
 
     [SerializeField] private GridBuildingSystem gridBuildingSystem;
     [SerializeField] private LayerMask groundLayerMask;
@@ -26,7 +26,7 @@ public class BuildingGhost : MonoBehaviour {
     }
 
     public void LateUpdate() {
-        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, groundLayerMask)) {
             gridBuildingSystem._grid.GetXZ(hit.point, out int x, out int z);
             Vector2Int rotationOffset = gridBuildingSystem.building.GetRotationOffset(gridBuildingSystem.direction);

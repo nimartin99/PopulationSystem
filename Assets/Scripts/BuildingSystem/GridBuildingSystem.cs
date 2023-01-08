@@ -20,7 +20,6 @@ public class GridBuildingSystem : MonoBehaviour {
     [FormerlySerializedAs("_building")] public BuildingObject building;
     [FormerlySerializedAs("defaultDirection")] [SerializeField] public BuildingObject.Direction direction = BuildingObject.Direction.Down;
     
-    [SerializeField] private Camera camera;
     [SerializeField] private LayerMask groundLayerMask;
     
     public event EventHandler OnSelectedChanged;

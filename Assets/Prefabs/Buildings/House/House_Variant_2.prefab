@@ -63,8 +63,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   residents: []
+  _residentsCurrentlyInHome: []
   residentPrefab: {fileID: 2612433150575423496, guid: a3395e85d277a5049b05637fb2e7d248, type: 3}
   entrance: {fileID: 366594041765323281}
+  nextChurch: {fileID: 0}
 --- !u!1 &2704845067670660107
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,7 +189,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2497729753070558497, guid: 50df071c0cd09b042982d3eaf25f6540, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.949
+      value: 0.962
       objectReference: {fileID: 0}
     - target: {fileID: 2497729753070558497, guid: 50df071c0cd09b042982d3eaf25f6540, type: 3}
       propertyPath: m_LocalRotation.w
@@ -265,7 +267,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 424664, guid: 08f5c92f5757ce646bdc266e6ae27fd4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.506
+      value: 0.452
       objectReference: {fileID: 0}
     - target: {fileID: 424664, guid: 08f5c92f5757ce646bdc266e6ae27fd4, type: 3}
       propertyPath: m_LocalRotation.w

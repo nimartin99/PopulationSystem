@@ -7,10 +7,11 @@ public class Church : MonoBehaviour, IBuilding
 {
     private List<Transform> _visitors;
     [SerializeField] private int churchDuration;
-    [SerializeField] private Transform entrance;
+    [SerializeField] public Transform entrance;
 
-    [SerializeField] public static float ChurchRange = 20;
-    
+    [SerializeField] public const float ChurchRange = 50;
+    private bool addTaskInNextUpdate = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,11 +21,20 @@ public class Church : MonoBehaviour, IBuilding
     // Update is called once per frame
     void Update()
     {
-        
+        if (addTaskInNextUpdate)
+        {
+            foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("Resident"))
+            {
+                Debug.Log("found resident " + fooObj);
+                fooObj.GetComponent<Resident>().AddTask(Resident.AvailableTasks.Church);
+            }
+            addTaskInNextUpdate = false;
+        }
     }
 
-    public void BuildingPlaced() {
-        
+    public void BuildingPlaced()
+    {
+        addTaskInNextUpdate = true;
     }
 
     public void ResidentEnter(Collider other) {

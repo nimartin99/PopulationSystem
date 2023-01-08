@@ -24,6 +24,7 @@ public class House : MonoBehaviour, IBuilding {
     public void BuildingPlaced() {
         Transform residentTransform = Instantiate(residentPrefab, entrance.position, Quaternion.identity);
         residents.Add(residentTransform);
+        _residentsCurrentlyInHome.Add(residentTransform);
         Resident resident = residentTransform.GetComponent<Resident>();
         resident.ResidentConstructor(this);
     }
@@ -43,25 +44,26 @@ public class House : MonoBehaviour, IBuilding {
         resident.EnableVisual();
     }
 
-    public Transform FindNextChurch() {
-        NavMeshAgent anyResidentAgent = residents[0].GetComponent<NavMeshAgent>();
-        Transform closestChurch = null;
+    public Transform FindNextChurch(Resident resident) {
+        NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
+        Church closestChurch = null;
         float closestTargetDistance = float.MaxValue;
         NavMeshPath Path = new NavMeshPath();
-        foreach(GameObject church in FindObjectsOfType(typeof(Church))) {
+        foreach(Church church in FindObjectsOfType<Church>()) {
             Transform churchTransform = church.transform;
-            if (NavMesh.CalculatePath(transform.position, churchTransform.position, anyResidentAgent.areaMask, Path)) {
+            Debug.Log(NavMesh.CalculatePath(entrance.transform.position, church.entrance.position, anyResidentAgent.areaMask, Path));
+            if (NavMesh.CalculatePath(entrance.transform.position, church.entrance.position, anyResidentAgent.areaMask, Path)) {
                 float distanceToChurch = Vector3.Distance(transform.position, Path.corners[0]);
                 for (int i = 1; i < Path.corners.Length; i++) {
                     distanceToChurch += Vector3.Distance(Path.corners[i - 1], Path.corners[i]);
                 }
-
+                Debug.Log("DistanceToChurch" + distanceToChurch);
                 if (distanceToChurch < Church.ChurchRange && distanceToChurch < closestTargetDistance) {
                     closestTargetDistance = distanceToChurch;
-                    closestChurch = church.transform;
+                    closestChurch = church;
                 }
             }
         }
-        return closestChurch;
+        return closestChurch.entrance;
     }
 }
