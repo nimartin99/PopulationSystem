@@ -9,7 +9,7 @@ public class Church : MonoBehaviour, IBuilding
     [SerializeField] private int churchDuration;
     [SerializeField] public Transform entrance;
 
-    [SerializeField] public const float ChurchRange = 50;
+    [SerializeField] public const float ChurchRange = 25;
     private bool addTaskInNextUpdate = false;
 
     // Start is called before the first frame update
@@ -38,7 +38,6 @@ public class Church : MonoBehaviour, IBuilding
     }
 
     public void ResidentEnter(Collider other) {
-        Debug.Log("Resident Enter");
         Resident resident = other.GetComponent<Resident>();
         if (resident.tasks[0] == Resident.AvailableTasks.Church) {
             resident.DisableVisual();
@@ -46,7 +45,7 @@ public class Church : MonoBehaviour, IBuilding
         }
     }
 
-    IEnumerator CompleteReligionTask(Resident resident) {
+    private IEnumerator CompleteReligionTask(Resident resident) {
         yield return new WaitForSeconds(churchDuration);
         resident.religionSatisfaction = 100f;
         resident.CompleteTask();

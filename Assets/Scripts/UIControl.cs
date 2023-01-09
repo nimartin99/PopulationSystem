@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -11,6 +12,7 @@ public class UIControl : MonoBehaviour
     [SerializeField] private BuildingGhost buildingGhost;
     
     private UIDocument _uiDocument;
+    private TimeController _timeController;
     
     // Toolbar
     private Button _exploreButton;
@@ -25,7 +27,19 @@ public class UIControl : MonoBehaviour
     private string _currentlyInspectedType;
     private Resident _currentlyInspectedResident;
 
+    // Statusbar
+    private Label _dayLabel;
+    private Label _timeLabel;
+    
+    // Settings
+    private Button _settingsActivator;
+    private VisualElement _settings;
+    private SliderInt _workNecessitiesSlider;
+    private Label _necessitiesLabelValue;
+    private Label _workLabelValue;
+
     void Start() {
+        _timeController = TimeController.Instance;
         _inputControl = GetComponent<InputControl>();
         
         _uiDocument = GetComponent<UIDocument>();
@@ -43,6 +57,21 @@ public class UIControl : MonoBehaviour
         _inspectorName = _uiDocument.rootVisualElement.Q<Label>("inspectorName");
         _inspectorReligion = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorReligion");
         _inspector.visible = false;
+        
+        // Statusbar
+        _dayLabel = _uiDocument.rootVisualElement.Q<Label>("dayLabel");
+        _timeLabel = _uiDocument.rootVisualElement.Q<Label>("timeLabel");
+        
+        // Settings
+        _settingsActivator = _uiDocument.rootVisualElement.Q<Button>("settingsActivator");
+        _settingsActivator.clicked += () => { ToggleSettings(); };
+        _settings = _uiDocument.rootVisualElement.Q<VisualElement>("settings");
+        _settings.visible = false;
+        _workNecessitiesSlider = _uiDocument.rootVisualElement.Q<SliderInt>("workNecessitiesSlider");
+        _workNecessitiesSlider.highValue = _timeController.hoursInADay;
+        _necessitiesLabelValue = _uiDocument.rootVisualElement.Q<Label>("necessitiesLabelValue");
+        _workLabelValue = _uiDocument.rootVisualElement.Q<Label>("workLabelValue");
+            
     }
 
     private void Update() {
@@ -56,6 +85,16 @@ public class UIControl : MonoBehaviour
                     break;
             }
         }
+
+
+        if (_workNecessitiesSlider.visible) {
+            int workTime = _workNecessitiesSlider.value;
+            _timeController.workHours = workTime;
+            _workLabelValue.text = workTime.ToString();
+            _necessitiesLabelValue.text = (_timeController.hoursInADay - workTime).ToString();
+        }
+
+        DisplayClockToStatusbar();
     }
 
     private void ButtonClicked(string type) {
@@ -118,5 +157,39 @@ public class UIControl : MonoBehaviour
         buttonToUnstyle2.style.borderLeftWidth = 1f;
         buttonToUnstyle2.style.borderTopWidth = 1f;
         buttonToUnstyle2.style.borderRightWidth = 1f;
+    }
+
+    private void ToggleSettings() {
+        _settings.visible = !_settings.visible;
+        if (_settings.visible) {
+            _settingsActivator.style.borderBottomRightRadius = 0;
+            _settingsActivator.style.borderBottomLeftRadius = 0;
+        }
+        else {
+            _settingsActivator.style.borderBottomRightRadius = 3;
+            _settingsActivator.style.borderBottomLeftRadius = 3;
+        }
+    }
+
+    private void DisplayClockToStatusbar() {
+        double hours = _timeController.hours;
+        double minutes = _timeController.minutes;
+        String hoursAndMinutes = "";
+        if (hours < 10) {
+            hoursAndMinutes = "0" + hours;
+        }
+        else {
+            hoursAndMinutes = hours.ToString();
+        }
+        hoursAndMinutes += ":";
+        if (minutes < 10) {
+            hoursAndMinutes += "0" + minutes;
+        }
+        else {
+            hoursAndMinutes += minutes.ToString();
+        }
+
+        _dayLabel.text = "Day " + _timeController.daysSinceStart + " -";
+        _timeLabel.text = hoursAndMinutes;
     }
 }

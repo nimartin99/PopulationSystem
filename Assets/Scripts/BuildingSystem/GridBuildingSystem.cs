@@ -50,7 +50,7 @@ public class GridBuildingSystem : MonoBehaviour {
         foreach (Vector2Int position in occupyingGridObjectCoordinates) {
             GridObject gridObject = _grid.GetGridObject(position.x, position.y);
             if (!gridObject.CanBuild()) {
-                Debug.Log("Cannot build here!");
+                // Debug.Log("Cannot build here!");
                 gridCoordinatesFree = false;
                 break;
             }
