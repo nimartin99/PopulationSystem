@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -22,6 +21,7 @@ public class UIControl : MonoBehaviour
     // Inspector
     private VisualElement _inspector;
     private Label _inspectorName;
+    private ProgressBar _inspectorFood;
     private ProgressBar _inspectorReligion;
     private Transform _currentlyInspected;
     private string _currentlyInspectedType;
@@ -55,6 +55,7 @@ public class UIControl : MonoBehaviour
         // Inspector
         _inspector = _uiDocument.rootVisualElement.Q<VisualElement>("inspector");
         _inspectorName = _uiDocument.rootVisualElement.Q<Label>("inspectorName");
+        _inspectorFood = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorFood");
         _inspectorReligion = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorReligion");
         _inspector.visible = false;
         
@@ -78,8 +79,10 @@ public class UIControl : MonoBehaviour
         if (_inspector.visible) {
             switch (_currentlyInspectedType) {
                 case "Resident":
-                    // Religion
-                    _inspectorReligion.title = _currentlyInspectedResident.religionSatisfaction + " / 100";
+                    _inspectorFood.title = Math.Floor(_currentlyInspectedResident.foodSatisfaction) + " / 100";
+                    _inspectorFood.value = _currentlyInspectedResident.foodSatisfaction;
+                    _inspectorReligion.title =  Math.Floor(_currentlyInspectedResident.religionSatisfaction) + " / 100";
+                    _inspectorReligion.value = _currentlyInspectedResident.religionSatisfaction;
                     break;
                 case "House":
                     break;

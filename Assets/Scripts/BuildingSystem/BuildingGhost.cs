@@ -21,7 +21,6 @@ public class BuildingGhost : MonoBehaviour {
     }
 
     private void BuildingSystemOnSelectedChanged(object sender, EventArgs e) {
-        Debug.Log("BuildingSystemOnSelectedChanged");
         RefreshVisual();
     }
 

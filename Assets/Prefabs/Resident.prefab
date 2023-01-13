@@ -71,12 +71,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597dc65c9cc20254c9a782d6c487a59a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sleeping: 0
+  workedToday: 0
   currentTask: 0
   tasks: 
   skinnedMeshRenderer: {fileID: 2820376663486769268}
   positionIndicator: {fileID: 511933203813988317}
   workplace: {fileID: 0}
   religionSatisfaction: 0
+  foodSatisfaction: 0
 --- !u!54 &1223320523537930294
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -19,13 +19,6 @@ public class InputControl : MonoBehaviour {
     
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O)) {
-            foreach(GameObject fooObj in GameObject.FindGameObjectsWithTag("Resident"))
-            {
-                Debug.Log("Found Resident: " + fooObj);
-                fooObj.GetComponent<Resident>().AddTask(Resident.AvailableTasks.Church);
-            }
-        }
         if (Input.GetKeyDown(KeyCode.M)) {
             switch (currentMode) {
                 case InputModes.ExploreMode:

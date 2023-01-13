@@ -10,8 +10,7 @@ public class House : MonoBehaviour, IBuilding {
     public List<Transform> _residentsCurrentlyInHome;
     [SerializeField] private Transform residentPrefab;
     [SerializeField] public Transform entrance;
-
-    public Transform nextChurch;
+    
     [SerializeField] private Transform sleepingIndicator;
     
     // Start is called before the first frame update
@@ -61,15 +60,13 @@ public class House : MonoBehaviour, IBuilding {
         NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
         Church closestChurch = null;
         float closestTargetDistance = float.MaxValue;
-        NavMeshPath Path = new NavMeshPath();
+        NavMeshPath path = new NavMeshPath();
         foreach(Church church in FindObjectsOfType<Church>()) {
-            Transform churchTransform = church.transform;
-            if (NavMesh.CalculatePath(entrance.transform.position, church.entrance.position, anyResidentAgent.areaMask, Path)) {
-                float distanceToChurch = Vector3.Distance(transform.position, Path.corners[0]);
-                for (int i = 1; i < Path.corners.Length; i++) {
-                    distanceToChurch += Vector3.Distance(Path.corners[i - 1], Path.corners[i]);
+            if (NavMesh.CalculatePath(entrance.transform.position, church.entrance.position, anyResidentAgent.areaMask, path)) {
+                float distanceToChurch = Vector3.Distance(transform.position, path.corners[0]);
+                for (int i = 1; i < path.corners.Length; i++) {
+                    distanceToChurch += Vector3.Distance(path.corners[i - 1], path.corners[i]);
                 }
-                Debug.Log("DistanceToChurch" + distanceToChurch);
                 if (distanceToChurch < Church.ChurchRange && distanceToChurch < closestTargetDistance) {
                     closestTargetDistance = distanceToChurch;
                     closestChurch = church;
@@ -77,6 +74,26 @@ public class House : MonoBehaviour, IBuilding {
             }
         }
         return closestChurch.entrance;
+    }
+    
+    public Transform FindNextMarket(Resident resident) {
+        NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
+        Market closestMarket = null;
+        float closestTargetDistance = float.MaxValue;
+        NavMeshPath path = new NavMeshPath();
+        foreach(Market market in FindObjectsOfType<Market>()) {
+            if (NavMesh.CalculatePath(entrance.transform.position, market.entrance.position, anyResidentAgent.areaMask, path)) {
+                float distanceToMarket = Vector3.Distance(transform.position, path.corners[0]);
+                for (int i = 1; i < path.corners.Length; i++) {
+                    distanceToMarket += Vector3.Distance(path.corners[i - 1], path.corners[i]);
+                }
+                if (distanceToMarket < Market.MarketRange && distanceToMarket < closestTargetDistance) {
+                    closestTargetDistance = distanceToMarket;
+                    closestMarket = market;
+                }
+            }
+        }
+        return closestMarket.entrance;
     }
 
     public bool PathFromHomeAvailable(Transform destination, Resident resident) {

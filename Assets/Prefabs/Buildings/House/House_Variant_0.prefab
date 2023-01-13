@@ -67,7 +67,6 @@ MonoBehaviour:
   _residentsCurrentlyInHome: []
   residentPrefab: {fileID: 2612433150575423496, guid: a3395e85d277a5049b05637fb2e7d248, type: 3}
   entrance: {fileID: 3110706059726405192}
-  nextChurch: {fileID: 0}
   sleepingIndicator: {fileID: 498936471353097429}
 --- !u!1 &2704845067670660107
 GameObject:
@@ -364,6 +363,10 @@ PrefabInstance:
     - target: {fileID: 4548324963609497464, guid: 0d2dd72a1cdcccf45ac1477b697e65c7, type: 3}
       propertyPath: m_Name
       value: SleepIndicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 4548324963609497464, guid: 0d2dd72a1cdcccf45ac1477b697e65c7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d2dd72a1cdcccf45ac1477b697e65c7, type: 3}
