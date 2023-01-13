@@ -1,0 +1,137 @@
+% durch Austauschen dieser Zeilen kann die Sprache des Templates geändert werden
+\PassOptionsToPackage{main=ngerman}{babel}
+%\PassOptionsToPackage{main=english}{babel
+
+% durch Austauschen dieser Zeilen kann zwischen Abschlussarbeit und Seminararbeit gewechselt werden
+\documentclass[thesis, numbers=noenddot]{mi-document}
+%\documentclass[seminar]{mi-document}
+
+\DeclareTOCStyleEntry[
+  level=\chaptertocdepth,
+  indent=0pt,
+  numwidth=2.3em,
+  dynnumwidth,
+  linefill=\hfill,
+  entryformat=\appendixtocformat,
+  entrynumberformat=\appendixtocnumberformat,
+  pagenumberformat=\appendixtocpagenumberformat
+]{tocline}{appendixchapter}
+\newcommand*\appendixtocformat[1]{{\usekomafont{chapterentry}#1}}
+\newcommand*\appendixtocnumberformat[1]{{\def\autodot{:}\appendixname\ #1}}
+\newcommand*\appendixtocpagenumberformat[1]
+  {{\usekomafont{chapterentry}\usekomafont{chapterentrypagenumber}#1}}
+
+\usepackage{xpatch}
+\xapptocmd\appendix
+  {%
+    \renewcommand*{\chapterformat}{%
+      \mbox{\appendixname{\nobreakspace}\thechapter:%
+        \IfUsePrefixLine{}{\enskip}}%
+    }%
+    \renewcommand*{\chaptermarkformat}{\appendixname\ \thechapter:\enskip}%
+    \xpatchcmd{\addchaptertocentry}
+      {\addtocentrydefault{chapter}{#1}{#2}}
+      {\addtocentrydefault{appendixchapter}{#1}{#2}}%
+      {}{\PatchFailed}%
+  }{}{\PatchFailed}
+
+\bachelor % im Falle einer Masterarbeit \master
+
+% Variablen, die für das Deckblatt und Metadaten verwendet werden
+\title{Anbindung eines Exploit-Frameworks an ein Automotive-Testsystem}
+\author{Leonhard Bosch}
+\semester{SS22}
+\course{Bachelorarbeit}
+\module{[z.B. MEI-M 04 (B.A.)]}
+\dozent{Prof. Dr.-Ing. Andreas Mayer}
+\studid{204002}
+\studSemester{7. Semester B.S. Software Engineering}
+\phone{0941/133742666} % Optional
+\studSubject{Software Engineering}
+\firstReviewer{Prof. Dr.-Ing. Andreas Mayer}
+\secondReviewer{Dipl.-Ing. Holger Heinemann}
+\advisor{Holger Heinemann}
+\mail{leonhard.bosch@icloud.com}
+\studMail{lbosch@stud.hs-heilbronn.de}
+\dateHandedIn{30.06.2022}
+\keywords{automotive;cyber security;pentest;software testing}
+
+\bibliographystyle{apacite}
+
+% Falls Sie die Abkürzung zum Einbinden von Grafiken benutzen möchten. Erläuterung fnden Sie im Abschnitt zu Abbildungen.
+\input{config}
+
+\begin{document}
+
+% Die Nummerierung beginnt mit der Titelseite (= Seite 1), soll aber erst ab der ersten Inhaltsseite (Einleitung) angezeigt werden.
+\pagestyle{empty}
+
+% Das Deckblatt erstellen
+\maketitle
+
+%\printindex
+
+\pagestyle{headings} % Seitennummern und Kapitelbezeichnungen anzeigen
+
+\input{00_abstract}
+
+\tableofcontents % Optional
+\listoffigures % Optional
+%\listoftables % Optional
+%\lstlistoflistings % Optional
+
+
+\clearpage
+\onehalfspacing
+
+\clearpage
+
+% hier beginnt der eigentliche Inhalt der Arbeit
+
+\include{01_vorwort}
+\include{02_ueberblick}
+\include{04_grundlagen}
+\include{05_anforderungen}
+
+\include{06_implementierung}
+% Entscheidungen in der Implementierung begründen, warum wurde etwas so umgesetzt wie es umgesetzt wurde. 
+% Benchmarking (ist es optimal)
+\include{07_evaluation}
+\include{08_zusammenfassung}
+%\include{gestaltungsrichtlinien}
+%\include{empfehlungen}
+%\include{zusammenfassung}
+
+% Kapitelbezeichnung in der rechten oberen Ecke entfernen
+\clearpage
+\pagestyle{plain}
+
+% Literaturverzeichnis anzeigen
+% kleinerer Zeilenabstand, damit es nicht so gestreckt aussieht
+\onehalfspacing
+\bibliography{literature}
+\onehalfspacing
+
+% Anhang
+\appendix
+\include{anhang}
+
+% Tipps zur Verwendung von LaTeX
+%\include{latex}
+
+\begin{singlespace}
+\KOMAoptions{parskip=full}
+% Erklärung zur Urherberschaft (urheberschaft.tex) anhängen
+\include{urheberschaft}
+
+% Erklärung zur Lizenzierung der Arbeit (lizenzierung.tex) anhängen
+%\include{lizenzierung}
+
+% Stichwortverzeichnis anzeigen. Weiß nicht, warum das nicht nach dem Inhaltsverzeichnis kommt.
+\end{singlespace}
+
+% Inhalt des Datenträgers. Gehört meiner Meinung nach zum Anhang, aber was weiß ich schon. AS
+%\newpage
+%\input{datenträger}
+
+\end{document}

@@ -1,0 +1,47 @@
+\chapter{Docker Compose des Metasploit Containers}\label{sec:anhang}\index{Demo}
+
+\begin{minted}[linenos]{yaml}
+version: "3.9"
+
+services:
+  metasploit:
+    build: "MetasploitContainer"
+    depends_on:
+      - postgres
+      - redis
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+      - net.ipv6.conf.all.accept_ra=2
+      - net.ipv6.conf.all.forwarding=1
+    cap_add:
+      - NET_ADMIN         # Allows us to create 
+                          # a tap interface in the container
+      - NET_RAW           # Required for iptables
+      - NET_BIND_SERVICE  # Bind a socket to internet domain
+                          # privileged ports 
+                          # (port numbers less than 1024).
+      - SETPCAP           # Modify process capabilities.
+    environment:
+      - TAPSERVERIP=192.168.1.128/24 # Sets the IP of the tapserver
+    ports:
+      - "2222:22"         # SSH Port
+      - "33000:33000/udp" # Tapserver ServiceDiscoveryPort
+      - "37471:37471"     # Tapserver DataPort
+      - "55553:55553"     # MsfRPC
+    volumes:
+      - ./modules/:/root/.msf4/modules
+#      - ./modulesDev/:/root/dev/
+
+  redis:
+    image: redislabs/rejson
+    ports:
+      - "6379:6379"
+\end{minted}
+
+\chapter{Screenshot PentestStudio}\label{sec:penteststudio}\index{Another}
+
+\includegraphics[height=\textheight - 4cm,keepaspectratio]{images/anhang2.png}
+
+\chapter{Evaluationsaufbau}\label{sec:evaluationsaufbau}\index{anotheraufbau}
+
+\includegraphics[angle=90, height=\textheight - 4cm,keepaspectratio]{images/idaufbau.jpeg}

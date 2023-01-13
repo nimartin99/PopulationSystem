@@ -1,0 +1,134 @@
+\chapter{Anforderungen}\label{sec:anforderungen}
+Mit der immer weiter anhaltenden Digitalisierung von Fahrzeugen steigt die Gefahr von Cyberangriffen auf Fahrzeuge. Aufgrund dieser Entwicklung fordern die Regulierungsbehörden zunehmend Maßnahmen für die Zulassung von Fahrzeugen, um den Schutz vor Angriffen dieser Art zu gewährleisten. Ein Pentest kann dabei eine Maßnahme sein, um den Anforderungen gerecht zu werden. 
+
+\section{Pentesting Prozess}\label{sec:generalpentesting}
+
+Laut dem \cite{pentest} kann ein Pentest dazu dienen, Schwachstellen in einem IT-System zu identifizieren oder dazu genutzt werden, die IT-Sicherheit eines Systems durch einen externen Dritten zu bestätigen. Es ist jedoch zu beachten, dass trotz eines Pentests noch Schwachstellen in einem System vorhanden sein können, die beispielsweise zum Zeitpunkt des Pentests noch nicht bekannt waren. 
+
+Für ein strukturiertes Vorgehen bei einem Pentest schlägt das BSI die folgenden fünf Phasen als Vorgehensweise vor:
+
+\subsection{Vorbereitung}\label{subsec:pentestvor}
+Vor dem eigentlichen Pentest muss mit dem Auftraggeber geklärt werden, welche Ziele damit erfüllt werden sollen. Je nach Zielsetzung hat dies einen starken Einfluss auf das Vorgehen bei einem Pentest. Der Auftraggeber kann zum Beispiel verlangen, dass beim Testen eines Produktivsystems die Funktionalität nicht beeinträchtigt wird, was besondere Sorgfalt bei der Auswahl der Exploits erfordert. 
+Zudem muss von jeder Partei eines Systems die Zustimmung zum Pentest eingeholt werden, da ein unbefugter Angriff eine Straftat darstellen kann.
+
+\subsection{Reconnaissance}\label{subsec:informationsbeschafung}
+
+Ziel dieser Phase ist es, einen möglichst umfassenden Überblick über ein System und mögliche Angriffspunkte zu erhalten. In Metasploit sind Module dieser Phase als \path{auxiliaries} bekannt (siehe Kapitel \ref{subsec:metasploitmodule}).
+
+\subsection{Assessment}\label{subsec:risikoanalyse}
+
+Bevor ein Eindringversuch gestartet wird, werden die vereinbarten Ziele des Penetrationstests, die potenzielle Gefährdung des Systems und der geschätzte Aufwand analysiert. Auf der Grundlage dieser Analyse werden die Ziele für die folgende Phase ausgewählt. 
+
+\subsection{Exploitation}\label{subsec:eindringversuch}
+
+In dieser Phase wird das System aktiv angegriffen. So kann geprüft werden, inwieweit die vermeintlichen Schwachstellen ein reales Risiko darstellen. Metasploit nennt Module dieser Phase \path{exploits} (siehe Kapitel \ref{subsec:metasploitmodule}).
+
+\subsection{Abschlussanalyse}\label{subsec:eindringversuch}
+
+Zuletzt wird die Dokumentation für alle vorangegangenen Phasen erstellt. Es sollte dabei darauf geachtet werden, dass die Schwachstellen für den Auftraggeber nachvollziehbar sind. Ferner sollten konkrete Empfehlungen für die Behebung der gefundenen Schwachstellen gegeben werden.
+
+\section{Rechtlicher Rahmen}\label{sec:automotivepentesting}
+
+Im Jahr 2018 begann eine Arbeitsgruppe der Wirtschaftskommission der Vereinten Nationen für Europa (UNECE) und der Internationalen Organisation für Normung mit der Untersuchung einheitlicher Regulierungssysteme für die Cybersicherheit in der Fahrzeugherstellung. Die Ergebnisse beider Organisationen wurden ca. 2021 veröffentlicht und als Grundlage für Verordnungen der Europäischen Kommission verwendet. Ab Juli 2022 müssen alle neuen Fahrzeugtypen die Anforderungen der UNECE-Regelung Nr. 155 erfüllen und ab Juli 2024 alle neu produzierten Fahrzeuge (siehe Abbildung \ref{fig:regulierungen}).
+
+\begin{figure}[H]
+	\centering
+	\includesvg[width=\textwidth,inkscapelatex=false]{images/Regulierungen.svg}
+	\caption{Standards zur Cybersecurity im Automobilsektor \\ Quelle: Eigene Darstellung nach \cite[]{Ebert2021}}
+	\label{fig:regulierungen}
+\end{figure}
+
+\subsection{UNECE Regulation No. 155}\label{subsec:unce}
+Bei der UNECE Regulation No. 155 „Proposal for a new UN Regulation on uniform provisions concerning the approval of vehicles with regards to cyber security and cyber security management system“ handelt es sich um eine Verordnung der „United Nations Economic Commission for Europe“, welche von Automobilherstellern ein Cybersecurity-Management-System (CSMS) verlangt. Ab Juli 2024 ist sie für sämtlichen Neuwagen in der EU verpflichtend.  
+
+Das CSMS soll über die in § 7.2.2.2. genannten Verfahren sicherstellen, dass die Hersteller über entsprechende Sicherheitsmaßnahmen in der Entwicklungs-, Produktions- sowie Postproduktionsphase verfügen, um die folgenden Anforderungen zu erfüllen:
+ \begin{quote}
+\begin{enumerate}[label=\alph*.]
+  \item Erfassung und Überprüfung der gesamten Lieferkette hinweg, um nachzuweisen, dass lieferantenbezogene Risiken ermittelt und bewältigt werden
+  \item Dokumentation der Risikobewertung (während der Entwicklungsphase oder nachträglich), der Testergebnisse und der Minderungsmaßnahmen bezogen auf den Fahrzeugtyp, einschließlich konstruktionsbezogener Informationen zur Untermauerung der Risikobewertung
+  \item Implementierung geeigneter Cybersicherheitsmaßnahmen bei der Konzeption des Fahrzeugtyps
+  \item Erkennung von und Reaktion auf mögliche Cyberangriffe
+  \item Protokollierung von Daten zur Unterstützung der Erkennung von Cyberangriffen und Bereitstellung von Datenforensik, um eine Analyse versuchter oder erfolgreicher Cyberangriffe zu ermöglichen
+\end{enumerate}
+\cite[§ 7.2.2.2.]{un115}
+\end{quote}
+
+Eine Institution wie die GTÜ ATEEL AG\footnote{\url{https://www.gtue.de/de/die-gtu/unsere-tochterunternehmen/ateel}} überprüft alle drei Jahre, ob das vom Hersteller vorgeschlagene CSMS die genannten Punkte erfüllt und stellt ihm in diesem Fall eine Konformitätsbescheinigung für sein CSMS aus.
+
+Konkrete Empfehlungen für Maßnahmen werden im „Proposal for the Interpretation Document for UN Regulation No. 155 on uniform provisions concerning the  approval of vehicles with regards to cyber security and cyber security management system“ genannt.
+
+Um Punkt E „Verfahren zum Testen der Cybersicherheit eines Fahrzeugtyps“ in der Entwicklungsphase zu erfüllen, schlägt das Proposal unter anderem die Norm ISO/SAE 21434 als Leitlinie vor.
+ 
+\subsection{ISO/SAE 21434}\label{subsec:iso21434}
+
+In ISO/SAE 21434 werden für jede Phase des Produktzyklus organisatorische Maßnahmen vorgegeben, die für die Zertifizierung durchgeführt werden müssen. Dafür wird hauptsächlich die Aufgaben jeder Maßnahme beschrieben, was es erlaubt, die Umsetzung der Maßnahmen weitestgehend selbst zu bestimmen. 
+
+Penetration Tests sind laut RC-10-12 des Standards in der Entwicklungsphase als Methode empfohlen, um zu bestätigen, dass nicht identifizierte Schwachstellen auf ein Minimum reduziert wurden.
+
+In der Validierungsphase sind sie laut RQ-11-01 eine geeignete Methode, um zu zeigen, dass ein adäquates Sicherheitsniveau erreicht wurde.
+ 
+\section{Integration in den Entwicklungsprozess}\label{fig:vmodell}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{images/V-Modell.pdf}
+	\caption{Grey Box Pentesting in V-Modell Automotive-Projekten \\ Quelle: Eigene Darstellung nach \cite[]{Ebert2021}}
+	\label{fig:vmodel}
+\end{figure}
+
+\cite{Ebert2021} beschreiben in „Penetration Testing for Automotive Cybersecurity“ anhand des V-Modells, wie ein Pentest während der Definitions- und Entwicklungsphase (linke Seite des V-Modells) und der Test- und Integrationsphase (rechte Seite des V-Modells) durchgeführt werden kann. Dafür werden die folgenden 10 Schritte während des in Abbildung \ref{fig:vmodel} dargestellten Entwicklungsprozesses durchgeführt:
+
+\begin{enumerate}
+    \item \textbf{Reconnaissance:} Überprüfen von Featuren der Anwendung, ob diese missbraucht werden können
+    \item \textbf{Structural analysis:} Bestimmen der Komponenten der Software, die im Pentest überprüft werden sollen
+    \item \textbf{Asset elicitation:} Erfassen von Teilen der Komponenten, die überhaupt schützenswert sind
+    \item \textbf{Specifications:} Recherche und Scannen nach bekannte Schwachstellen in der Hard- und Softwarespezifikation
+    \item \textbf{TARA, security goals:} Durchführen einer Bedrohungsanalyse und Risikobewertung (TARA)
+    \item \textbf{Minimum Viable Pentest Cases:} Erstellen einer Testumgebung, in der ein Pentest ausgeführt werden kann
+    \item \textbf{Penetration Testing:} Durchführen von Pentests in der Testumgebung und Dokumentation der Ergebnisse
+    \item \textbf{Key performance indicators:} Prüfen der Effektivität des Pentests anhand von KPI Metriken wie der Threat coverage, security test efficiency, vulnerability detection effectiveness
+    \item \textbf{Functional security requirements:} Aus den gewonnenen Erkenntnissen des Pentests erneut Komponenten identifizieren, die überprüft werden sollten
+    \item \textbf{Regression testing:} Bei Codeänderungen muss sichergestellt werden, dass nicht neue Schwachstellen eingeführt wurden
+\end{enumerate}
+
+\subsection{Tooling Support für Durchführung eines Pentests}\label{subsec:fallbeispiel}
+
+Um den Mitarbeitenden bei der Entwicklung Penetrationstests zugänglich zu machen, benötigen sie entsprechende Softwaretools, die dies ermöglichen. 
+
+Ideal für die Dokumentation der Bedrohungsanalyse und Risikobewertung ist die Anwendung COMPASS 2\footnote{\url{https://consulting.vector.com/de/de/solutions/compass-und-preevision/compass/}} von Vector, mit der sich systematisch Berichte erstellen lassen.
+
+Als Prüfsystem eignet sich die Anwendung CANoe, mit der ein komplettes Steuergerät in einer simulierten Umgebung getestet werden kann. 
+
+Für das eigentliche Pentesten eignet sich das etablierte Metasploit-Framework, das mit einer Vielzahl von Modulen, die über das Metasploit CLI parametrisiert werden können, schnell zu Ergebnissen führt.
+
+Um die durchgeführten Pentests zu dokumentieren und für Regressionstests einfach wiederholen zu können, kann vTESTStudio eingesetzt werden. Darin können die ausgeführten Schritte des Pentests in einem Integrationstest automatisiert werden und die Ergebnisse der Metasploit-Module entsprechend ausgewertet werden.
+
+Die grundlegenden Werkzeuge sind bereits vorhanden, allerdings fehlt eine Integration dieser untereinander. So existiert in Metasploit kein Mechanismus, um auf den Datenverkehr eines CANoe Netzwerks zuzugreifen. Des Weiteren ist es für den Endanwender sehr umständlich, während des Pentests gleichzeitig mit CANoe und Metasploit arbeiten zu müssen. Es wäre deshalb sinnvoll, die Bedienung Metasploits weitestgehend in CANoe zu ermöglichen. 
+
+\section{Architektur der Anwendung}\label{subsec:context}
+
+\subsection{Kontext der Anwendung}\label{subsec:kontext}
+Die zu entwickelnde Anwendung wird im Rahmen eines Pentests verwendet, der Schritt 7 der im Abbildung \ref{fig:vmodell} vorgeschlagenen Prozesses ausführt. Als Grundlage dieses Pentests dient ein CANoe Projekt, welches während der Implementierung als Testumgebung gedient hat. Bei einem Gespräch mit dem Auftraggeber der Anwendung wurden die folgenden zwei Zielgruppen identifiziert:
+
+\begin{itemize}
+\item Security-ExpertInnen sollten in der Lage sein, eine Analyse mit etablierten Pentest-Tools und Frameworks durchzuführen, diese zu dokumentieren und in einem Modul für das erneute Ausführen aufbereiten
+\item Automobil-EntwicklerInnen sollen aus einem breiten Katalog fertiger Pentest Module auswählen können und damit eigenständig eine Komponente überprüfen
+\end{itemize}
+
+Dabei sollen beide Gruppen in ihrer Domäne bleiben können, sprich die Security-ExpertInnen in ihrer Linux- und die Automobil-EntwicklerInnen in ihrer gewohnten CANoe-Umgebung. Die Verbindung zwischen diesen beiden Welten sollen die aus Metasploit bekannten Module darstellen. Die Dokumentation dieser soll es der CANoe EntwicklerIn eigenständig erlauben, passende Exploits zu finden und auszuprobieren. Allerdings benötigt die Automobil-EntwicklerInnen immer noch genug Fachkenntnisse, um zu verstehen, was in dem Modul vor sich geht, um das Modul entsprechend parametrisieren zu können. In diesem Punkt unterscheidet sich die Anwendung von Vulnerability Scanning Tools, die weitestgehend ohne manuelles Zutun nach Schwachstellen suchen können. 
+
+\subsection{Container der Anwendung}\label{subsec:container}
+Der Tester sollte nur mit dem CANoe System und den darin enthaltenen Containern interagieren müssen, um ein Pentestmodul auszuführen. Damit der PentestRunner mit dem gegebenen CANoe Projekt arbeiten kann, muss ihm eine entsprechende MAC- und IP-Adresse zugewiesen werden. Die GUI des PentestStudios wird über ein Panel in das CANoe Projekt hinzugefügt. In zukünftigen Versionen sollte dieses ähnlich wie der Plattform Manager Teil von CANoe werden, um es aus einem Menü einfach zu starten. 
+
+In PentestStudio sollen Tester in der Lage sein, vorgefertigte Pentestmodule, z. B. aus ExploitDB oder speziell von einem Sicherheitsexperten vorbereitet, zu untersuchen, zu parametrisieren und auszuführen. 
+
+Zusätzlich sollen sie aus diesen Modulen entsprechende Testmethoden generieren können, welche einfach in vTESTstudio Tests integriert werden können. Diese Tests können dann nach dem Beheben eines Befunds als Regressionstests dienen, um sicherzustellen, dass derselbe Fehler nicht erneut gemacht wird. 
+
+Mit Metasploit sollte ein Sicherheitsexperte in der Lage sein, mit einem in seiner Expertise etablierten Tools zu arbeiten. Dies soll die größtmögliche Wiederverwendbarkeit bestehender Lösungen gewährleisten und die schnellstmögliche Reaktion auf das Bekanntwerden neuer Exploits ermöglichen. Aus der CANoe Umgebung können Modulen als Parameter entsprechende Systemvariablen übergeben werden. 
+
+\begin{figure}
+	\centering
+	\includesvg[width=\textwidth,inkscapelatex=false]{images/2_containers.svg}
+	\caption{Container der Anwendung}
+	\label{fig:context}
+\end{figure}
