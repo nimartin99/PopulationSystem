@@ -26,6 +26,7 @@ public class Resident : MonoBehaviour {
     [SerializeField] private Transform positionIndicator;
     [SerializeField] private Workplace workplace;
 
+    public float satisfaction = 0f;
     public float religionSatisfaction = 0f;
     public float foodSatisfaction = 0f;
     private TimeController _timeController;
@@ -66,7 +67,7 @@ public class Resident : MonoBehaviour {
             }
         }
         // Decrease satisfactions
-        DecreaseSatisfactions();
+        CalculateSatisfactions();
         // Rotate indicator
         positionIndicator.Rotate(60 * Time.deltaTime, 0, 0);
     }
@@ -135,13 +136,15 @@ public class Resident : MonoBehaviour {
         }
     }
     
-    private void DecreaseSatisfactions() {
+    private void CalculateSatisfactions() {
         if (religionSatisfaction > 0) {
             religionSatisfaction -= Time.deltaTime * 0.5f;
         }
         if (foodSatisfaction > 0) {
-            foodSatisfaction -= Time.deltaTime * 1f;
+            foodSatisfaction -= Time.deltaTime * 1.5f;
         }
+
+        satisfaction = foodSatisfaction * 0.6f + religionSatisfaction * 0.4f;
     }
 
     private void CantCompleteTask() {

@@ -10,8 +10,8 @@ public class GridBuildingSystem : MonoBehaviour {
     public static GridBuildingSystem Instance { get; private set; }
     
     // Grid related stuff
-    [SerializeField] private int width;
-    [SerializeField] private int height;
+    [SerializeField] public int width;
+    [SerializeField] public int height;
     [SerializeField] public float cellSize;
     [SerializeField] private GridHelper gridHelper;
 

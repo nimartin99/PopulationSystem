@@ -32,21 +32,59 @@
 }
 
 .defaultButton {
-    background-color: rgba(156, 102, 68, 255);
-    color: rgba(255, 255, 255, 255);
+    background-color: rgb(156, 102, 68);
+    color: rgb(255, 255, 255);
     border-left-color: rgb(0, 0, 0);
     border-right-color: rgb(0, 0, 0);
     border-top-color: rgb(0, 0, 0);
     border-bottom-color: rgb(0, 0, 0);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 .unity-progress-bar__progress {
-    background-color: rgba(102, 141, 229, 255);
+    background-color: rgb(102, 141, 229);
 }
 
 .unity-progress-bar__title-container {
 }
 
 .unity-progress-bar__background {
-    background-color: rgba(48, 48, 48, 255);
+    background-color: rgb(48, 48, 48);
+}
+
+.divider {
+    width: 75%;
+    background-color: rgb(255, 255, 255);
+    height: 1px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.defaultContainer {
+    background-color: rgba(127, 85, 57, 255);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-left-color: rgba(0, 0, 0, 255);
+    border-right-color: rgba(0, 0, 0, 255);
+    border-top-color: rgba(0, 0, 0, 255);
+    border-bottom-color: rgba(0, 0, 0, 255);
+}
+
+.foodRadioButton {
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    color: rgba(255, 255, 255, 255);
 }
