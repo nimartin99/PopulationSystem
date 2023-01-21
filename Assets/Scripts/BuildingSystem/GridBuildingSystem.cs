@@ -82,6 +82,10 @@ public class GridBuildingSystem : MonoBehaviour {
         // Get the position where the Ray hits the grid
         PlacedObject placedObject = _grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
+            IBuilding buildingToDestroy = placedObject.gameObject.GetComponent<IBuilding>();
+            if (buildingToDestroy != null) {
+                buildingToDestroy.BuildingDestroyed();
+            }
             placedObject.DestroySelf();
             List<Vector2Int> occupyingGridObjectCoordinates = placedObject.GetGridPositionList();
             foreach (Vector2Int position in occupyingGridObjectCoordinates) {

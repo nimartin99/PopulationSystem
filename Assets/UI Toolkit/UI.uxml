@@ -11,14 +11,20 @@
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="inspector" class="defaultContainer" style="position: absolute; right: 0; top: 0; width: 20%; height: 74%; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; align-items: center; display: flex; color: rgb(255, 255, 255); border-top-right-radius: 0; border-bottom-right-radius: 0;">
-        <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" class="borderedText" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
-        <ui:VisualElement name="divider" class="divider" />
-        <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
-            <ui:Label text="Satisfaction" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-            <ui:ProgressBar title="0/100" name="inspectorSatisfaction" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <ui:VisualElement style="height: 20%; min-width: auto; min-height: auto; align-items: center; width: 100%;">
+            <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" class="borderedText" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+            <ui:VisualElement name="divider" class="divider" />
+            <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                <ui:Label text="Satisfaction" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                <ui:ProgressBar title="0/100" name="inspectorSatisfaction" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                <ui:Label text="Happiness" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                <ui:ProgressBar title="0/100" name="inspectorHappiness" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="divider" class="divider" />
         </ui:VisualElement>
-        <ui:VisualElement name="divider" class="divider" />
-        <ui:ScrollView style="width: 100%; height: 100%; align-items: flex-start;">
+        <ui:ScrollView style="width: 100%; height: 70%; align-items: flex-start;">
             <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
                 <ui:Label text="Food" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
                 <ui:ProgressBar title="0/100" name="inspectorFood" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
@@ -27,10 +33,14 @@
                 <ui:Label text="Religion" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
                 <ui:ProgressBar title="0/100" name="inspectorReligion" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
             </ui:VisualElement>
+            <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                <ui:Label text="Tavern" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                <ui:ProgressBar title="0/100" name="inspectorTavern" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+            </ui:VisualElement>
         </ui:ScrollView>
     </ui:VisualElement>
     <ui:VisualElement style="position: absolute; left: 0; top: 0;" />
-    <ui:VisualElement class="defaultContainer" style="position: absolute; left: 32px; top: 0.5px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: 15%; height: 35px; flex-direction: row; align-items: center; border-top-left-radius: 0; border-bottom-left-radius: 0;">
+    <ui:VisualElement class="defaultContainer" style="position: absolute; left: 32px; top: 0.5px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: 31%; height: 35px; flex-direction: row; align-items: center; border-top-left-radius: 0; border-bottom-left-radius: 0;">
         <ui:VisualElement style="flex-direction: row; align-items: center; margin-left: 12px;">
             <ui:Label text="Day 0 -" display-tooltip-when-elided="true" name="dayLabel" style="color: rgb(255, 255, 255); font-size: 20px;" />
             <ui:Label text="00:00" display-tooltip-when-elided="true" name="timeLabel" style="color: rgb(255, 255, 255); font-size: 20px;" />
@@ -74,14 +84,14 @@
                             <ui:Label text="No Taxes" display-tooltip-when-elided="true" style="position: relative; left: 0; font-size: 20px; color: rgb(255, 255, 255);" />
                             <ui:Label text="Full Taxes" display-tooltip-when-elided="true" style="position: relative; right: 0; font-size: 20px; color: rgb(255, 255, 255);" />
                         </ui:VisualElement>
-                        <ui:SliderInt picking-mode="Ignore" value="12" high-value="24" show-input-field="false" name="taxesSlider" style="width: 90%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
-                        <ui:Label text="0" display-tooltip-when-elided="true" name="taxesLabelValue" class="borderedText" style="position: relative; right: 0; font-size: 20px; color: rgb(255, 255, 255); margin-left: 0; margin-right: 0; margin-top: 4px; margin-bottom: 0;" />
+                        <ui:SliderInt picking-mode="Ignore" value="0" high-value="100" show-input-field="false" name="taxesSlider" style="width: 90%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+                        <ui:VisualElement style="width: 88%; height: 42px;">
+                            <ui:Label text="0" display-tooltip-when-elided="true" name="taxesLabelValue" class="borderedText" style="position: absolute; font-size: 20px; color: rgb(255, 255, 255); margin-left: 0; margin-right: 0; margin-top: 4px; margin-bottom: 0; width: 35px; height: 32px; left: 0; -unity-text-align: upper-center; translate: -50% 0;" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="foodSettingTab" style="min-height: auto; justify-content: space-around; flex-direction: column; align-items: flex-start; border-top-left-radius: 0; border-top-width: 0; width: 100%; display: none; min-width: auto;">
-                    <ui:RadioButton label="No Food" name="foodNoPortionRadioButton" class="foodRadioButton" />
-                    <ui:RadioButton label="1/2 Portion" name="foodHalfPortionRadioButton" />
-                    <ui:RadioButton label="Full Portion" value="true" name="foodFullPortionRadioButton" />
+                    <ui:RadioButtonGroup name="foodPortionRadioButtonGroup" style="flex-direction: column;" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

@@ -40,7 +40,13 @@ public class House : MonoBehaviour, IBuilding {
         Resident resident = residentTransform.GetComponent<Resident>();
         resident.ResidentConstructor(this);
     }
-    
+
+    public void BuildingDestroyed() {
+        foreach (Transform resident in residents) {
+            Destroy(resident.gameObject);
+        }
+    }
+
     public void ResidentEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
         if (residents.Contains(resident.transform) && (resident.currentTask == Resident.AvailableTasks.Home || resident.sleeping)) {
@@ -73,7 +79,7 @@ public class House : MonoBehaviour, IBuilding {
                 }
             }
         }
-        return closestChurch.entrance;
+        return closestChurch ? closestChurch.entrance : null;
     }
     
     public Transform FindNextMarket(Resident resident) {
@@ -93,7 +99,29 @@ public class House : MonoBehaviour, IBuilding {
                 }
             }
         }
-        return closestMarket.entrance;
+        return closestMarket ? closestMarket.entrance : null;
+    }
+    
+    public Transform FindNextTavern(Resident resident) {
+        NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
+        Tavern closestTavern = null;
+        float closestTargetDistance = float.MaxValue;
+        NavMeshPath path = new NavMeshPath();
+        foreach(Tavern tavern in FindObjectsOfType<Tavern>()) {
+            if (NavMesh.CalculatePath(entrance.transform.position, tavern.entrance.position, anyResidentAgent.areaMask, path)) {
+                float distanceToTavern = Vector3.Distance(transform.position, path.corners[0]);
+                for (int i = 1; i < path.corners.Length; i++) {
+                    distanceToTavern += Vector3.Distance(path.corners[i - 1], path.corners[i]);
+                }
+                if (distanceToTavern < Tavern.TavernRange && distanceToTavern < closestTargetDistance) {
+                    closestTargetDistance = distanceToTavern;
+                    closestTavern = tavern;
+                }
+            }
+        }
+
+        Debug.Log("closestTavern" + closestTavern + " - " + closestTargetDistance);
+        return closestTavern ? closestTavern.entrance : null;
     }
 
     public bool PathFromHomeAvailable(Transform destination, Resident resident) {

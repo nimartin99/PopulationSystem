@@ -11,20 +11,12 @@ public class Church : MonoBehaviour, IBuilding
 
     [SerializeField] public const float ChurchRange = 25;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void BuildingPlaced()
     {
+        
+    }
+
+    public void BuildingDestroyed() {
         
     }
 

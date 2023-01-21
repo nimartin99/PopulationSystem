@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,21 +7,18 @@ public class Market : MonoBehaviour, IBuilding {
     public Transform entrance;
     [SerializeField] public const float MarketRange = 25;
     [SerializeField] private int marketDuration;
-    
-    // Start is called before the first frame update
-    void Start()
+    private UIControl _uiControl;
+
+    private void Start() {
+        _uiControl = UIControl.Instance;
+    }
+
+    public void BuildingPlaced()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-    
-    public void BuildingPlaced()
-    {
+    public void BuildingDestroyed() {
         
     }
 
@@ -34,7 +32,23 @@ public class Market : MonoBehaviour, IBuilding {
 
     private IEnumerator CompleteMarketTask(Resident resident) {
         yield return new WaitForSeconds(marketDuration);
-        resident.foodSatisfaction = 100f;
+        float currentResidentSatisfaction = resident.foodSatisfaction;
+        switch (_uiControl.currentFoodPortion) {
+            case "No Food":
+                break;
+            case "1/2 Portion":
+                currentResidentSatisfaction += 40f;
+                if (currentResidentSatisfaction > 100f) {
+                    resident.foodSatisfaction = 100f;
+                }
+                else {
+                    resident.foodSatisfaction = currentResidentSatisfaction;
+                }
+                break;
+            case "Full Portion":
+                resident.foodSatisfaction = 100f;
+                break;
+        }
         resident.CompleteTask();
         resident.EnableResident();
     }

@@ -14,6 +14,10 @@ public class Workplace : MonoBehaviour, IBuilding {
         throw new System.NotImplementedException();
     }
 
+    public void BuildingDestroyed() {
+        
+    }
+
     public void ResidentEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
         if (resident.currentTask == Resident.AvailableTasks.Work) {

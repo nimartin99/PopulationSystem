@@ -69,6 +69,9 @@ public class InputControl : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.Alpha4)) {
                 gridBuildingSystem.SelectBuilding(3);
             }
+            if (Input.GetKeyDown(KeyCode.Alpha5)) {
+                gridBuildingSystem.SelectBuilding(4);
+            }
             
             if (Input.GetMouseButtonDown(1)) {
                 ResetToExploreMode();
