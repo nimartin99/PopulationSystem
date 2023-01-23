@@ -99,7 +99,7 @@
     <ui:VisualElement name="presettingSelection" class="defaultContainer" style="position: absolute; left: 50%; top: 50%; width: auto; translate: -50% -50%; flex-direction: row; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; display: flex;">
         <ui:Button text="Free Play" display-tooltip-when-elided="true" name="freePlay" class="defaultButton" />
         <ui:Button text="Presetting 1" display-tooltip-when-elided="true" name="presettingOne" class="defaultButton" />
-        <ui:Button text="Presetting 2" display-tooltip-when-elided="true" name="presettingTwo" class="defaultButton" style="display: none;" />
+        <ui:Button text="Presetting 2" display-tooltip-when-elided="true" name="presettingTwo" class="defaultButton" style="display: flex;" />
         <ui:Button text="Presetting 3" display-tooltip-when-elided="true" name="presettingThree" class="defaultButton" style="display: none;" />
     </ui:VisualElement>
 </ui:UXML>

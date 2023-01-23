@@ -27,7 +27,7 @@ public class Tavern : MonoBehaviour, IBuilding {
         
     }
 
-    public void ResidentEnter(Collider other) {
+    public void ResidentEnter(Collider other) { 
         Resident resident = other.GetComponent<Resident>();
         if (resident.tasks[0] == Resident.AvailableTasks.Tavern) {
             resident.DisableResident();
@@ -37,7 +37,7 @@ public class Tavern : MonoBehaviour, IBuilding {
     
     private IEnumerator CompleteTavernTask(Resident resident) {
         yield return new WaitForSeconds(tavernDuration);
-        resident.happiness = 100f;
+        resident.tavernSatisfaction = 100f;
         resident.CompleteTask();
         resident.EnableResident();
     }

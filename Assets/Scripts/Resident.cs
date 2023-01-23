@@ -135,10 +135,18 @@ public class Resident : MonoBehaviour {
 
     private AvailableTasks GetNextTask(bool noFood) {
         Dictionary<string, float> needs = new Dictionary<string, float>();
-        needs.Add("work", (workPriority + Random.Range(-0.15f, 0.15f)) * 100);
-        needs.Add("food", (100f - foodSatisfaction) * foodPriority + (foodSatisfaction < 25 ? 10 : Random.Range(-10, 10)));
-        needs.Add("religion", (100f - religionSatisfaction) * religionPriority + (religionSatisfaction < 25 ? 10 : Random.Range(-10, 10)));
-        needs.Add("tavern", (100f - tavernSatisfaction) * tavernPriority + Random.Range(-10, 10));
+        if (!workedToday) {
+            needs.Add("work", (workPriority + Random.Range(-0.15f, 0.15f)) * 100);
+        }
+        if (_home.FindNextMarket(this) != null && !noFood) {
+            needs.Add("food", (100f - foodSatisfaction) * foodPriority + (foodSatisfaction < 25 ? 10 : Random.Range(-10, 10)));
+        }
+        if (_home.FindNextChurch(this) != null) {
+            needs.Add("religion", (100f - religionSatisfaction) * religionPriority + (religionSatisfaction < 25 ? 10 : Random.Range(-10, 10)));
+        }
+        if (_home.FindNextTavern(this) != null) {
+            needs.Add("tavern", (100f - tavernSatisfaction) * tavernPriority + Random.Range(-10, 10));
+        }
 
         Debug.Log("------------- Priorities -------------");
         foreach (KeyValuePair<string, float> need in needs) {
@@ -149,7 +157,7 @@ public class Resident : MonoBehaviour {
         string highestPriorityNeedName = "";
         float highestPriorityNeed = 0f;
         foreach (KeyValuePair<string, float> need in needs) {
-            if (need.Value > highestPriorityNeed && !(need.Key == "food" && noFood) && !(need.Key == "work" && workedToday)) {
+            if (need.Value > highestPriorityNeed) {
                 highestPriorityNeedName = need.Key;
                 highestPriorityNeed = need.Value;
             }
@@ -189,7 +197,7 @@ public class Resident : MonoBehaviour {
             }
         }
         if (tavernSatisfaction > 0) {
-            tavernSatisfaction -= Time.deltaTime * 1.5f;
+            tavernSatisfaction -= Time.deltaTime * 0.3f;
             if (tavernSatisfaction < 0) {
                 tavernSatisfaction = 0f;
             }

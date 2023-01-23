@@ -110,7 +110,30 @@ public class PresettingGenerator : MonoBehaviour {
     }
     
     public void GeneratePresettingTwo() {
-        
+        _gridBuildingSystem.SelectBuilding(0);
+        for (int j = 0; j < _height; j++) {
+            for (int i = 0; i < _width; i++) {
+                switch (j) {
+                    case 2 when i < 20:
+                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j));
+                        break;
+                }
+            }
+        }
+        _gridBuildingSystem.SelectBuilding(2);
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 0f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.SelectBuilding(3);
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 4f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.SelectBuilding(4);
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 8f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.SelectBuilding(1);
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 18f, 0f, 0.5f + 3f));
     }
     
     public void GeneratePresettingThree() {

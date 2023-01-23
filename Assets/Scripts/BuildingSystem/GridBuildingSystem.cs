@@ -20,7 +20,7 @@ public class GridBuildingSystem : MonoBehaviour {
     [FormerlySerializedAs("_building")] public BuildingObject building;
     [FormerlySerializedAs("defaultDirection")] [SerializeField] public BuildingObject.Direction direction = BuildingObject.Direction.Down;
     
-    [SerializeField] private LayerMask groundLayerMask;
+    [SerializeField] private Transform environmentParent;
     
     public event EventHandler OnSelectedChanged;
     public event EventHandler OnGridChanged;
@@ -64,7 +64,8 @@ public class GridBuildingSystem : MonoBehaviour {
                 worldPosition,
                 new Vector2Int(x, z),
                 direction,
-                building
+                building,
+                environmentParent
             );
             // Scale the building to cellSize
             // spawnedBuilding.transform.localScale = spawnedBuilding.transform.localScale * cellSize;

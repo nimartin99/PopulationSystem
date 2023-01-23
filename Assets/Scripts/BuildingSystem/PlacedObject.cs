@@ -9,9 +9,9 @@ public class PlacedObject : MonoBehaviour {
     private BuildingObject.Direction _direction;
 
     public static PlacedObject Create(Vector3 worldPosition, Vector2Int gridPosition, BuildingObject.Direction direction, 
-        BuildingObject placedObjectType) {
+        BuildingObject placedObjectType, Transform parent) {
         Transform placedObjectTransform = Instantiate(placedObjectType.prefab, worldPosition,
-            Quaternion.Euler(0, placedObjectType.GetRotationAngle(direction), 0));
+            Quaternion.Euler(0, placedObjectType.GetRotationAngle(direction), 0), parent);
         PlacedObject placedObject = placedObjectTransform.GetComponent<PlacedObject>();
         placedObject._buildingObjectType = placedObjectType;
         placedObject.gridPosition = gridPosition;
