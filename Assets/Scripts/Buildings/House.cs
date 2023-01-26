@@ -6,16 +6,17 @@ using UnityEngine;
 using UnityEngine.AI;
 
 public class House : MonoBehaviour, IBuilding {
-    [SerializeField] private List<Transform> residents;
+    [SerializeField] public List<Transform> residents;
     public List<Transform> _residentsCurrentlyInHome;
     [SerializeField] private Transform residentPrefab;
     [SerializeField] public Transform entrance;
     
     [SerializeField] private Transform sleepingIndicator;
     
+    private GridBuildingSystem _gridBuildingSystem;
     // Start is called before the first frame update
     void Start() {
-        
+        _gridBuildingSystem = GridBuildingSystem.Instance;
     }
 
     private void Update() {
@@ -53,6 +54,7 @@ public class House : MonoBehaviour, IBuilding {
             _residentsCurrentlyInHome.Add(resident.transform);
             resident.DisableVisual();
             resident.CompleteTask();
+            
         }
     }
 
@@ -119,14 +121,127 @@ public class House : MonoBehaviour, IBuilding {
                 }
             }
         }
-
-        Debug.Log("closestTavern" + closestTavern + " - " + closestTargetDistance);
+        
         return closestTavern ? closestTavern.entrance : null;
     }
 
-    public bool PathFromHomeAvailable(Transform destination, Resident resident) {
+    public bool PathFromHomeAvailable(Vector3 destination, Resident resident) {
         NavMeshPath Path = new NavMeshPath();
         NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
-        return NavMesh.CalculatePath(entrance.transform.position, destination.position, anyResidentAgent.areaMask, Path);
+        NavMesh.CalculatePath(entrance.transform.position, destination, anyResidentAgent.areaMask, Path);
+        return Path.status == NavMeshPathStatus.PathComplete;
+    }
+
+    public Vector3 FindNextPathCrossroad(Resident resident) {
+        Vector3 topLeftPosition = new Vector3(0, 0 , 0);
+        Vector3 transformPosition = transform.position;
+        switch (transform.eulerAngles.y) {
+            case 0:
+                topLeftPosition = new Vector3(transformPosition.x, 0, transformPosition.z + 1);
+                break;
+            case 90:
+                topLeftPosition = new Vector3(transformPosition.x, 0, transformPosition.z - 1);
+                break;
+            case 180:
+                topLeftPosition = new Vector3(transformPosition.x - 2, 0, transformPosition.z - 1);
+                break;
+            case 270:
+                topLeftPosition = new Vector3(transformPosition.x - 2, 0, transformPosition.z + 1);
+                break;
+        }
+
+        Vector3 bestCrossroad = new Vector3(topLeftPosition.x - 1, 0, topLeftPosition.z + 1);
+        int bestCrossroadDirections = 0;
+        
+        for (int i = 0; i < 10; i++) {
+            Vector3 currentSquare = new Vector3(topLeftPosition.x - 1 - 1 * i, 0, topLeftPosition.z + 1 + 1 * i);;
+            for (int j = 0; j < 4 + 2 * i; j++) {
+                Vector3 topRowPosition = new Vector3(currentSquare.x + j, 0, currentSquare.z);
+                GridBuildingSystem.GridObject topRowGridObject =
+                    _gridBuildingSystem._grid.GetGridObject(topRowPosition);
+                if (topRowGridObject != null && topRowGridObject.GetPlacedObject() != null && topRowGridObject.GetPlacedObjectType() == "Path") {
+                    int thisPathDirections = CountNeighbourPaths(topRowPosition);
+                    if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(topRowPosition, resident)) {
+                        if (thisPathDirections == 4) {
+                            return topRowPosition;
+                        }
+                        bestCrossroad = topRowPosition;
+                        bestCrossroadDirections = thisPathDirections;
+                    }
+                }
+                
+                Vector3 bottomRowPosition = new Vector3(currentSquare.x + j, 0, currentSquare.z - 3 - i * 2);
+                GridBuildingSystem.GridObject bottomRowGridObject =
+                    _gridBuildingSystem._grid.GetGridObject(bottomRowPosition);
+                if (bottomRowGridObject != null && bottomRowGridObject.GetPlacedObject() != null && bottomRowGridObject.GetPlacedObjectType() == "Path") {
+                    int thisPathDirections = CountNeighbourPaths(bottomRowPosition);
+                    if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(bottomRowPosition, resident)) {
+                        if (thisPathDirections == 4) {
+                            return bottomRowPosition;
+                        }
+                        bestCrossroad = bottomRowPosition;
+                        bestCrossroadDirections = thisPathDirections;
+                    }
+                }
+
+                if (j > 0 && j < 3 + 2 * i) {
+                    Vector3 leftColumnPosition = new Vector3(currentSquare.x, 0, currentSquare.z - j);
+                    GridBuildingSystem.GridObject leftColumnGridObject =
+                        _gridBuildingSystem._grid.GetGridObject(leftColumnPosition);
+                    if (leftColumnGridObject != null && leftColumnGridObject.GetPlacedObject() != null && leftColumnGridObject.GetPlacedObjectType() == "Path") {
+                        int thisPathDirections = CountNeighbourPaths(leftColumnPosition);
+                        if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(leftColumnPosition, resident)) {
+                            if (thisPathDirections == 4) {
+                                return leftColumnPosition;
+                            }
+                            bestCrossroad = leftColumnPosition;
+                            bestCrossroadDirections = thisPathDirections;
+                        }
+                    }
+                
+                    Vector3 rightColumnPosition = new Vector3(currentSquare.x + 3 + 2 * i, 0, currentSquare.z - j);
+                    GridBuildingSystem.GridObject rightColumnGridObject =
+                        _gridBuildingSystem._grid.GetGridObject(rightColumnPosition);
+                    if (rightColumnGridObject != null && rightColumnGridObject.GetPlacedObject() != null && rightColumnGridObject.GetPlacedObjectType() == "Path") {
+                        int thisPathDirections = CountNeighbourPaths(rightColumnPosition);
+                        if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(rightColumnPosition, resident)) {
+                            if (thisPathDirections == 4) {
+                                return rightColumnPosition;
+                            }
+                            bestCrossroad = rightColumnPosition;
+                            bestCrossroadDirections = thisPathDirections;
+                        }
+                    }
+                }
+            }
+        }
+
+        return bestCrossroad;
+    }
+
+    private int CountNeighbourPaths(Vector3 pos) {
+        int thisPathDirections = 0;
+        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)) != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)).GetPlacedObjectType() == "Path") {
+            thisPathDirections++;
+        }
+        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)) != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)).GetPlacedObjectType() == "Path") {
+            thisPathDirections++;
+        }
+        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)) != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)).GetPlacedObjectType() == "Path") {
+            thisPathDirections++;
+        }
+        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)) != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)).GetPlacedObjectType() == "Path") {
+            thisPathDirections++;
+        }
+
+        return thisPathDirections;
     }
 }

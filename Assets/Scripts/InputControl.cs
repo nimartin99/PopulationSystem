@@ -39,6 +39,8 @@ public class InputControl : MonoBehaviour {
                 if (hitSomething) {
                     if (hitTransform.GetComponent<Resident>() != null) {
                         uiControl.SetToInspector(hitTransform, "Resident");
+                    } else if (hitTransform.GetComponent<House>() != null) {
+                        uiControl.SetToInspector(hitTransform, "House");
                     }
                 }
             }

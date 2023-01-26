@@ -14,6 +14,7 @@ public class Resident : MonoBehaviour {
         Work,
         Market,
         Tavern,
+        Protest,
     }
 
     public bool sleeping = false;
@@ -26,6 +27,9 @@ public class Resident : MonoBehaviour {
     private House _home;
     [SerializeField] private Transform positionIndicator;
     [SerializeField] private Workplace workplace;
+    
+    // Animation
+    [SerializeField] private Animator _animator;
 
     public float satisfaction = 0f;
     public float happiness = 0f;
@@ -44,6 +48,21 @@ public class Resident : MonoBehaviour {
     // Happiness
     public float tavernPriority;
 
+    private List<float> _overallSatisfactionMeasurements = new List<float>();
+    private List<float> _foodSatisfactionMeasurements = new List<float>();
+    private List<float> _religionSatisfactionMeasurements = new List<float>();
+    private List<float> _tavernSatisfactionMeasurements = new List<float>();
+
+    public float _overallSatisfactionOverTime = 100f;
+    public float _foodSatisfactionOverTime = 100f;
+    public float _religionSatisfactionOverTime = 100f;
+    public float _tavernSatisfactionOverTime = 100f;
+    
+    // Protest, Riot & Revolution
+    private List<string> _reasonsToRiot = new List<string>();
+    public bool _protesting;
+    [SerializeField] private Transform _protestPrefab;
+
     public event EventHandler OnTaskAdded;
 
     private void Awake() {
@@ -55,7 +74,9 @@ public class Resident : MonoBehaviour {
     private void Start() {
         _timeController = TimeController.Instance;
         _uiControl = UIControl.Instance;
-        
+
+        _timeController.OnNextHour += MeasureSatisfactions;
+        _timeController.OnNextHour += CalculateRiotRisk;
         _timeController.OnSleepTimeStart += EnterSleepMode;
         _timeController.OnSleepTimeEnd += StopSleepMode;
         _timeController.OnNewDay += (sender, args) => workedToday = false;
@@ -65,9 +86,20 @@ public class Resident : MonoBehaviour {
 
     private void Update() {
         if (sleeping) {
-            _navMeshAgent.destination = _home.entrance.position;
-        }
-        else {
+            if (currentTask == AvailableTasks.None && !_home._residentsCurrentlyInHome.Contains(transform)) {
+                AddTask(AvailableTasks.Home);
+                currentTask = AvailableTasks.Home;
+                _navMeshAgent.destination = _home.entrance.position;
+            }
+        } else if (_protesting) {
+            if (currentTask != AvailableTasks.Protest) {
+                currentTask = AvailableTasks.Protest;
+                RemoveTask(0);
+                Vector3 protestPosition = _home.FindNextPathCrossroad(this);
+                Instantiate(_protestPrefab, new Vector3(protestPosition.x + 0.5f, 0.05f, protestPosition.z + 0.5f), Quaternion.identity);
+                _navMeshAgent.destination = new Vector3(protestPosition.x + 0.5f, 0.05f, protestPosition.z + 0.5f);
+            }
+        } else {
             if (currentTask == AvailableTasks.None && tasks.Count > 0) {
                 ExecuteTask();
             } else if (currentTask == AvailableTasks.None && tasks.Count == 0) {
@@ -83,6 +115,13 @@ public class Resident : MonoBehaviour {
         CalculateSatisfactions();
         // Rotate indicator
         positionIndicator.Rotate(60 * Time.deltaTime, 0, 0);
+        
+        if (_navMeshAgent.velocity.x > 0 || _navMeshAgent.velocity.z > 0) {
+            _animator.SetFloat("Speed_f", 1f);
+        }
+        else {
+            _animator.SetFloat("Speed_f", 0f);
+        }
     }
 
     private void ExecuteTask() {
@@ -109,7 +148,7 @@ public class Resident : MonoBehaviour {
                 }
                 break;
             case AvailableTasks.Work:
-                if (_home.PathFromHomeAvailable(workplace.transform, this)) {
+                if (_home.PathFromHomeAvailable(workplace.transform.position, this)) {
                     _navMeshAgent.destination = workplace.transform.position;
                 }
                 else {
@@ -148,12 +187,6 @@ public class Resident : MonoBehaviour {
             needs.Add("tavern", (100f - tavernSatisfaction) * tavernPriority + Random.Range(-10, 10));
         }
 
-        Debug.Log("------------- Priorities -------------");
-        foreach (KeyValuePair<string, float> need in needs) {
-            Debug.Log(need.Key + ": " + need.Value);
-        }
-        Debug.Log("--------------------------------------");
-        
         string highestPriorityNeedName = "";
         float highestPriorityNeed = 0f;
         foreach (KeyValuePair<string, float> need in needs) {
@@ -162,9 +195,7 @@ public class Resident : MonoBehaviour {
                 highestPriorityNeed = need.Value;
             }
         }
-        
-        Debug.Log("highestPriorityNeed: " + highestPriorityNeedName +" - " + highestPriorityNeed);
-        
+
         if (highestPriorityNeed < _lowestPriority * 50) {
             return _home._residentsCurrentlyInHome.Contains(transform) ? AvailableTasks.None : AvailableTasks.Home;
         }
@@ -205,6 +236,54 @@ public class Resident : MonoBehaviour {
 
         satisfaction = foodSatisfaction * 0.6f + religionSatisfaction * 0.4f;
         happiness = (100f - _uiControl.currentTaxes) * 0.3f + tavernSatisfaction * 0.7f;
+    }
+
+    private void MeasureSatisfactions(object sender, EventArgs e) {
+        _overallSatisfactionMeasurements.Add(satisfaction);
+        _foodSatisfactionMeasurements.Add(foodSatisfaction);
+        _religionSatisfactionMeasurements.Add(religionSatisfaction);
+        _tavernSatisfactionMeasurements.Add(tavernSatisfaction);
+        if (_overallSatisfactionMeasurements.Count > 36) {
+            _overallSatisfactionMeasurements.RemoveAt(0);
+            _foodSatisfactionMeasurements.RemoveAt(0);
+            _religionSatisfactionMeasurements.RemoveAt(0);
+            _tavernSatisfactionMeasurements.RemoveAt(0);
+
+            float summedUpOverallMeasurements = 0f;
+            float summedUpFoodMeasurements = 0f;
+            float summedUpReligionMeasurements = 0f;
+            float summedUpTavernMeasurements = 0f;
+            for (int i = 0; i < _overallSatisfactionMeasurements.Count; i++) {
+                summedUpOverallMeasurements += _overallSatisfactionMeasurements[i];
+                summedUpFoodMeasurements += _foodSatisfactionMeasurements[i];
+                summedUpReligionMeasurements += _religionSatisfactionMeasurements[i];
+                summedUpTavernMeasurements += _tavernSatisfactionMeasurements[i];
+            }
+
+            _overallSatisfactionOverTime = summedUpOverallMeasurements / _overallSatisfactionMeasurements.Count;
+            _foodSatisfactionOverTime = summedUpFoodMeasurements / _overallSatisfactionMeasurements.Count;
+            _religionSatisfactionOverTime = summedUpReligionMeasurements / _overallSatisfactionMeasurements.Count;
+            _tavernSatisfactionOverTime = summedUpTavernMeasurements / _overallSatisfactionMeasurements.Count;
+        }
+    }
+
+    private void CalculateRiotRisk(object sender, EventArgs e) {
+        if (_foodSatisfactionOverTime * foodPriority < 25) {
+            _reasonsToRiot.Add("food");
+        }
+        if (_religionSatisfactionOverTime * religionPriority < 25) {
+            _reasonsToRiot.Add("religion");
+        }
+        if (_tavernSatisfactionOverTime * tavernPriority < 25) {
+            _reasonsToRiot.Add("food");
+        }
+
+        if (_reasonsToRiot.Count > 0 && _overallSatisfactionOverTime < 60) {
+            int probabilityToRiot = Random.Range(_reasonsToRiot.Count, 6);
+            if (probabilityToRiot <= 3) {
+                _protesting = true;
+            }
+        }
     }
 
     private void CantCompleteTask() {

@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2612433150575423490}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10, y: 5.38, z: -10.3}
-  m_LocalScale: {x: 0.09, y: 0.09, z: 0.09}
+  m_LocalScale: {x: 0.18, y: 0.18, z: 0.18}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2820376663474926650}
@@ -47,8 +47,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 3
-  m_Acceleration: 8
+  m_Speed: 2
+  m_Acceleration: 4
   avoidancePriority: 50
   m_AngularSpeed: 800
   m_StoppingDistance: 0
@@ -78,6 +78,7 @@ MonoBehaviour:
   skinnedMeshRenderer: {fileID: 2820376663486769268}
   positionIndicator: {fileID: 511933203813988317}
   workplace: {fileID: 0}
+  _animator: {fileID: 2820376663482670042}
   satisfaction: 0
   happiness: 0
   religionSatisfaction: 0
@@ -88,6 +89,12 @@ MonoBehaviour:
   foodPriority: 0
   religionPriority: 0
   tavernPriority: 0
+  _overallSatisfactionOverTime: 100
+  _foodSatisfactionOverTime: 100
+  _religionSatisfactionOverTime: 100
+  _tavernSatisfactionOverTime: 100
+  _protesting: 0
+  _protestPrefab: {fileID: 8806961649495282037, guid: c87f0e1f9b4f91745990ffd87c4a0f21, type: 3}
 --- !u!54 &1223320523537930294
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -311,6 +318,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 85.072
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 3bd8a450fcb589542a7843ea7bda2ee6, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 13715150, guid: 3bd8a450fcb589542a7843ea7bda2ee6, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -320,6 +331,11 @@ PrefabInstance:
 --- !u!4 &2820376663474926650 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 3bd8a450fcb589542a7843ea7bda2ee6, type: 3}
+  m_PrefabInstance: {fileID: 2820376663475318458}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &2820376663482670042 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: 3bd8a450fcb589542a7843ea7bda2ee6, type: 3}
   m_PrefabInstance: {fileID: 2820376663475318458}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &2820376663486769268 stripped

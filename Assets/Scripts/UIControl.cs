@@ -226,16 +226,18 @@ public class UIControl : MonoBehaviour
         if (_currentlyInspectedResident) {
             _currentlyInspectedResident.DisableIndicator();
         }
-        _inspector.visible = true;
+        // _inspector.visible = true;
         _currentlyInspected = inspectionTransform;
         _currentlyInspectedType = type;
         switch (_currentlyInspectedType) {
             case "Resident":
+                _inspector.visible = true;
                 _currentlyInspectedResident = _currentlyInspected.GetComponent<Resident>();
                 _currentlyInspectedResident.EnableIndicator();
                 _inspectorName.text = _currentlyInspectedType;
                 break;
             case "House":
+                House house = inspectionTransform.GetComponent<House>();
                 break;
         }
     }

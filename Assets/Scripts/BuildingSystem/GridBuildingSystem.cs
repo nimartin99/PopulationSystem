@@ -149,5 +149,9 @@ public class GridBuildingSystem : MonoBehaviour {
         public bool CanBuild() {
             return _placedObject == null;
         }
+
+        public string GetPlacedObjectType() {
+            return _placedObject ? _placedObject.buildingObjectType.nameString : null;
+        }
     }
 }

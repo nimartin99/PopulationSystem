@@ -16,7 +16,8 @@ public class TimeController : MonoBehaviour
     public int daysSinceStart = 0;
     public double hours;
     public double minutes;
-    
+
+    public event EventHandler OnNextHour;
     public event EventHandler OnSleepTimeStart;
     public event EventHandler OnSleepTimeEnd;
     public event EventHandler OnNewDay;
@@ -44,7 +45,10 @@ public class TimeController : MonoBehaviour
             _percentageOfDayProgress = 0f;
         }
         AdjustLight();
-        
+
+        if (hoursBeforeAdding != hours) {
+            OnNextHour?.Invoke(this, EventArgs.Empty);
+        }
         if (hours >= 23 && !_sleepTime) {
             OnSleepTimeStart?.Invoke(this, EventArgs.Empty);
             _sleepTime = true;

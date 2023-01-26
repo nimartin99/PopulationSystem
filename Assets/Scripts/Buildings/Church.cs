@@ -22,7 +22,7 @@ public class Church : MonoBehaviour, IBuilding
 
     public void ResidentEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
-        if (resident.tasks[0] == Resident.AvailableTasks.Church) {
+        if (resident.currentTask == Resident.AvailableTasks.Church) {
             resident.DisableResident();
             StartCoroutine(CompleteReligionTask(resident));
         }

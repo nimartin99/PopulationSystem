@@ -85,9 +85,7 @@ public class Grid<TGridObject> {
         if (x >= 0 && z >= 0 && x < _width && z < _height) {
             return _gridArray[x, z];
         }
-        else {
-            return default(TGridObject);
-        }
+        return default(TGridObject);
     }
 
     public TGridObject GetGridObject(Vector3 worldPosition) {
