@@ -11,8 +11,8 @@
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="inspector" class="defaultContainer" style="position: absolute; right: 0; top: 0; width: 20%; height: 74%; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; align-items: center; display: flex; color: rgb(255, 255, 255); border-top-right-radius: 0; border-bottom-right-radius: 0;">
-        <ui:VisualElement style="height: 20%; min-width: auto; min-height: auto; align-items: center; width: 100%;">
-            <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" class="borderedText" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" class="borderedText" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <ui:VisualElement name="inspectorResidentOverall" style="height: auto; min-width: auto; min-height: auto; align-items: center; width: 100%; display: flex;">
             <ui:VisualElement name="divider" class="divider" />
             <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
                 <ui:Label text="Satisfaction" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
@@ -22,20 +22,37 @@
                 <ui:Label text="Happiness" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
                 <ui:ProgressBar title="0/100" name="inspectorHappiness" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
             </ui:VisualElement>
+            <ui:VisualElement name="inspectorResidentNext" style="width: 100%; flex-direction: row; align-items: center; justify-content: space-between; margin-top: 6px;">
+                <ui:Label text="Next:" display-tooltip-when-elided="true" style="font-size: 15px;" />
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="inspectorResidentNextLabel" class="borderedText" style="font-size: 15px; margin-bottom: 0;" />
+            </ui:VisualElement>
             <ui:VisualElement name="divider" class="divider" />
         </ui:VisualElement>
-        <ui:ScrollView style="width: 100%; height: 70%; align-items: flex-start;">
-            <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
-                <ui:Label text="Food" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-                <ui:ProgressBar title="0/100" name="inspectorFood" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <ui:ScrollView style="width: 100%; height: auto; align-items: flex-start; display: flex;">
+            <ui:VisualElement name="inspectorScrollResident" style="display: flex;">
+                <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                    <ui:Label text="Religion" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                    <ui:ProgressBar title="0/100" name="inspectorReligion" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                    <ui:Label text="Tavern" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                    <ui:ProgressBar title="0/100" name="inspectorTavern" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                    <ui:Label text="Food" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                    <ui:ProgressBar title="0/100" name="inspectorFood" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
-                <ui:Label text="Religion" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-                <ui:ProgressBar title="0/100" name="inspectorReligion" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
-            </ui:VisualElement>
-            <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
-                <ui:Label text="Tavern" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-                <ui:ProgressBar title="0/100" name="inspectorTavern" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+            <ui:VisualElement name="inspectorScrollRiot" style="display: flex;">
+                <ui:VisualElement style="flex-direction: column; width: 100%; align-items: center; margin-top: 4px; margin-bottom: 4px;">
+                    <ui:Label text="Riot intensifies" display-tooltip-when-elided="true" name="inspectorRiotStatus" style="margin-top: 4px; margin-bottom: 4px; font-size: 14px;" />
+                    <ui:ProgressBar title="0/100" name="inspectorRiotProgress" low-value="0" style="width: 100%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+                    <ui:VisualElement name="divider" class="divider" />
+                    <ui:VisualElement style="flex-direction: row; align-items: center;">
+                        <ui:Label text="Residents protesting:" display-tooltip-when-elided="true" style="font-size: 14px;" />
+                        <ui:Label text="0" display-tooltip-when-elided="true" name="inspectorRiotResidentCount" class="borderedText" style="font-size: 20px; margin-bottom: 0;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:ScrollView>
     </ui:VisualElement>
@@ -100,6 +117,6 @@
         <ui:Button text="Free Play" display-tooltip-when-elided="true" name="freePlay" class="defaultButton" />
         <ui:Button text="Presetting 1" display-tooltip-when-elided="true" name="presettingOne" class="defaultButton" />
         <ui:Button text="Presetting 2" display-tooltip-when-elided="true" name="presettingTwo" class="defaultButton" style="display: flex;" />
-        <ui:Button text="Presetting 3" display-tooltip-when-elided="true" name="presettingThree" class="defaultButton" style="display: none;" />
+        <ui:Button text="Presetting 3" display-tooltip-when-elided="true" name="presettingThree" class="defaultButton" style="display: flex;" />
     </ui:VisualElement>
 </ui:UXML>

@@ -50,18 +50,18 @@ public class House : MonoBehaviour, IBuilding {
 
     public void ResidentEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
-        if (residents.Contains(resident.transform) && (resident.currentTask == Resident.AvailableTasks.Home || resident.sleeping)) {
+        if (resident && residents.Contains(resident.transform) && (resident.currentTask == Resident.AvailableTasks.Home || resident.sleeping)) {
             _residentsCurrentlyInHome.Add(resident.transform);
-            resident.DisableVisual();
+            resident.DisableResident();
             resident.CompleteTask();
-            
         }
     }
 
     public void ResidentLeave(Collider other) {
         Resident resident = other.GetComponent<Resident>();
-        _residentsCurrentlyInHome.Remove(resident.transform);
-        resident.EnableVisual();
+        if (resident) {
+            _residentsCurrentlyInHome.Remove(resident.transform);
+        }
     }
 
     public Transform FindNextChurch(Resident resident) {
@@ -161,7 +161,8 @@ public class House : MonoBehaviour, IBuilding {
                     _gridBuildingSystem._grid.GetGridObject(topRowPosition);
                 if (topRowGridObject != null && topRowGridObject.GetPlacedObject() != null && topRowGridObject.GetPlacedObjectType() == "Path") {
                     int thisPathDirections = CountNeighbourPaths(topRowPosition);
-                    if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(topRowPosition, resident)) {
+                    if (thisPathDirections > bestCrossroadDirections && 
+                        PathFromHomeAvailable(new Vector3(topRowPosition.x + 0.5f, topRowPosition.y, topRowPosition.z + 0.5f), resident)) {
                         if (thisPathDirections == 4) {
                             return topRowPosition;
                         }
@@ -175,7 +176,8 @@ public class House : MonoBehaviour, IBuilding {
                     _gridBuildingSystem._grid.GetGridObject(bottomRowPosition);
                 if (bottomRowGridObject != null && bottomRowGridObject.GetPlacedObject() != null && bottomRowGridObject.GetPlacedObjectType() == "Path") {
                     int thisPathDirections = CountNeighbourPaths(bottomRowPosition);
-                    if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(bottomRowPosition, resident)) {
+                    if (thisPathDirections > bestCrossroadDirections && 
+                        PathFromHomeAvailable(new Vector3(bottomRowPosition.x + 0.5f, bottomRowPosition.y, bottomRowPosition.z + 0.5f), resident)) {
                         if (thisPathDirections == 4) {
                             return bottomRowPosition;
                         }
@@ -190,7 +192,8 @@ public class House : MonoBehaviour, IBuilding {
                         _gridBuildingSystem._grid.GetGridObject(leftColumnPosition);
                     if (leftColumnGridObject != null && leftColumnGridObject.GetPlacedObject() != null && leftColumnGridObject.GetPlacedObjectType() == "Path") {
                         int thisPathDirections = CountNeighbourPaths(leftColumnPosition);
-                        if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(leftColumnPosition, resident)) {
+                        if (thisPathDirections > bestCrossroadDirections && 
+                            PathFromHomeAvailable(new Vector3(leftColumnPosition.x + 0.5f, leftColumnPosition.y, leftColumnPosition.z + 0.5f), resident)) {
                             if (thisPathDirections == 4) {
                                 return leftColumnPosition;
                             }
@@ -204,7 +207,8 @@ public class House : MonoBehaviour, IBuilding {
                         _gridBuildingSystem._grid.GetGridObject(rightColumnPosition);
                     if (rightColumnGridObject != null && rightColumnGridObject.GetPlacedObject() != null && rightColumnGridObject.GetPlacedObjectType() == "Path") {
                         int thisPathDirections = CountNeighbourPaths(rightColumnPosition);
-                        if (thisPathDirections > bestCrossroadDirections && PathFromHomeAvailable(rightColumnPosition, resident)) {
+                        if (thisPathDirections > bestCrossroadDirections && 
+                            PathFromHomeAvailable(new Vector3(rightColumnPosition.x + 0.5f, rightColumnPosition.y, rightColumnPosition.z + 0.5f), resident)) {
                             if (thisPathDirections == 4) {
                                 return rightColumnPosition;
                             }
@@ -215,7 +219,7 @@ public class House : MonoBehaviour, IBuilding {
                 }
             }
         }
-
+        
         return bestCrossroad;
     }
 

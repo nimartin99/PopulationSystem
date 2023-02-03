@@ -87,17 +87,26 @@ public class Resident : MonoBehaviour {
     private void Update() {
         if (sleeping) {
             if (currentTask == AvailableTasks.None && !_home._residentsCurrentlyInHome.Contains(transform)) {
+                EnableResident();
                 AddTask(AvailableTasks.Home);
                 currentTask = AvailableTasks.Home;
                 _navMeshAgent.destination = _home.entrance.position;
             }
         } else if (_protesting) {
             if (currentTask != AvailableTasks.Protest) {
+                EnableResident();
                 currentTask = AvailableTasks.Protest;
                 RemoveTask(0);
-                Vector3 protestPosition = _home.FindNextPathCrossroad(this);
-                Instantiate(_protestPrefab, new Vector3(protestPosition.x + 0.5f, 0.05f, protestPosition.z + 0.5f), Quaternion.identity);
-                _navMeshAgent.destination = new Vector3(protestPosition.x + 0.5f, 0.05f, protestPosition.z + 0.5f);
+
+                Riot riot = FindObjectOfType<Riot>();
+                if (riot != null) {
+                    _navMeshAgent.destination = riot.transform.position;
+                }
+                else {
+                    Vector3 protestPosition = _home.FindNextPathCrossroad(this);
+                    Instantiate(_protestPrefab, new Vector3(protestPosition.x + 0.5f, 0.05f, protestPosition.z + 0.5f), Quaternion.identity);
+                    _navMeshAgent.destination = new Vector3(protestPosition.x + 0.5f, 0.05f, protestPosition.z + 0.5f);
+                }
             }
         } else {
             if (currentTask == AvailableTasks.None && tasks.Count > 0) {
@@ -125,6 +134,7 @@ public class Resident : MonoBehaviour {
     }
 
     private void ExecuteTask() {
+        EnableResident();
         currentTask = tasks[0];
         switch (currentTask) {
             case AvailableTasks.Church:
@@ -268,22 +278,24 @@ public class Resident : MonoBehaviour {
     }
 
     private void CalculateRiotRisk(object sender, EventArgs e) {
-        if (_foodSatisfactionOverTime * foodPriority < 25) {
+        if (_foodSatisfactionOverTime * (1f - foodPriority) < 25) {
             _reasonsToRiot.Add("food");
         }
-        if (_religionSatisfactionOverTime * religionPriority < 25) {
+        if (_religionSatisfactionOverTime * (1f - religionPriority) < 25) {
             _reasonsToRiot.Add("religion");
         }
-        if (_tavernSatisfactionOverTime * tavernPriority < 25) {
+        if (_tavernSatisfactionOverTime * (1f - tavernPriority) < 25) {
             _reasonsToRiot.Add("food");
         }
 
+        // Debug.Log("_reasonsToRiot: " + _reasonsToRiot.Count + " - _overallSatisfactionOverTime: " + _overallSatisfactionOverTime);
         if (_reasonsToRiot.Count > 0 && _overallSatisfactionOverTime < 60) {
             int probabilityToRiot = Random.Range(_reasonsToRiot.Count, 6);
-            if (probabilityToRiot <= 3) {
+            if (probabilityToRiot > 3) {
                 _protesting = true;
             }
         }
+        _reasonsToRiot.Clear();
     }
 
     private void CantCompleteTask() {
@@ -301,32 +313,32 @@ public class Resident : MonoBehaviour {
     }
 
     public void RemoveTask(int index) {
-        tasks.RemoveAt(index);
+        if (tasks.Count > 0) {
+            tasks.RemoveAt(index);
+        }
     }
 
     public void CompleteTask() {
         currentTask = AvailableTasks.None;
-        tasks.RemoveAt(0);
+        if (tasks.Count > 0) {
+            tasks.RemoveAt(0);
+        }
     }
 
     public void DisableResident() {
+        // _navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+        _navMeshAgent.enabled = false;
         _collider.enabled = false;
         skinnedMeshRenderer.enabled = false;
     }
     
     public void EnableResident() {
+        // _navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        _navMeshAgent.enabled = true;
         _collider.enabled = true;
         skinnedMeshRenderer.enabled = true;
     }
-    
-    public void DisableVisual() {
-        skinnedMeshRenderer.enabled = false;
-    }
-    
-    public void EnableVisual() {
-        skinnedMeshRenderer.enabled = true;
-    }
-    
+
     public void EnableIndicator() {
         positionIndicator.gameObject.SetActive(true);
     }

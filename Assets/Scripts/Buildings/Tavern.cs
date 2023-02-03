@@ -29,7 +29,7 @@ public class Tavern : MonoBehaviour, IBuilding {
 
     public void ResidentEnter(Collider other) { 
         Resident resident = other.GetComponent<Resident>();
-        if (resident.currentTask == Resident.AvailableTasks.Tavern) {
+        if (resident && resident.currentTask == Resident.AvailableTasks.Tavern) {
             resident.DisableResident();
             StartCoroutine(CompleteTavernTask(resident));
         }
@@ -38,8 +38,8 @@ public class Tavern : MonoBehaviour, IBuilding {
     private IEnumerator CompleteTavernTask(Resident resident) {
         yield return new WaitForSeconds(tavernDuration);
         resident.tavernSatisfaction = 100f;
-        resident.CompleteTask();
         resident.EnableResident();
+        resident.CompleteTask();
     }
 
     public void ResidentLeave(Collider other) {

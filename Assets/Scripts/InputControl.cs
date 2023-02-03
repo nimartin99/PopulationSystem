@@ -41,6 +41,9 @@ public class InputControl : MonoBehaviour {
                         uiControl.SetToInspector(hitTransform, "Resident");
                     } else if (hitTransform.GetComponent<House>() != null) {
                         uiControl.SetToInspector(hitTransform, "House");
+                    } else if (hitTransform.name == "ProtestIndicator" ||
+                               hitTransform.GetComponent<RiotingResident>() != null) {
+                        uiControl.SetToInspector(hitTransform, "Protest");
                     }
                 }
             }

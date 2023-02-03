@@ -31,9 +31,8 @@ public class Church : MonoBehaviour, IBuilding
     private IEnumerator CompleteReligionTask(Resident resident) {
         yield return new WaitForSeconds(churchDuration);
         resident.religionSatisfaction = 100f;
-        resident.CompleteTask();
         resident.EnableResident();
-        
+        resident.CompleteTask();
     }
 
     public void ResidentLeave(Collider other) {

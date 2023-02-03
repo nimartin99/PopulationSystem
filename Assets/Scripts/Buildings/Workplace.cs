@@ -20,7 +20,7 @@ public class Workplace : MonoBehaviour, IBuilding {
 
     public void ResidentEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
-        if (resident.currentTask == Resident.AvailableTasks.Work) {
+        if (resident && resident.currentTask == Resident.AvailableTasks.Work) {
             resident.DisableResident();
             StartCoroutine(CompleteWorkTask(resident));
         }
@@ -28,9 +28,9 @@ public class Workplace : MonoBehaviour, IBuilding {
 
     private IEnumerator CompleteWorkTask(Resident resident) {
         yield return new WaitForSeconds(_timeController.workHours);
-        resident.CompleteTask();
-        resident.EnableResident();
         resident.workedToday = true;
+        resident.EnableResident();
+        resident.CompleteTask();
     }
 
     public void ResidentLeave(Collider other) {

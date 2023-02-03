@@ -24,7 +24,7 @@ public class Market : MonoBehaviour, IBuilding {
 
     public void ResidentEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
-        if (resident.currentTask == Resident.AvailableTasks.Market) {
+        if (resident && resident.currentTask == Resident.AvailableTasks.Market) {
             resident.DisableResident();
             StartCoroutine(CompleteMarketTask(resident));
         }
@@ -49,8 +49,8 @@ public class Market : MonoBehaviour, IBuilding {
                 resident.foodSatisfaction = 100f;
                 break;
         }
-        resident.CompleteTask();
         resident.EnableResident();
+        resident.CompleteTask();
     }
 
     public void ResidentLeave(Collider other) {

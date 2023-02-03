@@ -28,14 +28,24 @@ public class UIControl : MonoBehaviour
     // Inspector
     private VisualElement _inspector;
     private Label _inspectorName;
+    private VisualElement _inspectorResidentOverall;
     private ProgressBar _inspectorSatisfaction;
     private ProgressBar _inspectorHappiness;
+    private VisualElement _inspectorResidentNext;
+    private Label _inspectorResidentNextLabel;
+    private VisualElement _inspectorScrollResident;
     private ProgressBar _inspectorFood;
     private ProgressBar _inspectorReligion;
     private ProgressBar _inspectorTavern;
+    private VisualElement _inspectorScrollRiot;
+    private Label _inspectorRiotStatus;
+    private ProgressBar _inspectorRiotProgress;
+    private Label _inspectorRiotResidentCount;
+    
     private Transform _currentlyInspected;
     private string _currentlyInspectedType;
     private Resident _currentlyInspectedResident;
+    private Riot _currentlyInspectedRiot;
 
     // Statusbar
     private Label _dayLabel;
@@ -91,11 +101,19 @@ public class UIControl : MonoBehaviour
         // Inspector
         _inspector = _uiDocument.rootVisualElement.Q<VisualElement>("inspector");
         _inspectorName = _uiDocument.rootVisualElement.Q<Label>("inspectorName");
+        _inspectorResidentOverall =_uiDocument.rootVisualElement.Q<VisualElement>("inspectorResidentOverall");
         _inspectorSatisfaction = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorSatisfaction");
         _inspectorHappiness = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorHappiness");
+        _inspectorResidentNext = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorResidentNext");
+        _inspectorResidentNextLabel = _uiDocument.rootVisualElement.Q<Label>("inspectorResidentNext");
+        _inspectorScrollResident = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorScrollResident");
         _inspectorFood = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorFood");
         _inspectorReligion = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorReligion");
         _inspectorTavern = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorTavern");
+        _inspectorScrollRiot = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorScrollRiot");
+        _inspectorRiotStatus = _uiDocument.rootVisualElement.Q<Label>("inspectorRiotStatus");
+        _inspectorRiotProgress = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorRiotProgress");
+        _inspectorRiotResidentCount = _uiDocument.rootVisualElement.Q<Label>("inspectorRiotResidentCount");
         _inspector.visible = false;
         
         // Statusbar
@@ -182,6 +200,12 @@ public class UIControl : MonoBehaviour
                     break;
                 case "House":
                     break;
+                case "Riot":
+                    _inspectorRiotStatus.text = _currentlyInspectedRiot.riotStatus;
+                    _inspectorRiotProgress.value = _currentlyInspectedRiot.riotProgress;
+                    _inspectorRiotProgress.title = Math.Floor(_currentlyInspectedResident.religionSatisfaction) + " / 100";
+                    _inspectorRiotResidentCount.text = _currentlyInspectedRiot.riotingResidents.Count.ToString();
+                    break;
             }
         }
         
@@ -238,6 +262,14 @@ public class UIControl : MonoBehaviour
                 break;
             case "House":
                 House house = inspectionTransform.GetComponent<House>();
+                break;
+            case "Protest":
+                Riot riot = inspectionTransform.parent.GetComponent<Riot>();
+                if (riot) {
+                    _inspector.visible = true;
+                    _inspectorName.text = _currentlyInspectedType;
+                    _currentlyInspectedRiot = riot;
+                }
                 break;
         }
     }
