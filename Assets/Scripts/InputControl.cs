@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputControl : MonoBehaviour {
     public InputModes currentMode = InputModes.ExploreMode;
+    [SerializeField] private BuildingGhost buildingGhost;
     
     public enum InputModes {
         ExploreMode,
@@ -17,18 +19,18 @@ public class InputControl : MonoBehaviour {
     [SerializeField] private UIControl uiControl;
     [SerializeField] private GridBuildingSystem gridBuildingSystem;
     
-    void Update()
+    void LateUpdate()
     {
         if (Input.GetKeyDown(KeyCode.M)) {
             switch (currentMode) {
                 case InputModes.ExploreMode:
-                    currentMode = InputModes.BuildingMode;
+                    uiControl.ChangeMode("build");
                     break;
                 case InputModes.BuildingMode:
-                    currentMode = InputModes.DeleteMode;
+                    uiControl.ChangeMode("delete");
                     break;
                 case InputModes.DeleteMode:
-                    currentMode = InputModes.ExploreMode;
+                    uiControl.ChangeMode("explore");
                     break;
             }
         }
@@ -41,9 +43,11 @@ public class InputControl : MonoBehaviour {
                         uiControl.SetToInspector(hitTransform, "Resident");
                     } else if (hitTransform.GetComponent<House>() != null) {
                         uiControl.SetToInspector(hitTransform, "House");
-                    } else if (hitTransform.name == "ProtestIndicator" ||
-                               hitTransform.GetComponent<RiotingResident>() != null) {
-                        uiControl.SetToInspector(hitTransform, "Protest");
+                    } else if (hitTransform.parent && 
+                               (hitTransform.GetComponent<Riot>() != null || 
+                                hitTransform.parent.GetComponent<Riot>() != null ||
+                               hitTransform.parent.transform.parent.GetComponent<Riot>() != null)) {
+                        uiControl.SetToInspector(hitTransform, "Riot");
                     }
                 }
             }
@@ -79,7 +83,8 @@ public class InputControl : MonoBehaviour {
             }
             
             if (Input.GetMouseButtonDown(1)) {
-                ResetToExploreMode();
+                buildingGhost.DestroyVisual();
+                uiControl.ChangeMode("explore");
             }
         }
 
@@ -91,34 +96,24 @@ public class InputControl : MonoBehaviour {
                 }
             }
             if (Input.GetMouseButtonDown(1)) {
-                ResetToExploreMode();
+                uiControl.ChangeMode("explore");
             }
         }
     }
 
     private Vector3 GetGroundPosition(out bool hitSomething) {
-        Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, groundLayerMask)) {
-            hitSomething = true;
-        }
-        else {
+        if (uiControl.hitUI) {
             hitSomething = false;
+            return Vector3.zero;
         }
+        Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
+        hitSomething = Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, groundLayerMask);
         return hit.point;
     }
     
     private Transform GetMouseObject(out bool hitSomething) {
         Ray ray = currentCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue)) {
-            hitSomething = true;
-        }
-        else {
-            hitSomething = false;
-        }
+        hitSomething = Physics.Raycast(ray, out RaycastHit hit, float.MaxValue);
         return hit.transform;
-    }
-
-    private void ResetToExploreMode() {
-        currentMode = InputModes.ExploreMode;
     }
 }

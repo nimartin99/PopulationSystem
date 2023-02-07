@@ -135,7 +135,7 @@ public class PresettingGenerator : MonoBehaviour {
         _gridBuildingSystem.RotateBuilding();
         _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 18f, 0f, 0.5f + 3f));
     }
-    
+
     public void GeneratePresettingThree() {
         _gridBuildingSystem.SelectBuilding(0);
         for (int j = 0; j < _height; j++) {
@@ -161,12 +161,43 @@ public class PresettingGenerator : MonoBehaviour {
         _gridBuildingSystem.RotateBuilding();
         _gridBuildingSystem.RotateBuilding();
         _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 18f, 0f, 0.5f + 3f));
-        FindObjectOfType<Resident>()._protesting = true;
+        Resident firstResident = FindObjectOfType<Resident>();
+        firstResident.riotingReasons.Add("food");
+        firstResident.riotingReasons.Add("religion");
+        firstResident.riotingReasons.Add("tavern");
+        firstResident.rioting = true;
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 20f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 22f, 0f, 0.5f + 3f));
+        // _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 24f, 0f, 0.5f + 3f));
+        foreach (Resident resident in FindObjectsOfType<Resident>()) {
+            resident.rioting = true;
+        }
+    }
+    
+    public void GeneratePresettingFour() {
+        _gridBuildingSystem.SelectBuilding(0);
+        for (int j = 0; j < _height; j++) {
+            for (int i = 0; i < _width; i++) {
+                switch (j) {
+                    case 2 when i is < 30 and > 2:
+                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j));
+                        break;
+                }
+            }
+        }
+        _gridBuildingSystem.SelectBuilding(1);
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 18f, 0f, 0.5f + 3f));
         _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 20f, 0f, 0.5f + 3f));
         _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 22f, 0f, 0.5f + 3f));
         _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 24f, 0f, 0.5f + 3f));
         foreach (Resident resident in FindObjectsOfType<Resident>()) {
-            resident._protesting = true;
+            resident._overallSatisfactionOverTime = 0f;
+            resident._religionSatisfactionOverTime = 0f;
+            resident._tavernSatisfactionOverTime = 0f;
+            resident._foodSatisfactionOverTime = 0f;
         }
     }
 }

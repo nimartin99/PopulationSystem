@@ -65,12 +65,11 @@ public class House : MonoBehaviour, IBuilding {
     }
 
     public Transform FindNextChurch(Resident resident) {
-        NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
         Church closestChurch = null;
         float closestTargetDistance = float.MaxValue;
         NavMeshPath path = new NavMeshPath();
         foreach(Church church in FindObjectsOfType<Church>()) {
-            if (NavMesh.CalculatePath(entrance.transform.position, church.entrance.position, anyResidentAgent.areaMask, path)) {
+            if (PathFromHomeAvailable(church.entrance.position, resident, path)) {
                 float distanceToChurch = Vector3.Distance(transform.position, path.corners[0]);
                 for (int i = 1; i < path.corners.Length; i++) {
                     distanceToChurch += Vector3.Distance(path.corners[i - 1], path.corners[i]);
@@ -85,12 +84,11 @@ public class House : MonoBehaviour, IBuilding {
     }
     
     public Transform FindNextMarket(Resident resident) {
-        NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
         Market closestMarket = null;
         float closestTargetDistance = float.MaxValue;
         NavMeshPath path = new NavMeshPath();
         foreach(Market market in FindObjectsOfType<Market>()) {
-            if (NavMesh.CalculatePath(entrance.transform.position, market.entrance.position, anyResidentAgent.areaMask, path)) {
+            if (PathFromHomeAvailable(market.entrance.position, resident, path)) {
                 float distanceToMarket = Vector3.Distance(transform.position, path.corners[0]);
                 for (int i = 1; i < path.corners.Length; i++) {
                     distanceToMarket += Vector3.Distance(path.corners[i - 1], path.corners[i]);
@@ -105,12 +103,11 @@ public class House : MonoBehaviour, IBuilding {
     }
     
     public Transform FindNextTavern(Resident resident) {
-        NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
         Tavern closestTavern = null;
         float closestTargetDistance = float.MaxValue;
         NavMeshPath path = new NavMeshPath();
         foreach(Tavern tavern in FindObjectsOfType<Tavern>()) {
-            if (NavMesh.CalculatePath(entrance.transform.position, tavern.entrance.position, anyResidentAgent.areaMask, path)) {
+            if (PathFromHomeAvailable(tavern.entrance.position, resident, path)) {
                 float distanceToTavern = Vector3.Distance(transform.position, path.corners[0]);
                 for (int i = 1; i < path.corners.Length; i++) {
                     distanceToTavern += Vector3.Distance(path.corners[i - 1], path.corners[i]);
@@ -125,11 +122,13 @@ public class House : MonoBehaviour, IBuilding {
         return closestTavern ? closestTavern.entrance : null;
     }
 
-    public bool PathFromHomeAvailable(Vector3 destination, Resident resident) {
-        NavMeshPath Path = new NavMeshPath();
+    public bool PathFromHomeAvailable(Vector3 destination, Resident resident, NavMeshPath path = null) {
+        if (path == null) {
+            path = new NavMeshPath();
+        }
         NavMeshAgent anyResidentAgent = resident.GetComponent<NavMeshAgent>();
-        NavMesh.CalculatePath(entrance.transform.position, destination, anyResidentAgent.areaMask, Path);
-        return Path.status == NavMeshPathStatus.PathComplete;
+        NavMesh.CalculatePath(entrance.transform.position, destination, anyResidentAgent.areaMask, path);
+        return path.status == NavMeshPathStatus.PathComplete;
     }
 
     public Vector3 FindNextPathCrossroad(Resident resident) {

@@ -24,6 +24,7 @@ public class GridBuildingSystem : MonoBehaviour {
     
     public event EventHandler OnSelectedChanged;
     public event EventHandler OnGridChanged;
+    public event Action<string> OnBuildingPlaced;
 
     public Grid<GridObject> _grid;
 
@@ -67,6 +68,7 @@ public class GridBuildingSystem : MonoBehaviour {
                 building,
                 environmentParent
             );
+            OnBuildingPlaced?.Invoke(building.nameString);
             // Scale the building to cellSize
             // spawnedBuilding.transform.localScale = spawnedBuilding.transform.localScale * cellSize;
             // Set the building to every Grid coordinate

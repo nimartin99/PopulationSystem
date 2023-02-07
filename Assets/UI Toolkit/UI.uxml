@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/Styles.uss?fileID=7433441132597879392&amp;guid=45ea93da90c071e419d59a24f8c4afa4&amp;type=3#Styles" />
-    <ui:VisualElement name="toolbar" style="position: absolute; bottom: 0; width: 100%; height: 25%; align-items: center;">
-        <ui:VisualElement class="defaultContainer" style="height: 100%; width: 75%; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+    <ui:VisualElement name="toolbarContainer" style="position: absolute; bottom: 0; width: 100%; height: 25%; align-items: center;">
+        <ui:VisualElement name="toolbar" class="defaultContainer" style="height: 100%; width: 75%; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
             <ui:VisualElement name="Tools" style="width: 100%; height: 20%; flex-direction: row;">
                 <ui:Button display-tooltip-when-elided="true" name="exploreButton" class="toolButton" style="background-color: rgb(156, 102, 68); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;" />
                 <ui:Button display-tooltip-when-elided="true" name="buildButton" class="toolButton" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/EditIcon.png?fileID=2800000&amp;guid=4fdbf61b1736c9e40915001bc38f905b&amp;type=3#EditIcon&apos;); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);" />
@@ -12,7 +12,7 @@
     </ui:VisualElement>
     <ui:VisualElement name="inspector" class="defaultContainer" style="position: absolute; right: 0; top: 0; width: 20%; height: 74%; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; align-items: center; display: flex; color: rgb(255, 255, 255); border-top-right-radius: 0; border-bottom-right-radius: 0;">
         <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" class="borderedText" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
-        <ui:VisualElement name="inspectorResidentOverall" style="height: auto; min-width: auto; min-height: auto; align-items: center; width: 100%; display: flex;">
+        <ui:VisualElement name="inspectorResidentOverall" style="height: auto; min-width: auto; min-height: auto; align-items: center; width: 100%; display: flex; visibility: visible;">
             <ui:VisualElement name="divider" class="divider" />
             <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
                 <ui:Label text="Satisfaction" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
@@ -49,8 +49,11 @@
                     <ui:ProgressBar title="0/100" name="inspectorRiotProgress" low-value="0" style="width: 100%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
                     <ui:VisualElement name="divider" class="divider" />
                     <ui:VisualElement style="flex-direction: row; align-items: center;">
-                        <ui:Label text="Residents protesting:" display-tooltip-when-elided="true" style="font-size: 14px;" />
+                        <ui:Label text="Angry residents:" display-tooltip-when-elided="true" style="font-size: 14px;" />
                         <ui:Label text="0" display-tooltip-when-elided="true" name="inspectorRiotResidentCount" class="borderedText" style="font-size: 20px; margin-bottom: 0;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="inspectorRiotReasons" style="flex-direction: column; align-items: center;">
+                        <ui:VisualElement name="divider" class="divider" />
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -118,5 +121,6 @@
         <ui:Button text="Presetting 1" display-tooltip-when-elided="true" name="presettingOne" class="defaultButton" />
         <ui:Button text="Presetting 2" display-tooltip-when-elided="true" name="presettingTwo" class="defaultButton" style="display: flex;" />
         <ui:Button text="Presetting 3" display-tooltip-when-elided="true" name="presettingThree" class="defaultButton" style="display: flex;" />
+        <ui:Button text="Presetting 4" display-tooltip-when-elided="true" name="presettingFour" class="defaultButton" style="display: flex;" />
     </ui:VisualElement>
 </ui:UXML>

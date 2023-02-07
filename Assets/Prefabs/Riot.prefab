@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7935112233885479916}
+  - component: {fileID: 3136907551678970289}
   m_Layer: 0
   m_Name: ProtestingCircle
   m_TagString: Untagged
@@ -34,6 +35,19 @@ Transform:
   m_Father: {fileID: 8806961649495282037}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &3136907551678970289
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1479717074400880512}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6967493587382898655
 GameObject:
   m_ObjectHideFlags: 0
@@ -81,13 +95,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3457d3703a337b345b0dda8448935a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  protestIndicator: {fileID: 3065648730754436046}
-  _protestingCircle: {fileID: 7935112233885479916}
-  _movingProtest: 0
+  riotIndicator: {fileID: 3065648730754436046}
+  protestCircle: {fileID: 7935112233885479916}
+  currentlyProtestingResidents: []
+  movingProtest: 0
   rioter: {fileID: 2612433150575423496, guid: 348b18f2ee09a594c97c36efe11484dc, type: 3}
   riotTargetPrefab: {fileID: 5096879640307845903, guid: 5d8e147c6e76d0947bb109ca88a2c5e3, type: 3}
-  riotingResidents: []
-  protestProgress: 0
+  riotCurrentStatus: Protesting
+  riotProgress: 0
+  riotingReasons: []
 --- !u!65 &1467614324554609012
 BoxCollider:
   m_ObjectHideFlags: 0

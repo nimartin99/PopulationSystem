@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -15,12 +16,15 @@ public class UIControl : MonoBehaviour
     
     private UIDocument _uiDocument;
     private TimeController _timeController;
+
+    public bool hitUI;
     
     // UI params
     public int currentTaxes;
     public string currentFoodPortion;
 
     // Toolbar
+    private VisualElement _toolbar;
     private Button _exploreButton;
     private Button _buildButton;
     private Button _deleteButton;
@@ -41,9 +45,10 @@ public class UIControl : MonoBehaviour
     private Label _inspectorRiotStatus;
     private ProgressBar _inspectorRiotProgress;
     private Label _inspectorRiotResidentCount;
-    
+    private VisualElement _inspectorRiotReasons;
+
     private Transform _currentlyInspected;
-    private string _currentlyInspectedType;
+    public string currentlyInspectedType;
     private Resident _currentlyInspectedResident;
     private Riot _currentlyInspectedRiot;
 
@@ -74,6 +79,7 @@ public class UIControl : MonoBehaviour
     private Button _presettingOne;
     private Button _presettingTwo;
     private Button _presettingThree;
+    private Button _presettingFour;
 
     private void Awake() {
         if (Instance != null && Instance != this) { 
@@ -91,12 +97,12 @@ public class UIControl : MonoBehaviour
         _uiDocument = GetComponent<UIDocument>();
         // Toolbar
         _exploreButton = _uiDocument.rootVisualElement.Q<Button>("exploreButton");
-        _exploreButton.clicked += () => { ButtonClicked("explore"); };
+        _exploreButton.clicked += () => { ChangeMode("explore"); };
         _buildButton = _uiDocument.rootVisualElement.Q<Button>("buildButton");
-        _buildButton.clicked += () => { ButtonClicked("build"); };
+        _buildButton.clicked += () => { ChangeMode("build"); };
         _deleteButton = _uiDocument.rootVisualElement.Q<Button>("deleteButton");
-        _deleteButton.clicked += () => { ButtonClicked("delete"); };
-        ButtonClicked("explore");
+        _deleteButton.clicked += () => { ChangeMode("delete"); };
+        ChangeMode("explore");
         
         // Inspector
         _inspector = _uiDocument.rootVisualElement.Q<VisualElement>("inspector");
@@ -105,7 +111,7 @@ public class UIControl : MonoBehaviour
         _inspectorSatisfaction = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorSatisfaction");
         _inspectorHappiness = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorHappiness");
         _inspectorResidentNext = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorResidentNext");
-        _inspectorResidentNextLabel = _uiDocument.rootVisualElement.Q<Label>("inspectorResidentNext");
+        _inspectorResidentNextLabel = _uiDocument.rootVisualElement.Q<Label>("inspectorResidentNextLabel");
         _inspectorScrollResident = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorScrollResident");
         _inspectorFood = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorFood");
         _inspectorReligion = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorReligion");
@@ -114,7 +120,8 @@ public class UIControl : MonoBehaviour
         _inspectorRiotStatus = _uiDocument.rootVisualElement.Q<Label>("inspectorRiotStatus");
         _inspectorRiotProgress = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorRiotProgress");
         _inspectorRiotResidentCount = _uiDocument.rootVisualElement.Q<Label>("inspectorRiotResidentCount");
-        _inspector.visible = false;
+        _inspectorRiotReasons = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorRiotReasons");
+        HideInspector();
         
         // Statusbar
         _dayLabel = _uiDocument.rootVisualElement.Q<Label>("dayLabel");
@@ -164,29 +171,53 @@ public class UIControl : MonoBehaviour
         _freePlay = _uiDocument.rootVisualElement.Q<Button>("freePlay");
         _freePlay.clicked += () => { _presettingSelection.visible = false; };
         _presettingOne = _uiDocument.rootVisualElement.Q<Button>("presettingOne"); 
-        _presettingOne.clicked += () => {
-            presettingGenerator.GeneratePresettingOne(); 
-            _presettingSelection.visible = false;
-            ButtonClicked("explore");
-        };
+        _presettingOne.clicked += () => { StartPresetting(1); };
         _presettingTwo = _uiDocument.rootVisualElement.Q<Button>("presettingTwo");
-        _presettingTwo.clicked += () => {
-            presettingGenerator.GeneratePresettingTwo(); 
-            _presettingSelection.visible = false;
-            ButtonClicked("explore");
-        };
+        _presettingTwo.clicked += () => { StartPresetting(2); };
         _presettingThree = _uiDocument.rootVisualElement.Q<Button>("presettingThree");
-        _presettingThree.clicked += () => {
-            presettingGenerator.GeneratePresettingThree(); 
-            _presettingSelection.visible = false;
-            ButtonClicked("explore");
-        };
+        _presettingThree.clicked += () => { StartPresetting(3); };
+        _presettingFour = _uiDocument.rootVisualElement.Q<Button>("presettingFour");
+        _presettingFour.clicked += () => { StartPresetting(4); };
+
+        RegisterUIBlock(_uiDocument.rootVisualElement);
+    }
+
+    private void StartPresetting(int setting) {
+        hitUI = true;
+        switch (setting) {
+            case 1:
+                presettingGenerator.GeneratePresettingOne();
+                break;
+            case 2:
+                presettingGenerator.GeneratePresettingTwo();
+                break;
+            case 3:
+                presettingGenerator.GeneratePresettingThree();
+                break;
+            case 4:
+                presettingGenerator.GeneratePresettingFour();
+                break;
+        }
+        _presettingSelection.visible = false;
+        ChangeMode("explore");
+    }
+
+    private void RegisterUIBlock(VisualElement element) {
+        element.RegisterCallback<MouseDownEvent>((eve) => { HitUI(); });
+        foreach (VisualElement childElement in element.Children()) {
+            RegisterUIBlock(childElement);
+        }
     }
 
     private void Update() {
+        if (hitUI) {
+            hitUI = false;
+        }
         if (_inspector.visible) {
-            switch (_currentlyInspectedType) {
+            switch (currentlyInspectedType) {
                 case "Resident":
+                    _inspectorResidentOverall.style.display = DisplayStyle.Flex;
+                    _inspectorScrollResident.style.display = DisplayStyle.Flex;
                     _inspectorSatisfaction.title =  Math.Floor(_currentlyInspectedResident.satisfaction) + " / 100";
                     _inspectorSatisfaction.value = _currentlyInspectedResident.satisfaction;
                     _inspectorHappiness.title =  Math.Floor(_currentlyInspectedResident.happiness) + " / 100";
@@ -197,14 +228,27 @@ public class UIControl : MonoBehaviour
                     _inspectorReligion.value = _currentlyInspectedResident.religionSatisfaction;
                     _inspectorTavern.title =  Math.Floor(_currentlyInspectedResident.tavernSatisfaction) + " / 100";
                     _inspectorTavern.value = _currentlyInspectedResident.tavernSatisfaction;
+                    if (_currentlyInspectedResident.currentTask == Resident.AvailableTasks.None) {
+                        _inspectorResidentNext.style.visibility = Visibility.Hidden;
+                    }
+                    else {
+                        _inspectorResidentNext.style.visibility = Visibility.Visible;
+                        _inspectorResidentNextLabel.text = _currentlyInspectedResident.currentTask.ToString();
+                    }
                     break;
                 case "House":
                     break;
                 case "Riot":
-                    _inspectorRiotStatus.text = _currentlyInspectedRiot.riotStatus;
+                    _inspectorScrollRiot.style.display = DisplayStyle.Flex;
+                    _inspectorRiotStatus.text = _currentlyInspectedRiot.riotCurrentStatus;
                     _inspectorRiotProgress.value = _currentlyInspectedRiot.riotProgress;
-                    _inspectorRiotProgress.title = Math.Floor(_currentlyInspectedResident.religionSatisfaction) + " / 100";
-                    _inspectorRiotResidentCount.text = _currentlyInspectedRiot.riotingResidents.Count.ToString();
+                    _inspectorRiotProgress.title = Math.Floor(_currentlyInspectedRiot.riotProgress) + " / 100";
+                    _inspectorRiotProgress.style.display = _currentlyInspectedRiot.movingRiot
+                        ? DisplayStyle.Flex : DisplayStyle.None;
+                    _inspectorRiotResidentCount.text = _currentlyInspectedRiot.residents.Count.ToString();
+                    if (_inspectorRiotReasons.childCount != _currentlyInspectedRiot.riotingReasons.Count) {
+                        RefreshRiotReasonsToUI();
+                    }
                     break;
             }
         }
@@ -219,7 +263,7 @@ public class UIControl : MonoBehaviour
         DisplayClockToStatusbar();
     }
 
-    private void ButtonClicked(string type) {
+    public void ChangeMode(string type) {
         switch (type) {
             case "build":
                 _inputControl.currentMode = InputControl.InputModes.BuildingMode;
@@ -247,28 +291,27 @@ public class UIControl : MonoBehaviour
     }
 
     public void SetToInspector(Transform inspectionTransform, string type) {
-        if (_currentlyInspectedResident) {
-            _currentlyInspectedResident.DisableIndicator();
-        }
-        // _inspector.visible = true;
+        HideInspector();
         _currentlyInspected = inspectionTransform;
-        _currentlyInspectedType = type;
-        switch (_currentlyInspectedType) {
+        currentlyInspectedType = type;
+        switch (currentlyInspectedType) {
             case "Resident":
                 _inspector.visible = true;
                 _currentlyInspectedResident = _currentlyInspected.GetComponent<Resident>();
                 _currentlyInspectedResident.EnableIndicator();
-                _inspectorName.text = _currentlyInspectedType;
+                _inspectorName.text = currentlyInspectedType;
                 break;
             case "House":
                 House house = inspectionTransform.GetComponent<House>();
                 break;
-            case "Protest":
+            case "Riot":
                 Riot riot = inspectionTransform.parent.GetComponent<Riot>();
                 if (riot) {
                     _inspector.visible = true;
-                    _inspectorName.text = _currentlyInspectedType;
+                    _inspectorName.text = currentlyInspectedType;
                     _currentlyInspectedRiot = riot;
+                    _inspectorRiotReasons.style.display = DisplayStyle.Flex;
+                    RefreshRiotReasonsToUI();
                 }
                 break;
         }
@@ -276,7 +319,12 @@ public class UIControl : MonoBehaviour
 
     public void HideInspector() {
         _inspector.visible = false;
-        switch (_currentlyInspectedType) {
+        _inspectorResidentOverall.style.display = DisplayStyle.None;
+        _inspectorScrollResident.style.display = DisplayStyle.None;
+        _inspectorScrollRiot.style.display = DisplayStyle.None;
+        _inspectorRiotReasons.style.display = DisplayStyle.None;
+        _inspectorName.text = "-";
+        switch (currentlyInspectedType) {
             case "Resident":
                 _currentlyInspected.GetComponent<Resident>().DisableIndicator();
                 break;
@@ -292,6 +340,7 @@ public class UIControl : MonoBehaviour
     }
 
     private void ToggleSettings() {
+        hitUI = true;
         _settings.visible = !_settings.visible;
         if (_settings.visible) {
             _settingsActivator.style.borderBottomRightRadius = 0;
@@ -330,6 +379,7 @@ public class UIControl : MonoBehaviour
     }
 
     private void SelectSettingTab(String tab) {
+        hitUI = true;
         switch (tab)
         {
             case "work":
@@ -357,5 +407,34 @@ public class UIControl : MonoBehaviour
                 BorderVisualElement(_foodSettingButton.parent, 1f, 1f, 1f, 0f);
                 break;
         }
+    }
+
+    private void RefreshRiotReasonsToUI() {
+        int count = _inspectorRiotReasons.childCount;
+        for (int i=1; i < count; i++)
+        {
+            _inspectorRiotReasons.RemoveAt(1);
+        }
+        foreach (string reason in _currentlyInspectedRiot.riotingReasons) {
+            string fullReason = "";
+            switch (reason) {
+                case "food":
+                    fullReason = "The residents are hungry. Build more markets or increase food portions.";
+                    break;
+                case "religion":
+                    fullReason = "The residents want more churches in their village.";
+                    break;
+                case "tavern":
+                    fullReason = "The residents are way to sober! Build them more taverns.";
+                    break;
+            }
+            Label label = new Label(fullReason);
+            label.AddToClassList("riotReasonText");
+            _inspectorRiotReasons.Add(label);
+        }
+    }
+
+    private void HitUI() {
+        hitUI = true;
     }
 }

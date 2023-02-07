@@ -93,8 +93,9 @@ MonoBehaviour:
   _foodSatisfactionOverTime: 100
   _religionSatisfactionOverTime: 100
   _tavernSatisfactionOverTime: 100
-  _protesting: 0
-  _protestPrefab: {fileID: 8806961649495282037, guid: c87f0e1f9b4f91745990ffd87c4a0f21, type: 3}
+  riotingReasons: []
+  rioting: 0
+  riotPrefab: {fileID: 8806961649495282037, guid: c87f0e1f9b4f91745990ffd87c4a0f21, type: 3}
 --- !u!54 &1223320523537930294
 Rigidbody:
   m_ObjectHideFlags: 0

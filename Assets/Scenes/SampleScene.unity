@@ -2196,6 +2196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMode: 0
+  buildingGhost: {fileID: 1333337954}
   currentCamera: {fileID: 963194227}
   groundLayerMask:
     serializedVersion: 2
@@ -2247,8 +2248,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingGhost: {fileID: 1333337954}
   presettingGenerator: {fileID: 2063104932}
+  hitUI: 0
   currentTaxes: 0
   currentFoodPortion: 
+  currentlyInspectedType: 
 --- !u!1001 &1819062972
 PrefabInstance:
   m_ObjectHideFlags: 0

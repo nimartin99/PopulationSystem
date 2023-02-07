@@ -1,68 +1,84 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 public class Riot : MonoBehaviour {
-    [SerializeField] private Transform protestIndicator;
-    [SerializeField] private Transform _protestingCircle;
+    private GridBuildingSystem _gridBuildingSystem;
+    [SerializeField] private Transform riotIndicator;
+    [SerializeField] private Transform protestCircle;
 
-    private List<Resident> currentlyProtestingResidents = new List<Resident>();
-    public bool _movingProtest = false;
+    [HideInInspector] public List<Resident> residents = new List<Resident>();
+    [HideInInspector] public bool movingRiot = false;
     
     [SerializeField] private Transform rioter;
     [SerializeField] private Transform riotTargetPrefab;
     private Transform _moveTarget;
-    public List<Transform> riotingResidents = new List<Transform>();
+    private readonly List<Transform> _riotingDummyResidents = new List<Transform>();
 
-    public string riotStatus = "Riot intensifies...";
+    [HideInInspector] public string riotCurrentStatus = "Protesting";
     public float riotProgress = 0f;
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    public List<string> riotingReasons = new List<string>();
+
+    private int _hoursSinceStart = 0;
+    [SerializeField] private int minimumHourDuration = 5;
+
+    private void Start() {
+        _gridBuildingSystem = GridBuildingSystem.Instance;
+        _gridBuildingSystem.OnBuildingPlaced += CheckReasonsToRiot;
+        TimeController.Instance.OnNextHour += (obj, EventArgs) => { _hoursSinceStart++; };
     }
 
     // Update is called once per frame
     void Update() {
-        protestIndicator.Rotate(0, 30 * Time.deltaTime, 0);
-        if (!_movingProtest) {
+        riotIndicator.Rotate(0, 30 * Time.deltaTime, 0);
+        if (!movingRiot) {
             transform.Rotate(0, 30 * Time.deltaTime, 0);
+        } else {
+            if (riotProgress < 100) {
+                riotProgress += 1f * Time.deltaTime;
+                riotProgress = Math.Clamp(riotProgress, 0f, 100f);
+            } else if (riotProgress == 100f) {
+                riotCurrentStatus = "Full blown revolution";
+            }
+        }
+        
+        if (riotingReasons.Count == 0 && _hoursSinceStart >= minimumHourDuration) {
+            StopRiot();
+            
         }
     }
 
     private void OnTriggerEnter(Collider other) {
         Resident resident = other.gameObject.GetComponent<Resident>();
         RiotingResident riotingResident = other.gameObject.GetComponent<RiotingResident>();
-        if (resident && resident.currentTask == Resident.AvailableTasks.Protest) {
+        if (resident && resident.currentTask == Resident.AvailableTasks.Riot) {
             resident.DisableResident();
-            currentlyProtestingResidents.Add(resident);
-            if (currentlyProtestingResidents.Count == 4) {
-                _protestingCircle.GetChild(0).gameObject.SetActive(false);
-                _protestingCircle.GetChild(1).gameObject.SetActive(false);
-                _protestingCircle.GetChild(2).gameObject.SetActive(false);
+            residents.Add(resident);
+            if (residents.Count == 4) {
+                protestCircle.gameObject.SetActive(false);
                 for (int i = 0; i < 4; i++) {
-                    AddNewProtesterToMoving();
+                    AddNewRioterToMoving();
                 }
-                protestIndicator.parent = riotingResidents[0];
-                _movingProtest = true;
+                riotIndicator.parent = _riotingDummyResidents[0];
+                movingRiot = true;
                 _moveTarget = Instantiate(riotTargetPrefab, GetNextPosition(), Quaternion.identity, transform);
-                foreach (Transform rioterTransform in riotingResidents) {
+                foreach (Transform rioterTransform in _riotingDummyResidents) {
                     Vector2 destinationVariation = new Vector2(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f));
                     rioterTransform.GetComponent<NavMeshAgent>().destination = 
                         new Vector3(_moveTarget.position.x + destinationVariation.x, _moveTarget.position.y, _moveTarget.position.z + destinationVariation.y);
                 }
-            } else if(currentlyProtestingResidents.Count < 4) {
-                _protestingCircle.GetChild(currentlyProtestingResidents.Count - 1).gameObject.SetActive(true);
-                _protestingCircle.GetChild(currentlyProtestingResidents.Count - 1).GetComponent<Animator>()
+
+                riotCurrentStatus = "Riot intensifies...";
+            } else if(residents.Count < 4) {
+                protestCircle.GetChild(residents.Count - 1).gameObject.SetActive(true);
+                protestCircle.GetChild(residents.Count - 1).GetComponent<Animator>()
                     .SetBool("Protesting", true);
-                protestIndicator.gameObject.SetActive(true);
+                riotIndicator.gameObject.SetActive(true);
             } else {
-                AddNewProtesterToMoving();
+                AddNewRioterToMoving();
             }
         } else if (riotingResident) {
             Vector2 destinationVariation = new Vector2(Random.Range(-0.4f, 0.4f), Random.Range(-0.4f, 0.4f));
@@ -70,9 +86,23 @@ public class Riot : MonoBehaviour {
                     new Vector3(_moveTarget.position.x + destinationVariation.x, _moveTarget.position.y, _moveTarget.position.z + destinationVariation.y);
         }
     }
+    
+    private void CheckReasonsToRiot(string buildingType) {
+        switch (buildingType) {
+            case "Market":
+                riotingReasons.Remove("food");
+                break;
+            case "Church":
+                riotingReasons.Remove("religion");
+                break;
+            default:
+                riotingReasons.Remove(buildingType.ToLower());
+                break;
+        }
+    }
 
     private Vector3 GetNextPosition() {
-        RaycastHit[] hitsAround = Physics.SphereCastAll(transform.position, 15f, transform.up);
+        RaycastHit[] hitsAround = Physics.BoxCastAll(transform.position, new Vector3(7.5f, 7.5f, 7.5f), transform.up);
         RaycastHit pathFurthestAway = hitsAround[0];
         foreach (RaycastHit hit in hitsAround) {
             if (hit.transform.CompareTag("Path") && hit.distance > pathFurthestAway.distance && IsPathAvailable(hit.transform.position)) {
@@ -95,17 +125,17 @@ public class Riot : MonoBehaviour {
 
     private bool IsPathAvailable(Vector3 destination) {
         NavMeshPath Path = new NavMeshPath();
-        NavMeshAgent anyResidentAgent = riotingResidents[0].GetComponent<NavMeshAgent>();
+        NavMeshAgent anyResidentAgent = _riotingDummyResidents[0].GetComponent<NavMeshAgent>();
         NavMesh.CalculatePath(transform.position, destination, anyResidentAgent.areaMask, Path);
         return Path.status == NavMeshPathStatus.PathComplete;
     }
 
-    private void AddNewProtesterToMoving() {
+    private void AddNewRioterToMoving() {
         Transform newRiotingResident = Instantiate(rioter, transform.position,
             Quaternion.identity, transform);
-        riotingResidents.Add(newRiotingResident);
-        foreach (Transform riotingResident in riotingResidents) {
-            riotingResident.GetComponent<RiotingResident>().riotRange = riotingResidents.Count;
+        _riotingDummyResidents.Add(newRiotingResident);
+        foreach (Transform riotingResident in _riotingDummyResidents) {
+            riotingResident.GetComponent<RiotingResident>().riotRange = _riotingDummyResidents.Count;
         }
         StartCoroutine(StartAsyncAnimation(newRiotingResident.GetChild(0)));
     }
@@ -113,5 +143,34 @@ public class Riot : MonoBehaviour {
     private IEnumerator StartAsyncAnimation(Transform riotingResident) {
         yield return new WaitForSeconds(Random.Range(0f, 1f));
         riotingResident.GetComponent<Animator>().SetBool("Protesting", true);
+    }
+
+    private void StopRiot() {
+        foreach (Resident resident in residents) {
+            resident.riotCooldown = 16;
+        }
+        if (!movingRiot) {
+            for (int i = 0; i < residents.Count; i++) {
+                residents[i].transform.position = protestCircle.GetChild(i).transform.position;
+                residents[i].transform.rotation = protestCircle.GetChild(i).transform.rotation;
+                residents[i].EnableResident();
+                residents[i].rioting = false;
+                residents[i].currentTask = Resident.AvailableTasks.None;
+            }
+        } else {
+            for (int i = 0; i < residents.Count; i++) {
+                residents[i].transform.position = _riotingDummyResidents[i].transform.position;
+                residents[i].transform.rotation = _riotingDummyResidents[i].transform.rotation;
+                residents[i].EnableResident();
+                residents[i].rioting = false;
+                residents[i].currentTask = Resident.AvailableTasks.None;
+            }
+        }
+
+        UIControl uiControl = UIControl.Instance;
+        if (uiControl.currentlyInspectedType == "Riot") {
+            uiControl.HideInspector();
+        }
+        Destroy(gameObject);
     }
 }
