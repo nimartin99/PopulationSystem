@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/Styles.uss?fileID=7433441132597879392&amp;guid=45ea93da90c071e419d59a24f8c4afa4&amp;type=3#Styles" />
-    <ui:VisualElement name="toolbar" style="position: absolute; bottom: 0; width: 100%; height: 25%; align-items: center;">
-        <ui:VisualElement style="height: 100%; width: 75%; border-top-left-radius: 8px; border-bottom-left-radius: 0; border-top-right-radius: 8px; border-bottom-right-radius: 0; background-color: rgb(127, 85, 57); padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px;">
+    <ui:VisualElement name="toolbarContainer" style="position: absolute; bottom: 0; width: 100%; height: 25%; align-items: center;">
+        <ui:VisualElement name="toolbar" class="defaultContainer" style="height: 100%; width: 75%; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
             <ui:VisualElement name="Tools" style="width: 100%; height: 20%; flex-direction: row;">
                 <ui:Button display-tooltip-when-elided="true" name="exploreButton" class="toolButton" style="background-color: rgb(156, 102, 68); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;" />
                 <ui:Button display-tooltip-when-elided="true" name="buildButton" class="toolButton" style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/EditIcon.png?fileID=2800000&amp;guid=4fdbf61b1736c9e40915001bc38f905b&amp;type=3#EditIcon&apos;); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);" />
@@ -10,22 +10,57 @@
             <ui:VisualElement name="Buildinng" style="width: 100%; height: 100%;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="inspector" style="position: absolute; right: 0; top: 0; width: 20%; height: 74%; border-top-left-radius: 8px; border-bottom-left-radius: 8px; background-color: rgb(127, 85, 57); padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; align-items: center; display: flex; color: rgb(255, 255, 255);">
-        <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" class="borderedText" />
-        <ui:VisualElement name="divider" style="width: 75%; background-color: rgb(0, 0, 0); height: 1px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 8px;" />
-        <ui:ScrollView style="width: 100%; height: 100%; align-items: flex-start;">
+    <ui:VisualElement name="inspector" class="defaultContainer" style="position: absolute; right: 0; top: 0; width: 20%; height: 74%; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; align-items: center; display: flex; color: rgb(255, 255, 255); border-top-right-radius: 0; border-bottom-right-radius: 0;">
+        <ui:Label text="Name" display-tooltip-when-elided="true" name="inspectorName" class="borderedText" style="margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+        <ui:VisualElement name="inspectorResidentOverall" style="height: auto; min-width: auto; min-height: auto; align-items: center; width: 100%; display: flex; visibility: visible;">
+            <ui:VisualElement name="divider" class="divider" />
             <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
-                <ui:Label text="Food" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-                <ui:ProgressBar title="0/100" name="inspectorFood" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+                <ui:Label text="Satisfaction" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                <ui:ProgressBar title="0/100" name="inspectorSatisfaction" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
             </ui:VisualElement>
             <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
-                <ui:Label text="Religion" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-                <ui:ProgressBar title="0/100" name="inspectorReligion" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+                <ui:Label text="Happiness" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                <ui:ProgressBar title="0/100" name="inspectorHappiness" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="inspectorResidentNext" style="width: 100%; flex-direction: row; align-items: center; justify-content: space-between; margin-top: 6px;">
+                <ui:Label text="Next:" display-tooltip-when-elided="true" style="font-size: 15px;" />
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="inspectorResidentNextLabel" class="borderedText" style="font-size: 15px; margin-bottom: 0;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="divider" class="divider" />
+        </ui:VisualElement>
+        <ui:ScrollView style="width: 100%; height: auto; align-items: flex-start; display: flex;">
+            <ui:VisualElement name="inspectorScrollResident" style="display: flex;">
+                <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                    <ui:Label text="Religion" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                    <ui:ProgressBar title="0/100" name="inspectorReligion" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                    <ui:Label text="Tavern" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                    <ui:ProgressBar title="0/100" name="inspectorTavern" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row; width: 100%; align-items: center;">
+                    <ui:Label text="Food" display-tooltip-when-elided="true" name="Label" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                    <ui:ProgressBar title="0/100" name="inspectorFood" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="inspectorScrollRiot" style="display: flex;">
+                <ui:VisualElement style="flex-direction: column; width: 100%; align-items: center; margin-top: 4px; margin-bottom: 4px;">
+                    <ui:Label text="Riot intensifies" display-tooltip-when-elided="true" name="inspectorRiotStatus" style="margin-top: 4px; margin-bottom: 4px; font-size: 14px;" />
+                    <ui:ProgressBar title="0/100" name="inspectorRiotProgress" low-value="0" style="width: 100%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
+                    <ui:VisualElement name="divider" class="divider" />
+                    <ui:VisualElement style="flex-direction: row; align-items: center;">
+                        <ui:Label text="Angry residents:" display-tooltip-when-elided="true" style="font-size: 14px;" />
+                        <ui:Label text="0" display-tooltip-when-elided="true" name="inspectorRiotResidentCount" class="borderedText" style="font-size: 20px; margin-bottom: 0;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="inspectorRiotReasons" style="flex-direction: column; align-items: center;">
+                        <ui:VisualElement name="divider" class="divider" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:ScrollView>
     </ui:VisualElement>
     <ui:VisualElement style="position: absolute; left: 0; top: 0;" />
-    <ui:VisualElement style="position: absolute; left: 32px; top: 1px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: 15%; height: 35px; flex-direction: row; align-items: center; background-color: rgb(127, 85, 57); border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+    <ui:VisualElement class="defaultContainer" style="position: absolute; left: 32px; top: 0.5px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: 31%; height: 35px; flex-direction: row; align-items: center; border-top-left-radius: 0; border-bottom-left-radius: 0;">
         <ui:VisualElement style="flex-direction: row; align-items: center; margin-left: 12px;">
             <ui:Label text="Day 0 -" display-tooltip-when-elided="true" name="dayLabel" style="color: rgb(255, 255, 255); font-size: 20px;" />
             <ui:Label text="00:00" display-tooltip-when-elided="true" name="timeLabel" style="color: rgb(255, 255, 255); font-size: 20px;" />
@@ -34,25 +69,58 @@
     <ui:Button display-tooltip-when-elided="true" name="settingsActivator" style="position: absolute; left: 0; top: 0; background-image: none; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; width: auto; background-color: rgb(156, 102, 68); border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0);">
         <ui:VisualElement style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/SettingsIcon.png?fileID=2800000&amp;guid=5924ee948190b09438e4b451d4876856&amp;type=3#SettingsIcon&apos;); width: 25px; height: 25px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;" />
     </ui:Button>
-    <ui:VisualElement name="settings" style="position: absolute; left: 5px; top: 42px; width: 40%; background-color: rgb(127, 85, 57); border-top-right-radius: 8px; border-bottom-right-radius: 8px; border-top-left-radius: 0; border-bottom-left-radius: 8px;">
-        <ui:VisualElement style="min-height: auto; margin-left: 8px; margin-right: 8px; margin-top: 8px; margin-bottom: 8px; justify-content: space-between; flex-direction: row; align-items: center;">
-            <ui:VisualElement style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/FarmerIcon.png?fileID=2800000&amp;guid=b92384ae3ead56a49b1b519787bcef34&amp;type=3#FarmerIcon&apos;); width: 40px; height: 80px; flex-direction: row; min-width: 40px;" />
-            <ui:VisualElement style="width: 80%; align-items: center;">
-                <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between; width: 100%;">
-                    <ui:Label text="Work" display-tooltip-when-elided="true" style="position: relative; left: 0; font-size: 20px; color: rgb(255, 255, 255);" />
-                    <ui:Label text="Necessities" display-tooltip-when-elided="true" style="position: relative; right: 0; font-size: 20px; color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="settings" style="position: absolute; left: 5px; top: 42px; width: 40%; border-top-right-radius: 0; border-bottom-right-radius: 0; border-top-left-radius: 0; border-bottom-left-radius: 0;">
+        <ui:VisualElement>
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:VisualElement class="defaultContainer" style="border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-top-right-radius: 0; border-bottom-width: 0; border-top-left-radius: 0;">
+                    <ui:Button text="Work" display-tooltip-when-elided="true" name="workSettingButton" class="defaultButton" style="margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px;" />
                 </ui:VisualElement>
-                <ui:SliderInt picking-mode="Ignore" value="12" high-value="24" show-input-field="false" name="workNecessitiesSlider" style="width: 90%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
-                <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between; width: 90%;">
-                    <ui:Label text="0" display-tooltip-when-elided="true" name="workLabelValue" class="borderedText" style="position: relative; left: 0; font-size: 20px; color: rgb(255, 255, 255);" />
-                    <ui:Label text="0" display-tooltip-when-elided="true" name="necessitiesLabelValue" class="borderedText" style="position: relative; right: 0; font-size: 20px; color: rgb(255, 255, 255);" />
+                <ui:VisualElement class="defaultContainer" style="border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-right-width: 0; border-left-width: 0;">
+                    <ui:Button text="Taxes" display-tooltip-when-elided="true" name="taxesSettingButton" class="defaultButton" style="margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px;" />
+                </ui:VisualElement>
+                <ui:VisualElement class="defaultContainer" style="border-top-left-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+                    <ui:Button text="Food" display-tooltip-when-elided="true" name="foodSettingButton" class="defaultButton" style="margin-left: 4px; margin-right: 4px; margin-top: 4px; margin-bottom: 4px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="defaultContainer" style="min-height: auto; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; justify-content: space-between; flex-direction: row; align-items: center; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; border-top-left-radius: 0; border-top-width: 0; display: flex;">
+                <ui:VisualElement name="workSettingTab" style="min-height: auto; justify-content: space-around; flex-direction: row; align-items: center; border-top-left-radius: 0; border-top-width: 0; width: 100%; display: none; visibility: visible;">
+                    <ui:VisualElement style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/FarmerIcon.png?fileID=2800000&amp;guid=b92384ae3ead56a49b1b519787bcef34&amp;type=3#FarmerIcon&apos;); width: 40px; height: 80px; flex-direction: row; min-width: 40px;" />
+                    <ui:VisualElement style="width: 80%; align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between; width: 100%;">
+                            <ui:Label text="Work" display-tooltip-when-elided="true" style="position: relative; left: 0; font-size: 20px; color: rgb(255, 255, 255);" />
+                            <ui:Label text="Necessities" display-tooltip-when-elided="true" style="position: relative; right: 0; font-size: 20px; color: rgb(255, 255, 255);" />
+                        </ui:VisualElement>
+                        <ui:SliderInt picking-mode="Ignore" value="12" high-value="24" show-input-field="false" name="workNecessitiesSlider" style="width: 90%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+                        <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between; width: 90%;">
+                            <ui:Label text="0" display-tooltip-when-elided="true" name="workLabelValue" class="borderedText" style="position: relative; left: 0; font-size: 20px; color: rgb(255, 255, 255); margin-bottom: 0; margin-top: 4px;" />
+                            <ui:Label text="0" display-tooltip-when-elided="true" name="necessitiesLabelValue" class="borderedText" style="position: relative; right: 0; font-size: 20px; color: rgb(255, 255, 255); margin-bottom: 0; margin-top: 4px;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="taxesSettingTab" style="min-height: auto; justify-content: space-around; flex-direction: row; align-items: center; border-top-left-radius: 0; border-top-width: 0; width: 100%; display: none; visibility: visible;">
+                    <ui:VisualElement style="background-image: url(&apos;project://database/Assets/UI%20Toolkit/Icons/Coin.png?fileID=2800000&amp;guid=55f9e17c4a0b3614fb39b886e0e1e31f&amp;type=3#Coin&apos;); width: 50px; height: 50px; flex-direction: row; min-width: 40px;" />
+                    <ui:VisualElement style="width: 80%; align-items: center;">
+                        <ui:VisualElement style="flex-direction: row; align-items: center; justify-content: space-between; width: 100%;">
+                            <ui:Label text="No Taxes" display-tooltip-when-elided="true" style="position: relative; left: 0; font-size: 20px; color: rgb(255, 255, 255);" />
+                            <ui:Label text="Full Taxes" display-tooltip-when-elided="true" style="position: relative; right: 0; font-size: 20px; color: rgb(255, 255, 255);" />
+                        </ui:VisualElement>
+                        <ui:SliderInt picking-mode="Ignore" value="0" high-value="100" show-input-field="false" name="taxesSlider" style="width: 90%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;" />
+                        <ui:VisualElement style="width: 88%; height: 42px;">
+                            <ui:Label text="0" display-tooltip-when-elided="true" name="taxesLabelValue" class="borderedText" style="position: absolute; font-size: 20px; color: rgb(255, 255, 255); margin-left: 0; margin-right: 0; margin-top: 4px; margin-bottom: 0; width: 35px; height: 32px; left: 0; -unity-text-align: upper-center; translate: -50% 0;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="foodSettingTab" style="min-height: auto; justify-content: space-around; flex-direction: column; align-items: flex-start; border-top-left-radius: 0; border-top-width: 0; width: 100%; display: none; min-width: auto;">
+                    <ui:RadioButtonGroup name="foodPortionRadioButtonGroup" style="flex-direction: column;" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="settingSelection" style="position: absolute; left: 50%; top: 50%; width: auto; translate: -50% -50%; flex-direction: row; background-color: rgb(127, 85, 57); padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; border-top-left-radius: 8px; border-bottom-left-radius: 8px; border-top-right-radius: 8px; border-bottom-right-radius: 8px; display: none;">
-        <ui:Button text="Setting 1" display-tooltip-when-elided="true" name="settingOne" class="defaultButton" />
-        <ui:Button text="Setting 2" display-tooltip-when-elided="true" name="settingTwo" class="defaultButton" />
-        <ui:Button text="Setting 3" display-tooltip-when-elided="true" name="settingThree" class="defaultButton" />
+    <ui:VisualElement name="presettingSelection" class="defaultContainer" style="position: absolute; left: 50%; top: 50%; width: auto; translate: -50% -50%; flex-direction: row; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; display: flex;">
+        <ui:Button text="Free Play" display-tooltip-when-elided="true" name="freePlay" class="defaultButton" />
+        <ui:Button text="Presetting 1" display-tooltip-when-elided="true" name="presettingOne" class="defaultButton" />
+        <ui:Button text="Presetting 2" display-tooltip-when-elided="true" name="presettingTwo" class="defaultButton" style="display: flex;" />
+        <ui:Button text="Presetting 3" display-tooltip-when-elided="true" name="presettingThree" class="defaultButton" style="display: flex;" />
+        <ui:Button text="Presetting 4" display-tooltip-when-elided="true" name="presettingFour" class="defaultButton" style="display: flex;" />
     </ui:VisualElement>
 </ui:UXML>

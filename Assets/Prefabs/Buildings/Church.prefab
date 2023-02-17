@@ -146,6 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba3cdafaf94b1d4498b677d7f4c2b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingObjectType: {fileID: 0}
   gridPosition: {x: 0, y: 0}
 --- !u!114 &1917947015236099066
 MonoBehaviour:
@@ -186,7 +187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2497729753070558497, guid: 50df071c0cd09b042982d3eaf25f6540, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.748
+      value: 1.789
       objectReference: {fileID: 0}
     - target: {fileID: 2497729753070558497, guid: 50df071c0cd09b042982d3eaf25f6540, type: 3}
       propertyPath: m_LocalRotation.w
@@ -216,6 +217,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8459284147227740759, guid: 50df071c0cd09b042982d3eaf25f6540, type: 3}
+      propertyPath: m_Size.x
+      value: 0.41
+      objectReference: {fileID: 0}
+    - target: {fileID: 8459284147227740759, guid: 50df071c0cd09b042982d3eaf25f6540, type: 3}
+      propertyPath: m_Size.z
+      value: 0.25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50df071c0cd09b042982d3eaf25f6540, type: 3}
 --- !u!4 &4229782543462896658 stripped
@@ -233,6 +242,10 @@ PrefabInstance:
     - target: {fileID: 6933685832221329624, guid: 4ef809eabb15b864e80d70de28b1395e, type: 3}
       propertyPath: m_Name
       value: Grass
+      objectReference: {fileID: 0}
+    - target: {fileID: 6933685832221329624, guid: 4ef809eabb15b864e80d70de28b1395e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8318522245531129820, guid: 4ef809eabb15b864e80d70de28b1395e, type: 3}
       propertyPath: m_RootOrder

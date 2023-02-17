@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2217292664771795287}
   - component: {fileID: 3748453071010356289}
   - component: {fileID: 4759742452051522472}
+  - component: {fileID: 4733165224459624129}
   m_Layer: 0
   m_Name: House_Variant_0
   m_TagString: Untagged
@@ -50,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ba3cdafaf94b1d4498b677d7f4c2b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingObjectType: {fileID: 0}
   gridPosition: {x: 0, y: 0}
 --- !u!114 &4759742452051522472
 MonoBehaviour:
@@ -68,6 +70,20 @@ MonoBehaviour:
   residentPrefab: {fileID: 2612433150575423496, guid: a3395e85d277a5049b05637fb2e7d248, type: 3}
   entrance: {fileID: 3110706059726405192}
   sleepingIndicator: {fileID: 498936471353097429}
+  demoObject: {fileID: 4590324387766889053, guid: fe68fe308b1f4974c9f5aa24d56a15ee, type: 3}
+--- !u!65 &4733165224459624129
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053358155083308691}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &2704845067670660107
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,6 +405,10 @@ PrefabInstance:
     - target: {fileID: 6933685832221329624, guid: 4ef809eabb15b864e80d70de28b1395e, type: 3}
       propertyPath: m_Layer
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6933685832221329624, guid: 4ef809eabb15b864e80d70de28b1395e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8318522245531129820, guid: 4ef809eabb15b864e80d70de28b1395e, type: 3}
       propertyPath: m_RootOrder

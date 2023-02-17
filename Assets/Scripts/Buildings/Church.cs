@@ -11,26 +11,18 @@ public class Church : MonoBehaviour, IBuilding
 
     [SerializeField] public const float ChurchRange = 25;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void BuildingPlaced()
     {
         
     }
 
+    public void BuildingDestroyed() {
+        
+    }
+
     public void ResidentEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
-        if (resident.tasks[0] == Resident.AvailableTasks.Church) {
+        if (resident && resident.currentTask == Resident.AvailableTasks.Church) {
             resident.DisableResident();
             StartCoroutine(CompleteReligionTask(resident));
         }
@@ -39,9 +31,8 @@ public class Church : MonoBehaviour, IBuilding
     private IEnumerator CompleteReligionTask(Resident resident) {
         yield return new WaitForSeconds(churchDuration);
         resident.religionSatisfaction = 100f;
-        resident.CompleteTask();
         resident.EnableResident();
-        
+        resident.CompleteTask();
     }
 
     public void ResidentLeave(Collider other) {

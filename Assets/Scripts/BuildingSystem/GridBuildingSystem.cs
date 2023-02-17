@@ -10,8 +10,8 @@ public class GridBuildingSystem : MonoBehaviour {
     public static GridBuildingSystem Instance { get; private set; }
     
     // Grid related stuff
-    [SerializeField] private int width;
-    [SerializeField] private int height;
+    [SerializeField] public int width;
+    [SerializeField] public int height;
     [SerializeField] public float cellSize;
     [SerializeField] private GridHelper gridHelper;
 
@@ -20,10 +20,11 @@ public class GridBuildingSystem : MonoBehaviour {
     [FormerlySerializedAs("_building")] public BuildingObject building;
     [FormerlySerializedAs("defaultDirection")] [SerializeField] public BuildingObject.Direction direction = BuildingObject.Direction.Down;
     
-    [SerializeField] private LayerMask groundLayerMask;
+    [SerializeField] private Transform environmentParent;
     
     public event EventHandler OnSelectedChanged;
     public event EventHandler OnGridChanged;
+    public event Action<string> OnBuildingPlaced;
 
     public Grid<GridObject> _grid;
 
@@ -64,8 +65,10 @@ public class GridBuildingSystem : MonoBehaviour {
                 worldPosition,
                 new Vector2Int(x, z),
                 direction,
-                building
+                building,
+                environmentParent
             );
+            OnBuildingPlaced?.Invoke(building.nameString);
             // Scale the building to cellSize
             // spawnedBuilding.transform.localScale = spawnedBuilding.transform.localScale * cellSize;
             // Set the building to every Grid coordinate
@@ -82,6 +85,10 @@ public class GridBuildingSystem : MonoBehaviour {
         // Get the position where the Ray hits the grid
         PlacedObject placedObject = _grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
+            IBuilding buildingToDestroy = placedObject.gameObject.GetComponent<IBuilding>();
+            if (buildingToDestroy != null) {
+                buildingToDestroy.BuildingDestroyed();
+            }
             placedObject.DestroySelf();
             List<Vector2Int> occupyingGridObjectCoordinates = placedObject.GetGridPositionList();
             foreach (Vector2Int position in occupyingGridObjectCoordinates) {
@@ -143,6 +150,10 @@ public class GridBuildingSystem : MonoBehaviour {
 
         public bool CanBuild() {
             return _placedObject == null;
+        }
+
+        public string GetPlacedObjectType() {
+            return _placedObject ? _placedObject.buildingObjectType.nameString : null;
         }
     }
 }
