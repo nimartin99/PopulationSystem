@@ -17,10 +17,10 @@ public class RiotingResident : MonoBehaviour {
     private void OnTriggerEnter(Collider other) {
         Resident resident = other.GetComponent<Resident>();
         if (resident && !resident.rioting) {
-            float satisfactionCap =
-                Math.Clamp(30f + 2f * transform.parent.GetComponent<Riot>().residents.Count, 30f, 50f);
+            float satisfactionThreshold =
+                Math.Clamp(22f + 2f * transform.parent.GetComponent<Riot>().residents.Count, 30f, 50f);
             if (resident && resident.currentTask != Resident.AvailableTasks.Riot 
-                         && resident._overallSatisfactionOverTime < satisfactionCap) {
+                         && resident.averageOverallSatisfaction < satisfactionThreshold) {
                 resident.rioting = true;
             }
         }

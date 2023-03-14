@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlacedObject : MonoBehaviour {
-    public BuildingObject buildingObjectType;
-    public Vector2Int gridPosition;
+    public BuildingObject buildingObject;
+    public Vector2Int originPosition;
     private BuildingObject.Direction _direction;
 
     public static PlacedObject Create(Vector3 worldPosition, Vector2Int gridPosition, BuildingObject.Direction direction, 
@@ -13,9 +11,23 @@ public class PlacedObject : MonoBehaviour {
         Transform placedObjectTransform = Instantiate(placedObjectType.prefab, worldPosition,
             Quaternion.Euler(0, placedObjectType.GetRotationAngle(direction), 0), parent);
         PlacedObject placedObject = placedObjectTransform.GetComponent<PlacedObject>();
-        placedObject.buildingObjectType = placedObjectType;
-        placedObject.gridPosition = gridPosition;
+        placedObject.buildingObject = placedObjectType;
+        placedObject.originPosition = gridPosition;
         placedObject._direction = direction;
+        switch (placedObject.buildingObject.nameString) {
+            case "House":
+                placedObject.GetComponent<House>().enabled = true;
+                break;
+            case "Church":
+                placedObject.GetComponent<Church>().enabled = true;
+                break;
+            case "Market":
+                placedObject.GetComponent<Market>().enabled = true;
+                break;
+            case "Tavern":
+                placedObject.GetComponent<Tavern>().enabled = true;
+                break;
+        }
         IBuilding building = placedObject.gameObject.GetComponent<IBuilding>();
         if (building != null) {
             building.BuildingPlaced();
@@ -24,7 +36,7 @@ public class PlacedObject : MonoBehaviour {
     }
 
     public List<Vector2Int> GetGridPositionList() {
-        return buildingObjectType.GetGridPositionList(gridPosition, _direction);
+        return buildingObject.GetGridPositionList(originPosition, _direction);
     }
     
     public void DestroySelf() {

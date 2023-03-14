@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using Random = UnityEngine.Random;
@@ -49,15 +47,15 @@ public class Resident : MonoBehaviour {
     // Happiness
     public float tavernPriority;
 
-    public List<float> _overallSatisfactionMeasurements = new List<float>();
-    public List<float> _foodSatisfactionMeasurements = new List<float>();
-    public List<float> _religionSatisfactionMeasurements = new List<float>();
-    public List<float> _tavernSatisfactionMeasurements = new List<float>();
+    public List<float> overallSatisfactionMeasurements = new List<float>();
+    public List<float> foodSatisfactionMeasurements = new List<float>();
+    public List<float> religionSatisfactionMeasurements = new List<float>();
+    public List<float> tavernSatisfactionMeasurements = new List<float>();
 
-    public float _overallSatisfactionOverTime = 100f;
-    public float _foodSatisfactionOverTime = 100f;
-    public float _religionSatisfactionOverTime = 100f;
-    public float _tavernSatisfactionOverTime = 100f;
+    public float averageOverallSatisfaction = 100f;
+    public float averageFoodSatisfaction = 100f;
+    public float averageReligionSatisfaction = 100f;
+    public float averageTavernSatisfaction = 100f;
     
     // Riot
     public List<string> riotingReasons = new List<string>();
@@ -87,7 +85,7 @@ public class Resident : MonoBehaviour {
 
     private void Update() {
         if (sleeping) {
-            if (currentTask == AvailableTasks.None && !_home._residentsCurrentlyInHome.Contains(transform)) {
+            if (currentTask == AvailableTasks.None && !_home.residentsCurrentlyInHome.Contains(transform)) {
                 EnableResident();
                 AddTask(AvailableTasks.Home);
                 currentTask = AvailableTasks.Home;
@@ -110,11 +108,11 @@ public class Resident : MonoBehaviour {
                     newRiot.GetComponent<Riot>().riotingReasons = riotingReasons;
                 }
             }
-        } else {
-            if (currentTask == AvailableTasks.None && tasks.Count > 0) {
+        } else if(currentTask == AvailableTasks.None) {
+            if (tasks.Count > 0) {
                 ExecuteTask();
-            } else if (currentTask == AvailableTasks.None && tasks.Count == 0) {
-                AvailableTasks nextTask = GetNextTask(_uiControl.currentFoodPortion == "No Food");
+            } else if (tasks.Count == 0) {
+                AvailableTasks nextTask = GetNextTask();
                 if (nextTask == AvailableTasks.None) {
                     currentTask = AvailableTasks.None;
                 } else {
@@ -122,10 +120,14 @@ public class Resident : MonoBehaviour {
                 }
             }
         }
+
+        if (gameObject.name == "Test") {
+            Debug.Log("current destination: " + _navMeshAgent.destination);
+        }
         // Decrease satisfactions
         CalculateSatisfactions();
         // Rotate indicator
-        positionIndicator.Rotate(60 * Time.deltaTime, 0, 0);
+        positionIndicator.Rotate(0, 60 * Time.deltaTime, 0);
         
         if (_navMeshAgent.velocity.x != 0f || _navMeshAgent.velocity.z != 0f) {
             _animator.SetFloat("Speed_f", 1f);
@@ -184,12 +186,12 @@ public class Resident : MonoBehaviour {
         }
     }
 
-    private AvailableTasks GetNextTask(bool noFood) {
+    private AvailableTasks GetNextTask() {
         Dictionary<AvailableTasks, float> needs = new Dictionary<AvailableTasks, float>();
         if (!workedToday && _home.PathFromHomeAvailable(workplace.transform.position, this)) {
             needs.Add(AvailableTasks.Work, (workPriority + Random.Range(-0.15f, 0.15f)) * 100);
         }
-        if (_home.FindNextMarket(this) != null && !noFood) {
+        if (_home.FindNextMarket(this) != null && _uiControl.currentFoodPortion != "No Food") {
             needs.Add(AvailableTasks.Market, (100f - foodSatisfaction) * foodPriority + (foodSatisfaction < 25 ? 10 : Random.Range(-10, 10)));
         }
         if (_home.FindNextChurch(this) != null) {
@@ -199,22 +201,22 @@ public class Resident : MonoBehaviour {
             needs.Add(AvailableTasks.Tavern, (100f - tavernSatisfaction) * tavernPriority + Random.Range(-10, 10));
         }
 
-        AvailableTasks highestPriorityNeedName = AvailableTasks.None;
-        float highestPriorityNeed = 0f;
+        AvailableTasks mostImportantNeedTask = AvailableTasks.None;
+        float mostImportantNeedValue = 0f;
         foreach (KeyValuePair<AvailableTasks, float> need in needs) {
-            if (need.Value > highestPriorityNeed && need.Key != _previousCompletedTask) {
-                highestPriorityNeedName = need.Key;
-                highestPriorityNeed = need.Value;
+            if (need.Value > mostImportantNeedValue && need.Key != _previousCompletedTask) {
+                mostImportantNeedTask = need.Key;
+                mostImportantNeedValue = need.Value;
             }
         }
-        if (highestPriorityNeed < _lowestPriority * 100) {
-            return _home._residentsCurrentlyInHome.Contains(transform) ? AvailableTasks.None : AvailableTasks.Home;
+        if (mostImportantNeedValue < _lowestPriority * 100) {
+            return _home.residentsCurrentlyInHome.Contains(transform) ? AvailableTasks.None : AvailableTasks.Home;
         }
 
-        if (highestPriorityNeedName == AvailableTasks.None) {
-            return _home._residentsCurrentlyInHome.Contains(transform) ? AvailableTasks.None : AvailableTasks.Home;
+        if (mostImportantNeedTask == AvailableTasks.None) {
+            return _home.residentsCurrentlyInHome.Contains(transform) ? AvailableTasks.None : AvailableTasks.Home;
         } else {
-            return highestPriorityNeedName;
+            return mostImportantNeedTask;
         }
     }
     
@@ -243,49 +245,49 @@ public class Resident : MonoBehaviour {
     }
 
     private void MeasureSatisfactions(object sender, EventArgs e) {
-        _overallSatisfactionMeasurements.Add(satisfaction);
-        _foodSatisfactionMeasurements.Add(foodSatisfaction);
-        _religionSatisfactionMeasurements.Add(religionSatisfaction);
-        _tavernSatisfactionMeasurements.Add(tavernSatisfaction);
-        if (_timeController.daysSinceStart >= 1) {
-            _overallSatisfactionMeasurements.RemoveAt(0);
-            _foodSatisfactionMeasurements.RemoveAt(0);
-            _religionSatisfactionMeasurements.RemoveAt(0);
-            _tavernSatisfactionMeasurements.RemoveAt(0);
+        overallSatisfactionMeasurements.Add(satisfaction);
+        foodSatisfactionMeasurements.Add(foodSatisfaction);
+        religionSatisfactionMeasurements.Add(religionSatisfaction);
+        tavernSatisfactionMeasurements.Add(tavernSatisfaction);
+        if (overallSatisfactionMeasurements.Count >= 25) {
+            overallSatisfactionMeasurements.RemoveAt(0);
+            foodSatisfactionMeasurements.RemoveAt(0);
+            religionSatisfactionMeasurements.RemoveAt(0);
+            tavernSatisfactionMeasurements.RemoveAt(0);
 
             float summedUpOverallMeasurements = 0f;
             float summedUpFoodMeasurements = 0f;
             float summedUpReligionMeasurements = 0f;
             float summedUpTavernMeasurements = 0f;
-            for (int i = 0; i < _overallSatisfactionMeasurements.Count; i++) {
-                summedUpOverallMeasurements += _overallSatisfactionMeasurements[i];
-                summedUpFoodMeasurements += _foodSatisfactionMeasurements[i];
-                summedUpReligionMeasurements += _religionSatisfactionMeasurements[i];
-                summedUpTavernMeasurements += _tavernSatisfactionMeasurements[i];
+            for (int i = 0; i < overallSatisfactionMeasurements.Count; i++) {
+                summedUpOverallMeasurements += overallSatisfactionMeasurements[i];
+                summedUpFoodMeasurements += foodSatisfactionMeasurements[i];
+                summedUpReligionMeasurements += religionSatisfactionMeasurements[i];
+                summedUpTavernMeasurements += tavernSatisfactionMeasurements[i];
             }
 
-            _overallSatisfactionOverTime = summedUpOverallMeasurements / _overallSatisfactionMeasurements.Count;
-            _foodSatisfactionOverTime = summedUpFoodMeasurements / _overallSatisfactionMeasurements.Count;
-            _religionSatisfactionOverTime = summedUpReligionMeasurements / _overallSatisfactionMeasurements.Count;
-            _tavernSatisfactionOverTime = summedUpTavernMeasurements / _overallSatisfactionMeasurements.Count;
+            averageOverallSatisfaction = summedUpOverallMeasurements / overallSatisfactionMeasurements.Count;
+            averageFoodSatisfaction = summedUpFoodMeasurements / overallSatisfactionMeasurements.Count;
+            averageReligionSatisfaction = summedUpReligionMeasurements / overallSatisfactionMeasurements.Count;
+            averageTavernSatisfaction = summedUpTavernMeasurements / overallSatisfactionMeasurements.Count;
         }
     }
 
     private void CalculateRiotRisk(object sender, EventArgs e) {
         if (!rioting && riotCooldown == 0) {
             List<string> reasonsToRiot = new List<string>();
-            if (_foodSatisfactionOverTime * (1f - foodPriority) < 25) {
+            if (averageFoodSatisfaction * (1f - foodPriority) < 25) {
                 reasonsToRiot.Add("food");
             }
-            if (_religionSatisfactionOverTime * (1f - religionPriority) < 25) {
+            if (averageReligionSatisfaction * (1f - religionPriority) < 25) {
                 reasonsToRiot.Add("religion");
             }
-            if (_tavernSatisfactionOverTime * (1f - tavernPriority) < 25) {
+            if (averageTavernSatisfaction * (1f - tavernPriority) < 25) {
                 reasonsToRiot.Add("tavern");
             }
         
-            if (reasonsToRiot.Count > 0 && _overallSatisfactionOverTime < 60) {
-                int probabilityToRiot = Random.Range(reasonsToRiot.Count, 6);
+            if (reasonsToRiot.Count > 0 && averageOverallSatisfaction < 60) {
+                int probabilityToRiot = Random.Range(reasonsToRiot.Count, 7);
                 if (probabilityToRiot > 3) {
                     rioting = true;
                     riotingReasons.Clear();
@@ -328,6 +330,7 @@ public class Resident : MonoBehaviour {
         _navMeshAgent.enabled = false;
         _collider.enabled = false;
         skinnedMeshRenderer.enabled = false;
+        DisableIndicator();
     }
     
     public void EnableResident() {
@@ -335,6 +338,9 @@ public class Resident : MonoBehaviour {
         _navMeshAgent.enabled = true;
         _collider.enabled = true;
         skinnedMeshRenderer.enabled = true;
+        if (_uiControl.currentlyInspectedResident == this) {
+            EnableIndicator();
+        }
     }
 
     public void EnableIndicator() {
@@ -377,5 +383,12 @@ public class Resident : MonoBehaviour {
                 _lowestPriority = priority;
             }
         }
+    }
+
+    private void OnDestroy() {
+        _timeController.OnNextHour -= MeasureSatisfactions;
+        _timeController.OnNextHour -= CalculateRiotRisk;
+        _timeController.OnSleepTimeStart -= EnterSleepMode;
+        _timeController.OnSleepTimeEnd -= StopSleepMode;
     }
 }

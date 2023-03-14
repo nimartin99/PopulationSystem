@@ -8,7 +8,7 @@ public class NavMeshManager : MonoBehaviour
 {
     [SerializeField] private GridBuildingSystem gridBuildingSystem;
     private NavMeshSurface _navMeshSurface;
-    private bool _buildNavMeshAfterUpdate;
+    public bool buildNavMeshAfterUpdate;
 
     // Start is called before the first frame update
     void Start() {
@@ -17,14 +17,15 @@ public class NavMeshManager : MonoBehaviour
     }
 
     private void LateUpdate() {
-        if (_buildNavMeshAfterUpdate) {
+        if (buildNavMeshAfterUpdate) {
+            Debug.Log("NavMesh regenerate");
             _navMeshSurface.BuildNavMesh();
-            _buildNavMeshAfterUpdate = false;
+            buildNavMeshAfterUpdate = false;
         }
     }
 
-    private void OnGridChanged(object sender, EventArgs e) {
-        _buildNavMeshAfterUpdate = true;
+    public void OnGridChanged(bool dontRegenerateNavMesh) {
+        buildNavMeshAfterUpdate = !dontRegenerateNavMesh;
     }
 
     private void UpdateNavMesh() {

@@ -1,66 +1,99 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
 
 public class House : MonoBehaviour, IBuilding {
-    [SerializeField] public List<Transform> residents;
-    public List<Transform> _residentsCurrentlyInHome;
+    [SerializeField] public List<Resident> residents;
+    public List<Transform> residentsCurrentlyInHome;
     [SerializeField] private Transform residentPrefab;
     [SerializeField] public Transform entrance;
-    
+
+    [SerializeField] private Transform positionIndicator;
     [SerializeField] private Transform sleepingIndicator;
-    
+    [SerializeField] private Transform upgradeIndicator;
     private GridBuildingSystem _gridBuildingSystem;
-    // Start is called before the first frame update
+
+    private TimeController _timeController;
+    private UIControl _uiControl;
+    [HideInInspector] public float allResidentsSatisfaction = 0f;
+    [HideInInspector] public float allResidentsHappiness = 0f;
+    [SerializeField] private float upgradeThreshold;
+    [HideInInspector] public bool upgradeable = false;
+
+    [SerializeField] private Transform farmerGenModel;
+    [SerializeField] private List<Transform> settlerGenModel = new List<Transform>();
+
+// Start is called before the first frame update
     void Start() {
         _gridBuildingSystem = GridBuildingSystem.Instance;
+        _timeController = TimeController.Instance;
+        _uiControl = UIControl.Instance;
+        _timeController.OnNextHour += CalculateAllResidentsValuesOverTime;
+        _uiControl.OnModeSwitch += UpgradeVisual;
     }
 
     private void Update() {
+        float sumSatisfaction = 0f;
+        float sumHappiness = 0f;
+        
+        foreach (Resident resident in residents) {
+            sumSatisfaction += resident.satisfaction;
+            sumHappiness += resident.happiness;
+        }
+
+        allResidentsSatisfaction = sumSatisfaction / residents.Count;
+        allResidentsHappiness = sumHappiness / residents.Count;
+        
         if (sleepingIndicator.gameObject.activeSelf) {
             sleepingIndicator.GetChild(0).Rotate(0, 60 * Time.deltaTime, 0);
             sleepingIndicator.GetChild(1).Rotate(0, 60 * Time.deltaTime, 0);
             sleepingIndicator.GetChild(2).Rotate(0, 60 * Time.deltaTime, 0);
         }
-
-        if (_residentsCurrentlyInHome.Any(resident => resident.GetComponent<Resident>().sleeping)) {
+        positionIndicator.Rotate(0, 60 * Time.deltaTime, 0);
+        upgradeIndicator.Rotate(0, 60 * Time.deltaTime, 0);
+        
+        if (residentsCurrentlyInHome.Any(resident => resident.GetComponent<Resident>().sleeping) 
+            && !upgradeIndicator.gameObject.activeSelf && !_uiControl.currentlyInspectedHouse == this) {
             sleepingIndicator.gameObject.SetActive(true);
-        }
-        else {
+        } else {
             sleepingIndicator.gameObject.SetActive(false);
         }
+        
+    }
+
+    public void UpgradeToNextGen() {
+        farmerGenModel.gameObject.SetActive(false);
+        settlerGenModel[Random.Range(0, settlerGenModel.Count)].gameObject.SetActive(true);
     }
 
     public void BuildingPlaced() {
         Transform residentTransform = Instantiate(residentPrefab, entrance.position, Quaternion.identity);
-        residents.Add(residentTransform);
-        _residentsCurrentlyInHome.Add(residentTransform);
         Resident resident = residentTransform.GetComponent<Resident>();
+        residents.Add(resident);
+        residentsCurrentlyInHome.Add(residentTransform);
         resident.ResidentConstructor(this);
     }
 
     public void BuildingDestroyed() {
-        foreach (Transform resident in residents) {
+        foreach (Resident resident in residents) {
             Destroy(resident.gameObject);
         }
     }
 
-    public void ResidentEnter(Collider other) {
-        Resident resident = other.GetComponent<Resident>();
-        if (resident && residents.Contains(resident.transform) && (resident.currentTask == Resident.AvailableTasks.Home || resident.sleeping)) {
-            _residentsCurrentlyInHome.Add(resident.transform);
+    public void ResidentEnter(Resident resident) {
+        if (resident && residents.Contains(resident) && (resident.currentTask == Resident.AvailableTasks.Home || resident.sleeping)) {
+            residentsCurrentlyInHome.Add(resident.transform);
             resident.DisableResident();
             resident.CompleteTask();
         }
     }
 
-    public void ResidentLeave(Collider other) {
-        Resident resident = other.GetComponent<Resident>();
+    public void ResidentLeave(Resident resident) {
         if (resident) {
-            _residentsCurrentlyInHome.Remove(resident.transform);
+            residentsCurrentlyInHome.Remove(resident.transform);
         }
     }
 
@@ -70,7 +103,7 @@ public class House : MonoBehaviour, IBuilding {
         NavMeshPath path = new NavMeshPath();
         foreach(Church church in FindObjectsOfType<Church>()) {
             if (PathFromHomeAvailable(church.entrance.position, resident, path)) {
-                float distanceToChurch = Vector3.Distance(transform.position, path.corners[0]);
+                float distanceToChurch = Vector3.Distance(entrance.transform.position, path.corners[0]);
                 for (int i = 1; i < path.corners.Length; i++) {
                     distanceToChurch += Vector3.Distance(path.corners[i - 1], path.corners[i]);
                 }
@@ -89,7 +122,7 @@ public class House : MonoBehaviour, IBuilding {
         NavMeshPath path = new NavMeshPath();
         foreach(Market market in FindObjectsOfType<Market>()) {
             if (PathFromHomeAvailable(market.entrance.position, resident, path)) {
-                float distanceToMarket = Vector3.Distance(transform.position, path.corners[0]);
+                float distanceToMarket = Vector3.Distance(entrance.transform.position, path.corners[0]);
                 for (int i = 1; i < path.corners.Length; i++) {
                     distanceToMarket += Vector3.Distance(path.corners[i - 1], path.corners[i]);
                 }
@@ -108,7 +141,7 @@ public class House : MonoBehaviour, IBuilding {
         NavMeshPath path = new NavMeshPath();
         foreach(Tavern tavern in FindObjectsOfType<Tavern>()) {
             if (PathFromHomeAvailable(tavern.entrance.position, resident, path)) {
-                float distanceToTavern = Vector3.Distance(transform.position, path.corners[0]);
+                float distanceToTavern = Vector3.Distance(entrance.transform.position, path.corners[0]);
                 for (int i = 1; i < path.corners.Length; i++) {
                     distanceToTavern += Vector3.Distance(path.corners[i - 1], path.corners[i]);
                 }
@@ -246,5 +279,30 @@ public class House : MonoBehaviour, IBuilding {
         }
 
         return thisPathDirections;
+    }
+
+    private void CalculateAllResidentsValuesOverTime(object sender, EventArgs args) {
+        float sumSatisfactionOverTime = 0f;
+        foreach (Resident resident in residents) {
+            sumSatisfactionOverTime += resident.averageOverallSatisfaction;
+        }
+        upgradeable = sumSatisfactionOverTime / residents.Count > upgradeThreshold;
+    }
+    
+    public void EnableIndicator() {
+        positionIndicator.gameObject.SetActive(true);
+    }
+    
+    public void DisableIndicator() {
+        positionIndicator.gameObject.SetActive(false);
+    }
+
+    private void UpgradeVisual(InputControl.InputModes type) {
+        if (type == InputControl.InputModes.UpgradeMode && upgradeable) {
+            DisableIndicator();
+            upgradeIndicator.gameObject.SetActive(true);
+        } else {
+            upgradeIndicator.gameObject.SetActive(false);
+        }
     }
 }

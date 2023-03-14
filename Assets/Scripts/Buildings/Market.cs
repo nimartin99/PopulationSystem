@@ -13,17 +13,11 @@ public class Market : MonoBehaviour, IBuilding {
         _uiControl = UIControl.Instance;
     }
 
-    public void BuildingPlaced()
-    {
-        
-    }
+    public void BuildingPlaced() {}
 
-    public void BuildingDestroyed() {
-        
-    }
+    public void BuildingDestroyed() {}
 
-    public void ResidentEnter(Collider other) {
-        Resident resident = other.GetComponent<Resident>();
+    public void ResidentEnter(Resident resident) {
         if (resident && resident.currentTask == Resident.AvailableTasks.Market) {
             resident.DisableResident();
             StartCoroutine(CompleteMarketTask(resident));
@@ -32,18 +26,13 @@ public class Market : MonoBehaviour, IBuilding {
 
     private IEnumerator CompleteMarketTask(Resident resident) {
         yield return new WaitForSeconds(marketDuration);
-        float currentResidentSatisfaction = resident.foodSatisfaction;
         switch (_uiControl.currentFoodPortion) {
             case "No Food":
                 break;
             case "1/2 Portion":
+                float currentResidentSatisfaction = resident.foodSatisfaction;
                 currentResidentSatisfaction += 40f;
-                if (currentResidentSatisfaction > 100f) {
-                    resident.foodSatisfaction = 100f;
-                }
-                else {
-                    resident.foodSatisfaction = currentResidentSatisfaction;
-                }
+                resident.foodSatisfaction = Math.Clamp(currentResidentSatisfaction, 0f, 100f);
                 break;
             case "Full Portion":
                 resident.foodSatisfaction = 100f;
@@ -53,7 +42,5 @@ public class Market : MonoBehaviour, IBuilding {
         resident.CompleteTask();
     }
 
-    public void ResidentLeave(Collider other) {
-        
-    }
+    public void ResidentLeave(Resident resident) {}
 }

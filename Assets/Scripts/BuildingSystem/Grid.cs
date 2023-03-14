@@ -28,8 +28,8 @@ public class Grid<TGridObject> {
                 _gridArray[x, z] = createGridObject(this, x, z);
 
                 if (debug) {
-                    _gridTextArray[x, z] = Utils.CreateWorldText(_gridArray[x, z].ToString(), null,
-                        GetWorldPosition(x, z) + new Vector3(cellSize / 2, 0, cellSize / 2), 1, Color.white,
+                    _gridTextArray[x, z] = Utils.CreateWorldText("GridObject\n" + _gridArray[x, z].ToString(), null,
+                        GetWorldPosition(x, z) + new Vector3(cellSize / 2, 0, cellSize / 2), 20, Color.red,
                         TextAnchor.MiddleCenter);
                 }
 
@@ -65,7 +65,7 @@ public class Grid<TGridObject> {
     /// <param name="x">The x position</param>
     /// <param name="z">The z position</param>
     /// <param name="value">The value that should be set at the coordinates</param>
-    public void SetGridObject(int x, int z, TGridObject value) {
+    private void SetGridObject(int x, int z, TGridObject value) {
         if (x >= 0 && x < _width && z < _height) {
             _gridArray[x, z] = value;
         }

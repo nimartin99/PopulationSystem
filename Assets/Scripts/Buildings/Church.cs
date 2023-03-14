@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,17 +12,11 @@ public class Church : MonoBehaviour, IBuilding
 
     [SerializeField] public const float ChurchRange = 25;
 
-    public void BuildingPlaced()
-    {
-        
-    }
+    public void BuildingPlaced() {}
 
-    public void BuildingDestroyed() {
-        
-    }
+    public void BuildingDestroyed() {}
 
-    public void ResidentEnter(Collider other) {
-        Resident resident = other.GetComponent<Resident>();
+    public void ResidentEnter(Resident resident) {
         if (resident && resident.currentTask == Resident.AvailableTasks.Church) {
             resident.DisableResident();
             StartCoroutine(CompleteReligionTask(resident));
@@ -35,7 +30,5 @@ public class Church : MonoBehaviour, IBuilding
         resident.CompleteTask();
     }
 
-    public void ResidentLeave(Collider other) {
-        
-    }
+    public void ResidentLeave(Resident resident) {}
 }

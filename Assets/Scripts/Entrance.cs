@@ -7,13 +7,13 @@ public class Entrance : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other) {
         if (other.gameObject.CompareTag("Resident")) {
-            transform.parent.GetComponent<IBuilding>().ResidentEnter(other);
+            transform.parent.GetComponent<IBuilding>().ResidentEnter(other.GetComponent<Resident>());
         }
     }
 
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.CompareTag("Resident")) {
-            transform.parent.GetComponent<IBuilding>().ResidentLeave(other);
+            transform.parent.GetComponent<IBuilding>().ResidentLeave(other.GetComponent<Resident>());
         }
     }
 }

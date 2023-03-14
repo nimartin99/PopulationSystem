@@ -92,10 +92,20 @@
 .riotReasonText {
     white-space: normal;
     -unity-text-align: upper-center;
-    color: rgba(255, 255, 255, 255);
+    color: rgb(255, 255, 255);
     padding-left: 4px;
     padding-right: 4px;
     padding-top: 8px;
     padding-bottom: 8px;
     font-size: 14px;
+}
+
+.farmerIconInspector {
+    width: 62px;
+    background-image: url('project://database/Assets/UI%20Toolkit/Icons/FarmerIcon.png?fileID=2800000&guid=b92384ae3ead56a49b1b519787bcef34&type=3#FarmerIcon');
+    height: 124px;
+    margin-left: 4px;
+    margin-right: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
 }

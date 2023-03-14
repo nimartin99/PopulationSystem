@@ -3,6 +3,6 @@ using UnityEngine;
 public interface IBuilding {
     void BuildingPlaced();
     void BuildingDestroyed();
-    void ResidentEnter(Collider other);
-    void ResidentLeave(Collider other);
+    void ResidentEnter(Resident resident);
+    void ResidentLeave(Resident resident);
 }

@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UIElements.Button;
@@ -18,6 +16,7 @@ public class UIControl : MonoBehaviour
     private TimeController _timeController;
 
     public bool hitUI;
+    public event Action<InputControl.InputModes> OnModeSwitch;
     
     // UI params
     public int currentTaxes;
@@ -27,6 +26,7 @@ public class UIControl : MonoBehaviour
     private VisualElement _toolbar;
     private Button _exploreButton;
     private Button _buildButton;
+    private Button _upgradeButton;
     private Button _deleteButton;
     
     // Inspector
@@ -46,11 +46,19 @@ public class UIControl : MonoBehaviour
     private ProgressBar _inspectorRiotProgress;
     private Label _inspectorRiotResidentCount;
     private VisualElement _inspectorRiotReasons;
+    private VisualElement _inspectorScrollHouse;
+    private Label _inspectorHouseResidentCount;
+    private VisualElement _inspectorHouseVisualResidents;
+    private ProgressBar _inspectorHouseSatisfaction;
+    private ProgressBar _inspectorHouseHappiness;
+    private Label _inspectorHouseUpgrade;
+    
 
     private Transform _currentlyInspected;
     public string currentlyInspectedType;
-    private Resident _currentlyInspectedResident;
+    [HideInInspector] public Resident currentlyInspectedResident;
     private Riot _currentlyInspectedRiot;
+    public House currentlyInspectedHouse;
 
     // Statusbar
     private Label _dayLabel;
@@ -80,6 +88,7 @@ public class UIControl : MonoBehaviour
     private Button _presettingTwo;
     private Button _presettingThree;
     private Button _presettingFour;
+    private Button _presettingFive;
 
     private void Awake() {
         if (Instance != null && Instance != this) { 
@@ -95,69 +104,79 @@ public class UIControl : MonoBehaviour
         _inputControl = GetComponent<InputControl>();
         
         _uiDocument = GetComponent<UIDocument>();
+        VisualElement root = _uiDocument.rootVisualElement;
         // Toolbar
-        _exploreButton = _uiDocument.rootVisualElement.Q<Button>("exploreButton");
-        _exploreButton.clicked += () => { ChangeMode("explore"); };
-        _buildButton = _uiDocument.rootVisualElement.Q<Button>("buildButton");
-        _buildButton.clicked += () => { ChangeMode("build"); };
-        _deleteButton = _uiDocument.rootVisualElement.Q<Button>("deleteButton");
-        _deleteButton.clicked += () => { ChangeMode("delete"); };
-        ChangeMode("explore");
+        _exploreButton = root.Q<Button>("exploreButton");
+        _exploreButton.clicked += () => { ChangeMode(InputControl.InputModes.ExploreMode); };
+        _buildButton = root.Q<Button>("buildButton");
+        _buildButton.clicked += () => { ChangeMode(InputControl.InputModes.BuildingMode); };
+        _upgradeButton = root.Q<Button>("upgradeButton");
+        _upgradeButton.clicked += () => { ChangeMode(InputControl.InputModes.UpgradeMode); };
+        _deleteButton = root.Q<Button>("deleteButton");
+        _deleteButton.clicked += () => { ChangeMode(InputControl.InputModes.DeleteMode); };
+        ChangeMode(InputControl.InputModes.ExploreMode);
         
         // Inspector
-        _inspector = _uiDocument.rootVisualElement.Q<VisualElement>("inspector");
-        _inspectorName = _uiDocument.rootVisualElement.Q<Label>("inspectorName");
-        _inspectorResidentOverall =_uiDocument.rootVisualElement.Q<VisualElement>("inspectorResidentOverall");
-        _inspectorSatisfaction = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorSatisfaction");
-        _inspectorHappiness = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorHappiness");
-        _inspectorResidentNext = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorResidentNext");
-        _inspectorResidentNextLabel = _uiDocument.rootVisualElement.Q<Label>("inspectorResidentNextLabel");
-        _inspectorScrollResident = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorScrollResident");
-        _inspectorFood = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorFood");
-        _inspectorReligion = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorReligion");
-        _inspectorTavern = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorTavern");
-        _inspectorScrollRiot = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorScrollRiot");
-        _inspectorRiotStatus = _uiDocument.rootVisualElement.Q<Label>("inspectorRiotStatus");
-        _inspectorRiotProgress = _uiDocument.rootVisualElement.Q<ProgressBar>("inspectorRiotProgress");
-        _inspectorRiotResidentCount = _uiDocument.rootVisualElement.Q<Label>("inspectorRiotResidentCount");
-        _inspectorRiotReasons = _uiDocument.rootVisualElement.Q<VisualElement>("inspectorRiotReasons");
+        _inspector = root.Q<VisualElement>("inspector");
+        _inspectorName = root.Q<Label>("inspectorName");
+        _inspectorResidentOverall =root.Q<VisualElement>("inspectorResidentOverall");
+        _inspectorSatisfaction = root.Q<ProgressBar>("inspectorSatisfaction");
+        _inspectorHappiness = root.Q<ProgressBar>("inspectorHappiness");
+        _inspectorResidentNext = root.Q<VisualElement>("inspectorResidentNext");
+        _inspectorResidentNextLabel = root.Q<Label>("inspectorResidentNextLabel");
+        _inspectorScrollResident = root.Q<VisualElement>("inspectorScrollResident");
+        _inspectorFood = root.Q<ProgressBar>("inspectorFood");
+        _inspectorReligion = root.Q<ProgressBar>("inspectorReligion");
+        _inspectorTavern = root.Q<ProgressBar>("inspectorTavern");
+        _inspectorScrollRiot = root.Q<VisualElement>("inspectorScrollRiot");
+        _inspectorRiotStatus = root.Q<Label>("inspectorRiotStatus");
+        _inspectorRiotProgress = root.Q<ProgressBar>("inspectorRiotProgress");
+        _inspectorRiotResidentCount = root.Q<Label>("inspectorRiotResidentCount");
+        _inspectorRiotReasons = root.Q<VisualElement>("inspectorRiotReasons");
+        _inspectorScrollHouse = root.Q<VisualElement>("inspectorScrollHouse");
+        _inspectorHouseResidentCount = root.Q<Label>("inspectorHouseResidentCount");
+        _inspectorHouseVisualResidents = root.Q<VisualElement>("inspectorHouseVisualResidents");
+        _inspectorHouseSatisfaction = root.Q<ProgressBar>("inspectorHouseSatisfaction");
+        _inspectorHouseHappiness = root.Q<ProgressBar>("inspectorHouseHappiness");
+        _inspectorHouseUpgrade = root.Q<Label>("inspectorHouseUpgrade");
+        
         HideInspector();
         
         // Statusbar
-        _dayLabel = _uiDocument.rootVisualElement.Q<Label>("dayLabel");
-        _timeLabel = _uiDocument.rootVisualElement.Q<Label>("timeLabel");
+        _dayLabel = root.Q<Label>("dayLabel");
+        _timeLabel = root.Q<Label>("timeLabel");
         
         // Settings
-        _settingsActivator = _uiDocument.rootVisualElement.Q<Button>("settingsActivator");
-        _settingsActivator.clicked += () => { ToggleSettings(); };
-        _settings = _uiDocument.rootVisualElement.Q<VisualElement>("settings");
+        _settingsActivator = root.Q<Button>("settingsActivator");
+        _settingsActivator.clicked += ToggleSettings;
+        _settings = root.Q<VisualElement>("settings");
         _settings.visible = false;
         
-        _workSettingButton = _uiDocument.rootVisualElement.Q<Button>("workSettingButton");
-        _taxesSettingButton = _uiDocument.rootVisualElement.Q<Button>("taxesSettingButton");
-        _foodSettingButton = _uiDocument.rootVisualElement.Q<Button>("foodSettingButton");
+        _workSettingButton = root.Q<Button>("workSettingButton");
+        _taxesSettingButton = root.Q<Button>("taxesSettingButton");
+        _foodSettingButton = root.Q<Button>("foodSettingButton");
         _workSettingButton.clicked += () => { SelectSettingTab("work"); };
         _taxesSettingButton.clicked += () => { SelectSettingTab("taxes"); };
         _foodSettingButton.clicked += () => { SelectSettingTab("food"); };
         
-        _workSettingTab = _uiDocument.rootVisualElement.Q<VisualElement>("workSettingTab");
-        _taxesSettingTab = _uiDocument.rootVisualElement.Q<VisualElement>("taxesSettingTab");
-        _foodSettingTab = _uiDocument.rootVisualElement.Q<VisualElement>("foodSettingTab");
+        _workSettingTab = root.Q<VisualElement>("workSettingTab");
+        _taxesSettingTab = root.Q<VisualElement>("taxesSettingTab");
+        _foodSettingTab = root.Q<VisualElement>("foodSettingTab");
         
-        _workNecessitiesSlider = _uiDocument.rootVisualElement.Q<SliderInt>("workNecessitiesSlider");
+        _workNecessitiesSlider = root.Q<SliderInt>("workNecessitiesSlider");
         _workNecessitiesSlider.highValue = _timeController.hoursInADay;
-        _necessitiesLabelValue = _uiDocument.rootVisualElement.Q<Label>("necessitiesLabelValue");
-        _workLabelValue = _uiDocument.rootVisualElement.Q<Label>("workLabelValue");
+        _necessitiesLabelValue = root.Q<Label>("necessitiesLabelValue");
+        _workLabelValue = root.Q<Label>("workLabelValue");
         
-        _taxesSlider = _uiDocument.rootVisualElement.Q<SliderInt>("taxesSlider");
-        _taxesLabelValue = _uiDocument.rootVisualElement.Q<Label>("taxesLabelValue");
+        _taxesSlider = root.Q<SliderInt>("taxesSlider");
+        _taxesLabelValue = root.Q<Label>("taxesLabelValue");
         _taxesSlider.RegisterCallback<ChangeEvent<int>>((evt) => {
             currentTaxes = evt.newValue;
             _taxesLabelValue.style.left = Length.Percent(evt.newValue);
             _taxesLabelValue.text = evt.newValue.ToString();
         });
 
-        _foodPortionRadioButtonGroup = _uiDocument.rootVisualElement.Q<RadioButtonGroup>("foodPortionRadioButtonGroup");
+        _foodPortionRadioButtonGroup = root.Q<RadioButtonGroup>("foodPortionRadioButtonGroup");
         _foodPortionRadioButtonGroup.choices = _foodPortions;
         int preSelectedFoodOption = 2;
         _foodPortionRadioButtonGroup.value = preSelectedFoodOption;
@@ -167,19 +186,21 @@ public class UIControl : MonoBehaviour
         });
 
         // Presetting selection
-        _presettingSelection = _uiDocument.rootVisualElement.Q<VisualElement>("presettingSelection");
-        _freePlay = _uiDocument.rootVisualElement.Q<Button>("freePlay");
+        _presettingSelection = root.Q<VisualElement>("presettingSelection");
+        _freePlay = root.Q<Button>("freePlay");
         _freePlay.clicked += () => { _presettingSelection.visible = false; };
-        _presettingOne = _uiDocument.rootVisualElement.Q<Button>("presettingOne"); 
+        _presettingOne = root.Q<Button>("presettingOne"); 
         _presettingOne.clicked += () => { StartPresetting(1); };
-        _presettingTwo = _uiDocument.rootVisualElement.Q<Button>("presettingTwo");
+        _presettingTwo = root.Q<Button>("presettingTwo");
         _presettingTwo.clicked += () => { StartPresetting(2); };
-        _presettingThree = _uiDocument.rootVisualElement.Q<Button>("presettingThree");
+        _presettingThree = root.Q<Button>("presettingThree");
         _presettingThree.clicked += () => { StartPresetting(3); };
-        _presettingFour = _uiDocument.rootVisualElement.Q<Button>("presettingFour");
+        _presettingFour = root.Q<Button>("presettingFour");
         _presettingFour.clicked += () => { StartPresetting(4); };
+        _presettingFive = root.Q<Button>("presettingFive");
+        _presettingFive.clicked += () => { StartPresetting(5); };
 
-        RegisterUIBlock(_uiDocument.rootVisualElement);
+        RegisterUIBlock(root);
     }
 
     private void StartPresetting(int setting) {
@@ -197,9 +218,12 @@ public class UIControl : MonoBehaviour
             case 4:
                 presettingGenerator.GeneratePresettingFour();
                 break;
+            case 5:
+                presettingGenerator.GeneratePresettingFive();
+                break;
         }
         _presettingSelection.visible = false;
-        ChangeMode("explore");
+        ChangeMode(InputControl.InputModes.ExploreMode);
     }
 
     private void RegisterUIBlock(VisualElement element) {
@@ -218,25 +242,39 @@ public class UIControl : MonoBehaviour
                 case "Resident":
                     _inspectorResidentOverall.style.display = DisplayStyle.Flex;
                     _inspectorScrollResident.style.display = DisplayStyle.Flex;
-                    _inspectorSatisfaction.title =  Math.Floor(_currentlyInspectedResident.satisfaction) + " / 100";
-                    _inspectorSatisfaction.value = _currentlyInspectedResident.satisfaction;
-                    _inspectorHappiness.title =  Math.Floor(_currentlyInspectedResident.happiness) + " / 100";
-                    _inspectorHappiness.value = _currentlyInspectedResident.happiness;
-                    _inspectorFood.title = Math.Floor(_currentlyInspectedResident.foodSatisfaction) + " / 100";
-                    _inspectorFood.value = _currentlyInspectedResident.foodSatisfaction;
-                    _inspectorReligion.title =  Math.Floor(_currentlyInspectedResident.religionSatisfaction) + " / 100";
-                    _inspectorReligion.value = _currentlyInspectedResident.religionSatisfaction;
-                    _inspectorTavern.title =  Math.Floor(_currentlyInspectedResident.tavernSatisfaction) + " / 100";
-                    _inspectorTavern.value = _currentlyInspectedResident.tavernSatisfaction;
-                    if (_currentlyInspectedResident.currentTask == Resident.AvailableTasks.None) {
+                    _inspectorSatisfaction.title =  Math.Floor(currentlyInspectedResident.satisfaction) + " / 100";
+                    _inspectorSatisfaction.value = currentlyInspectedResident.satisfaction;
+                    _inspectorHappiness.title =  Math.Floor(currentlyInspectedResident.happiness) + " / 100";
+                    _inspectorHappiness.value = currentlyInspectedResident.happiness;
+                    _inspectorFood.title = Math.Floor(currentlyInspectedResident.foodSatisfaction) + " / 100";
+                    _inspectorFood.value = currentlyInspectedResident.foodSatisfaction;
+                    _inspectorReligion.title =  Math.Floor(currentlyInspectedResident.religionSatisfaction) + " / 100";
+                    _inspectorReligion.value = currentlyInspectedResident.religionSatisfaction;
+                    _inspectorTavern.title =  Math.Floor(currentlyInspectedResident.tavernSatisfaction) + " / 100";
+                    _inspectorTavern.value = currentlyInspectedResident.tavernSatisfaction;
+                    if (currentlyInspectedResident.currentTask == Resident.AvailableTasks.None) {
                         _inspectorResidentNext.style.visibility = Visibility.Hidden;
                     }
                     else {
                         _inspectorResidentNext.style.visibility = Visibility.Visible;
-                        _inspectorResidentNextLabel.text = _currentlyInspectedResident.currentTask.ToString();
+                        _inspectorResidentNextLabel.text = currentlyInspectedResident.currentTask.ToString();
                     }
                     break;
                 case "House":
+                    _inspectorScrollHouse.style.display = DisplayStyle.Flex;
+                    _inspectorHouseResidentCount.text = currentlyInspectedHouse.residents.Count.ToString();
+                    if (_inspectorHouseVisualResidents.childCount != currentlyInspectedHouse.residents.Count) {
+                        _inspectorHouseVisualResidents.Clear();
+                        for (int i = 0; i < currentlyInspectedHouse.residents.Count; i++) {
+                            VisualElement residentVisual = new VisualElement();
+                            residentVisual.AddToClassList("farmerIconInspector");
+                        }
+                    }
+                    _inspectorHouseSatisfaction.title = Math.Floor(currentlyInspectedHouse.allResidentsSatisfaction) + " / 100";
+                    _inspectorHouseSatisfaction.value = currentlyInspectedHouse.allResidentsSatisfaction;
+                    _inspectorHouseHappiness.title = Math.Floor(currentlyInspectedHouse.allResidentsHappiness) + " / 100";
+                    _inspectorHouseHappiness.value = currentlyInspectedHouse.allResidentsHappiness;
+                    _inspectorHouseUpgrade.text = currentlyInspectedHouse.upgradeable ? "Yes" : "No";
                     break;
                 case "Riot":
                     _inspectorScrollRiot.style.display = DisplayStyle.Flex;
@@ -263,28 +301,42 @@ public class UIControl : MonoBehaviour
         DisplayClockToStatusbar();
     }
 
-    public void ChangeMode(string type) {
+    public void ChangeMode(InputControl.InputModes type) {
+        OnModeSwitch?.Invoke(type);
+        if (type != InputControl.InputModes.ExploreMode) {
+            HideInspector();
+        }
         switch (type) {
-            case "build":
+            case InputControl.InputModes.BuildingMode:
                 _inputControl.currentMode = InputControl.InputModes.BuildingMode;
                 buildingGhost.RefreshVisual();
                 BorderVisualElement(_buildButton, 2f, 2f, 2f, 2f);
                 BorderVisualElement(_exploreButton, 1f, 1f, 1f, 1f);
+                BorderVisualElement(_upgradeButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_deleteButton, 1f, 1f, 1f, 1f);
                 break;
-            case "delete":
+            case InputControl.InputModes.DeleteMode:
                 _inputControl.currentMode = InputControl.InputModes.DeleteMode;
                 buildingGhost.DestroyVisual();
                 BorderVisualElement(_buildButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_exploreButton, 1f, 1f, 1f, 1f);
+                BorderVisualElement(_upgradeButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_deleteButton, 2f, 2f, 2f, 2f);
                 break;
+            case InputControl.InputModes.UpgradeMode:
+                _inputControl.currentMode = InputControl.InputModes.UpgradeMode;
+                BorderVisualElement(_buildButton, 1f, 1f, 1f, 1f);
+                BorderVisualElement(_exploreButton, 1f, 1f, 1f, 1f);
+                BorderVisualElement(_upgradeButton, 2f, 2f, 2f, 2f);
+                BorderVisualElement(_deleteButton, 1f, 1f, 1f, 1f);
+                break;
             default:
-            case "explore":
+            case InputControl.InputModes.ExploreMode:
                 _inputControl.currentMode = InputControl.InputModes.ExploreMode;
                 buildingGhost.DestroyVisual();
                 BorderVisualElement(_buildButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_exploreButton, 2f, 2f, 2f, 2f);
+                BorderVisualElement(_upgradeButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_deleteButton, 1f, 1f, 1f, 1f);
                 break;
         }
@@ -297,12 +349,18 @@ public class UIControl : MonoBehaviour
         switch (currentlyInspectedType) {
             case "Resident":
                 _inspector.visible = true;
-                _currentlyInspectedResident = _currentlyInspected.GetComponent<Resident>();
-                _currentlyInspectedResident.EnableIndicator();
+                currentlyInspectedResident = _currentlyInspected.GetComponent<Resident>();
+                currentlyInspectedResident.EnableIndicator();
                 _inspectorName.text = currentlyInspectedType;
                 break;
             case "House":
                 House house = inspectionTransform.GetComponent<House>();
+                if (house) {
+                    _inspector.visible = true;
+                    currentlyInspectedHouse = house;
+                    currentlyInspectedHouse.EnableIndicator();
+                    _inspectorName.text = currentlyInspectedType;
+                }
                 break;
             case "Riot":
                 Riot riot = inspectionTransform.parent.GetComponent<Riot>();
@@ -323,12 +381,26 @@ public class UIControl : MonoBehaviour
         _inspectorScrollResident.style.display = DisplayStyle.None;
         _inspectorScrollRiot.style.display = DisplayStyle.None;
         _inspectorRiotReasons.style.display = DisplayStyle.None;
+        _inspectorScrollHouse.style.display = DisplayStyle.None;
         _inspectorName.text = "-";
-        switch (currentlyInspectedType) {
-            case "Resident":
-                _currentlyInspected.GetComponent<Resident>().DisableIndicator();
-                break;
+        if (_currentlyInspected) {
+            switch (currentlyInspectedType) {
+                case "Resident":
+                    currentlyInspectedResident.DisableIndicator();
+                    currentlyInspectedResident = null;
+                    break;
+                case "House":
+                    currentlyInspectedHouse.DisableIndicator();
+                    currentlyInspectedHouse = null;
+                    break;
+                case "Riot":
+                    _currentlyInspectedRiot = null;
+                    break;
+            }
+            _currentlyInspected = null;
+            currentlyInspectedType = null;
         }
+        
     }
 
     private void BorderVisualElement(VisualElement visualElement, StyleFloat left, StyleFloat right, StyleFloat top,

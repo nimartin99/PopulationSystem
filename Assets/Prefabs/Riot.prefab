@@ -97,13 +97,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   riotIndicator: {fileID: 3065648730754436046}
   protestCircle: {fileID: 7935112233885479916}
-  currentlyProtestingResidents: []
-  movingProtest: 0
+  residents: []
+  movingRiot: 0
   rioter: {fileID: 2612433150575423496, guid: 348b18f2ee09a594c97c36efe11484dc, type: 3}
   riotTargetPrefab: {fileID: 5096879640307845903, guid: 5d8e147c6e76d0947bb109ca88a2c5e3, type: 3}
   riotCurrentStatus: Protesting
   riotProgress: 0
   riotingReasons: []
+  minimumHourDuration: 5
 --- !u!65 &1467614324554609012
 BoxCollider:
   m_ObjectHideFlags: 0

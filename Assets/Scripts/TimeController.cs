@@ -42,6 +42,7 @@ public class TimeController : MonoBehaviour
         minutes = Math.Floor(_percentageOfDayProgress * 1440 - hours * 60);
         if (hours >= 24) {
             daysSinceStart++;
+            OnNewDay?.Invoke(this, EventArgs.Empty);
             _percentageOfDayProgress = 0f;
         }
         AdjustLight();
@@ -55,10 +56,6 @@ public class TimeController : MonoBehaviour
         } else if (hours >= 7 && hours < 23 && _sleepTime) {
             OnSleepTimeEnd?.Invoke(this, EventArgs.Empty);
             _sleepTime = false;
-        }
-
-        if (hoursBeforeAdding == 24d && hours == 0d) {
-            OnNewDay?.Invoke(this, EventArgs.Empty);
         }
     }
 

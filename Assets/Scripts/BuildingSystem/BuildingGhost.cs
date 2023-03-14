@@ -43,19 +43,10 @@ public class BuildingGhost : MonoBehaviour {
         BuildingObject currentBuildingObject = gridBuildingSystem.building;
         if (currentBuildingObject != null) {
             _visual = Instantiate(currentBuildingObject.visual, Vector3.zero, Quaternion.identity);
-            SetLayerRecursive(_visual.gameObject, 6);
             _visual.parent = transform;
+            SetLayerRecursively(gameObject, 8);
             _visual.localPosition = Vector3.zero;
             _visual.localEulerAngles = Vector3.zero;
-            // SetStaticRecursive(_visual.gameObject);
-            // SetLayerRecursive(_visual.gameObject, 11);
-        }
-    }
-
-    private void SetLayerRecursive(GameObject go, int layer) {
-        foreach (Transform trans in go.GetComponentsInChildren<Transform>(true))
-        {
-            trans.gameObject.layer = layer;
         }
     }
 
@@ -65,4 +56,18 @@ public class BuildingGhost : MonoBehaviour {
             _visual = null;
         }
     }
+
+    private void SetLayerRecursively(GameObject obj, int newLayer) {
+        if (null == obj) {
+            return;
+        }
+        obj.layer = newLayer;
+        foreach (Transform child in obj.transform) {
+            if (null == child) {
+                continue;
+            }
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
+    }
+
 }

@@ -23,7 +23,7 @@ public class GridBuildingSystem : MonoBehaviour {
     [SerializeField] private Transform environmentParent;
     
     public event EventHandler OnSelectedChanged;
-    public event EventHandler OnGridChanged;
+    public event Action<bool> OnGridChanged;
     public event Action<string> OnBuildingPlaced;
 
     public Grid<GridObject> _grid;
@@ -41,7 +41,7 @@ public class GridBuildingSystem : MonoBehaviour {
         building = buildingList[0].buildingVariants[0];
     }
 
-    public void PlaceBuilding(Vector3 mousePosition) {
+    public void PlaceBuilding(Vector3 mousePosition, bool dontRegenerateNavMesh = false) {
         // Get the position where the Ray hits the grid
         _grid.GetXZ(mousePosition, out int x, out int z);
         // Gets the list of x and z coordinates in the grid the building needs to be placed
@@ -68,7 +68,6 @@ public class GridBuildingSystem : MonoBehaviour {
                 building,
                 environmentParent
             );
-            OnBuildingPlaced?.Invoke(building.nameString);
             // Scale the building to cellSize
             // spawnedBuilding.transform.localScale = spawnedBuilding.transform.localScale * cellSize;
             // Set the building to every Grid coordinate
@@ -76,12 +75,13 @@ public class GridBuildingSystem : MonoBehaviour {
                 GridObject gridObject = _grid.GetGridObject(position.x, position.y);
                 gridObject.SetPlacedObject(placedObject);
             }
+            OnBuildingPlaced?.Invoke(building.nameString);
             // Trigger OnGridChanged event
-            OnGridChanged?.Invoke(this, EventArgs.Empty);
+            OnGridChanged?.Invoke(dontRegenerateNavMesh);
         }
     }
 
-    public void DestroyBuilding(Vector3 mousePosition) {
+    public void DestroyBuilding(Vector3 mousePosition, bool dontRegenerateNavMesh = false) {
         // Get the position where the Ray hits the grid
         PlacedObject placedObject = _grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
@@ -95,7 +95,7 @@ public class GridBuildingSystem : MonoBehaviour {
                 _grid.GetGridObject(position.x, position.y).ClearPlacedObject();
             }
             // Trigger OnGridChanged event
-            OnGridChanged?.Invoke(this, EventArgs.Empty);
+            OnGridChanged?.Invoke(dontRegenerateNavMesh);
         }
     }
 
@@ -153,7 +153,7 @@ public class GridBuildingSystem : MonoBehaviour {
         }
 
         public string GetPlacedObjectType() {
-            return _placedObject ? _placedObject.buildingObjectType.nameString : null;
+            return _placedObject ? _placedObject.buildingObject.nameString : null;
         }
     }
 }

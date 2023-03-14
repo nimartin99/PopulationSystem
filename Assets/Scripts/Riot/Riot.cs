@@ -45,7 +45,7 @@ public class Riot : MonoBehaviour {
             }
         }
         
-        if (riotingReasons.Count == 0 && _hoursSinceStart >= minimumHourDuration) {
+        if ( _hoursSinceStart >= minimumHourDuration && riotingReasons.Count == 0) {
             StopRiot();
             
         }
@@ -140,31 +140,24 @@ public class Riot : MonoBehaviour {
         StartCoroutine(StartAsyncAnimation(newRiotingResident.GetChild(0)));
     }
 
-    private IEnumerator StartAsyncAnimation(Transform riotingResident) {
+    private IEnumerator StartAsyncAnimation(Transform riotingResidentModel) {
         yield return new WaitForSeconds(Random.Range(0f, 1f));
-        riotingResident.GetComponent<Animator>().SetBool("Protesting", true);
+        riotingResidentModel.GetComponent<Animator>().SetBool("Protesting", true);
     }
 
     private void StopRiot() {
-        foreach (Resident resident in residents) {
-            resident.riotCooldown = 16;
-        }
-        if (!movingRiot) {
-            for (int i = 0; i < residents.Count; i++) {
+        for (int i = 0; i < residents.Count; i++) {
+            if (!movingRiot) {
                 residents[i].transform.position = protestCircle.GetChild(i).transform.position;
                 residents[i].transform.rotation = protestCircle.GetChild(i).transform.rotation;
-                residents[i].EnableResident();
-                residents[i].rioting = false;
-                residents[i].currentTask = Resident.AvailableTasks.None;
-            }
-        } else {
-            for (int i = 0; i < residents.Count; i++) {
+            } else {
                 residents[i].transform.position = _riotingDummyResidents[i].transform.position;
                 residents[i].transform.rotation = _riotingDummyResidents[i].transform.rotation;
-                residents[i].EnableResident();
-                residents[i].rioting = false;
-                residents[i].currentTask = Resident.AvailableTasks.None;
             }
+            residents[i].riotCooldown = 16;
+            residents[i].EnableResident();
+            residents[i].rioting = false;
+            residents[i].currentTask = Resident.AvailableTasks.None;
         }
 
         UIControl uiControl = UIControl.Instance;

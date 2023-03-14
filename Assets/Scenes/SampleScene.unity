@@ -977,7 +977,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.28978413, y: -0.00000001646809, z: 0.000000004986136, w: 0.95709205}
+  m_LocalRotation: {x: 0.28978413, y: 0.000000016468093, z: -0.0000000049861373, w: 0.95709205}
   m_LocalPosition: {x: 5.34, y: 10, z: -25.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2252,6 +2252,8 @@ MonoBehaviour:
   currentTaxes: 0
   currentFoodPortion: 
   currentlyInspectedType: 
+  currentlyInspectedResident: {fileID: 0}
+  currentlyInspectedHouse: {fileID: 0}
 --- !u!1001 &1819062972
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2436,7 +2438,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1850079791}
-  m_LocalRotation: {x: 0.28978413, y: -0.00000001646809, z: 0.000000004986136, w: 0.95709205}
+  m_LocalRotation: {x: 0.28978413, y: 0.000000016468093, z: -0.0000000049861373, w: 0.95709205}
   m_LocalPosition: {x: 5.34, y: 10, z: -25.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2747,6 +2749,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15aa16b19bae01b4aade97a4e868cea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  navMeshManager: {fileID: 1231450017}
 --- !u!4 &2063104933
 Transform:
   m_ObjectHideFlags: 0
