@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -17,7 +18,14 @@ public class UIControl : MonoBehaviour
 
     public bool hitUI;
     public event Action<InputControl.InputModes> OnModeSwitch;
-    
+
+    private readonly Dictionary<string, string> _roleDescriptions =  new Dictionary<string, string> {
+        {"Workaholic", "Workaholics prefer to go to work and work longer than usual Residents."},
+        {"Glutton", "Gluttons love to go to the market to eat something. They move slower than usual Residents."},
+        {"Religious", "Religious Residents visit the church more frequently and loose their satisfactions more slowly when they go to a church regularly."},
+        {"Alcoholic", "Alcoholics love their tavern and will stop walking from time to time after they visited the tavern."}
+    };
+
     // UI params
     public int currentTaxes;
     public string currentFoodPortion;
@@ -41,6 +49,9 @@ public class UIControl : MonoBehaviour
     private ProgressBar _inspectorFood;
     private ProgressBar _inspectorReligion;
     private ProgressBar _inspectorTavern;
+    private VisualElement _inspectorResidentRoleContainer;
+    private Label _inspectorResidentRole;
+    private Label _inspectorResidentRoleDescription;
     private VisualElement _inspectorScrollRiot;
     private Label _inspectorRiotStatus;
     private ProgressBar _inspectorRiotProgress;
@@ -105,6 +116,7 @@ public class UIControl : MonoBehaviour
         
         _uiDocument = GetComponent<UIDocument>();
         VisualElement root = _uiDocument.rootVisualElement;
+        
         // Toolbar
         _exploreButton = root.Q<Button>("exploreButton");
         _exploreButton.clicked += () => { ChangeMode(InputControl.InputModes.ExploreMode); };
@@ -128,6 +140,9 @@ public class UIControl : MonoBehaviour
         _inspectorFood = root.Q<ProgressBar>("inspectorFood");
         _inspectorReligion = root.Q<ProgressBar>("inspectorReligion");
         _inspectorTavern = root.Q<ProgressBar>("inspectorTavern");
+        _inspectorResidentRoleContainer = root.Q<VisualElement>("inspectorResidentRoleContainer");
+        _inspectorResidentRole = root.Q<Label>("inspectorResidentRole");
+        _inspectorResidentRoleDescription  = root.Q<Label>("inspectorResidentRoleDescription");
         _inspectorScrollRiot = root.Q<VisualElement>("inspectorScrollRiot");
         _inspectorRiotStatus = root.Q<Label>("inspectorRiotStatus");
         _inspectorRiotProgress = root.Q<ProgressBar>("inspectorRiotProgress");
@@ -164,7 +179,6 @@ public class UIControl : MonoBehaviour
         _foodSettingTab = root.Q<VisualElement>("foodSettingTab");
         
         _workNecessitiesSlider = root.Q<SliderInt>("workNecessitiesSlider");
-        _workNecessitiesSlider.highValue = _timeController.hoursInADay;
         _necessitiesLabelValue = root.Q<Label>("necessitiesLabelValue");
         _workLabelValue = root.Q<Label>("workLabelValue");
         
@@ -352,6 +366,11 @@ public class UIControl : MonoBehaviour
                 currentlyInspectedResident = _currentlyInspected.GetComponent<Resident>();
                 currentlyInspectedResident.EnableIndicator();
                 _inspectorName.text = currentlyInspectedType;
+                if (currentlyInspectedResident.role != "") {
+                    _inspectorResidentRoleContainer.style.display = DisplayStyle.Flex;
+                    _inspectorResidentRole.text = currentlyInspectedResident.role;
+                    _inspectorResidentRoleDescription.text = _roleDescriptions[currentlyInspectedResident.role];
+                }
                 break;
             case "House":
                 House house = inspectionTransform.GetComponent<House>();
@@ -386,6 +405,7 @@ public class UIControl : MonoBehaviour
         if (_currentlyInspected) {
             switch (currentlyInspectedType) {
                 case "Resident":
+                    _inspectorResidentRoleContainer.style.display = DisplayStyle.None;
                     currentlyInspectedResident.DisableIndicator();
                     currentlyInspectedResident = null;
                     break;

@@ -6,7 +6,6 @@ using UnityEngine;
 public class BuildingObject : ScriptableObject {
     public string nameString;
     public Transform prefab;
-    public Transform visual;
     public int variant;
     public int width;
     public int height;

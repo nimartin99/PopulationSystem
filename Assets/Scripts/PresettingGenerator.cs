@@ -55,64 +55,14 @@ public class PresettingGenerator : MonoBehaviour {
         _gridBuildingSystem.PlaceBuilding(new Vector3(11, 0, 8), true);
         _gridBuildingSystem.RotateBuilding();
         _gridBuildingSystem.PlaceBuilding(new Vector3(32, 0, 3), true);
-        
+
         _gridBuildingSystem.SelectBuilding(1);
-        _gridBuildingSystem.RotateBuilding();
-        for (int j = 0; j < _height; j++) {
-            for (int i = 0; i < _width; i++) {
-                switch (j) {
-                    case 0 when i == 0:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        break;
-                    case 0 or 5 or 10 when i >= 3 && i < 10:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        i++;
-                        break;
-                    case 0 or 5 or 10 when i > 10 && i < 15:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        i++;
-                        break;
-                    case 0 or 5 or 10 when i > 15 && i < 26:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        i++;
-                        break;
-                    case 0 or 5 or 10 when i > 26 && i < 31:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        break;
-                }
-                _gridBuildingSystem.SelectBuilding(0);
-                _gridBuildingSystem.SelectBuilding(1);
+        for (int j = 0; j < 14; j++) {
+            for (int i = 0; i < 32; i++) {
+                _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
             }
         }
-        _gridBuildingSystem.RotateBuilding();
-        _gridBuildingSystem.RotateBuilding();
-        for (int j = 0; j < _height; j++) {
-            for (int i = 0; i < _width; i++) {
-                switch (j) {
-                    case 0 when i == 0:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        break;
-                    case 3 or 8 when i >= 3 && i < 10:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        i++;
-                        break;
-                    case 3 or 8 when i > 10 && i < 15:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        i++;
-                        break;
-                    case 3 or 8 when i > 15 && i < 26:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        i++;
-                        break;
-                    case 3 or 8 when i > 26 && i < 31:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
-                        break;
-                }
-                _gridBuildingSystem.SelectBuilding(0);
-                _gridBuildingSystem.SelectBuilding(1);
-            }
-        }
-        
+
         AfterGenerate();
     }
     
@@ -272,7 +222,7 @@ public class PresettingGenerator : MonoBehaviour {
             }
         }
         _gridBuildingSystem.SelectBuilding(1);
-        for (int j = 0; j < _height; j++) {
+        for (int j = 0; j < 50; j++) {
             for (int i = 0; i < _width; i++) {
                 _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j), true);
             }

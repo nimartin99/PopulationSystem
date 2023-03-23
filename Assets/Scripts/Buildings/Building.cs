@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public interface IBuilding {
     void BuildingPlaced();
     void BuildingDestroyed();

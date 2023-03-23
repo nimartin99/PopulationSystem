@@ -24,10 +24,14 @@ public class Workplace : MonoBehaviour, IBuilding {
     }
 
     private IEnumerator CompleteWorkTask(Resident resident) {
-        yield return new WaitForSeconds(_timeController.workHours);
+        if (resident.role == "Workaholic") {
+            yield return new WaitForSeconds(_timeController.realSecondsPerInGameDay / 24 * _timeController.workHours + 3);
+        } else {
+            yield return new WaitForSeconds(_timeController.realSecondsPerInGameDay / 24 * _timeController.workHours);
+        }
         resident.workedToday = true;
-        resident.EnableResident();
         resident.CompleteTask();
+        resident.EnableResident();
     }
 
     public void ResidentLeave(Resident resident) {}

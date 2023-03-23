@@ -9,7 +9,7 @@ public class TimeController : MonoBehaviour
     [SerializeField] private Light sun;
     private Transform _sunTransform;
 
-    [SerializeField] private float RealSecondsPerInGameDay = 10f;
+    public float realSecondsPerInGameDay = 10f;
     private float _percentageOfDayProgress = 0f;
     public int hoursInADay = 24;
     public int workHours;
@@ -21,7 +21,7 @@ public class TimeController : MonoBehaviour
     public event EventHandler OnSleepTimeStart;
     public event EventHandler OnSleepTimeEnd;
     public event EventHandler OnNewDay;
-    private bool _sleepTime = false;
+    public bool sleepTime = false;
     
     private void Awake() {
         if (Instance != null && Instance != this) { 
@@ -36,11 +36,11 @@ public class TimeController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
-        _percentageOfDayProgress += Time.deltaTime / RealSecondsPerInGameDay;
+        _percentageOfDayProgress += Time.deltaTime / realSecondsPerInGameDay;
         double hoursBeforeAdding = hours;
         hours = Math.Floor(_percentageOfDayProgress * 24);
         minutes = Math.Floor(_percentageOfDayProgress * 1440 - hours * 60);
-        if (hours >= 24) {
+        if (hours >= 24) { 
             daysSinceStart++;
             OnNewDay?.Invoke(this, EventArgs.Empty);
             _percentageOfDayProgress = 0f;
@@ -50,35 +50,20 @@ public class TimeController : MonoBehaviour
         if (hoursBeforeAdding != hours) {
             OnNextHour?.Invoke(this, EventArgs.Empty);
         }
-        if (hours >= 23 && !_sleepTime) {
+        if (hours >= 23 && !sleepTime) {
             OnSleepTimeStart?.Invoke(this, EventArgs.Empty);
-            _sleepTime = true;
-        } else if (hours >= 7 && hours < 23 && _sleepTime) {
+            sleepTime = true;
+        } else if (hours >= 7 && hours < 23 && sleepTime) {
             OnSleepTimeEnd?.Invoke(this, EventArgs.Empty);
-            _sleepTime = false;
+            sleepTime = false;
         }
     }
 
     private void AdjustLight() {
-        // if (hours is > 6 and < 18) {
-        //     float xRoation = 0f;
-        //     if (hours > 12) {
-        //         xRoation = 6f + 0.11f * ((float)hours * 60f + (float)minutes);
-        //     }
-        //     else {
-        //         xRoation = 50f - 0.11f * ((float)hours * 60f + (float)minutes);
-        //     }
-        //     _sunTransform.rotation = Quaternion.Euler(xRoation, -85f + 0.23f * ((float) hours * 60f + (float) minutes), -50f + 0.14f * (float) hours * 60f + (float) minutes);
-        // } else if (_sunTransform.rotation != Quaternion.Euler(6, -85, -50)) {
-        //     _sunTransform.rotation = Quaternion.Euler(6, -85, -50);
-        // }
-        
-        
         if (hours > 18) {
             sun.intensity = 0.5f +  (1440 - (float) hours * 60 - (float) minutes) / 360;
         } else if (hours < 6 ) {
             sun.intensity = 0.5f + ((float) hours * 60 + (float) minutes) / 360;
         }
-        
     }
 }

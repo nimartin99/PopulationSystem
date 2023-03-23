@@ -18,8 +18,11 @@ public class NavMeshManager : MonoBehaviour
 
     private void LateUpdate() {
         if (buildNavMeshAfterUpdate) {
-            Debug.Log("NavMesh regenerate");
+            DateTime beforeRegenerate = DateTime.UtcNow;
             _navMeshSurface.BuildNavMesh();
+            DateTime afterRegenerate = DateTime.UtcNow;
+            TimeSpan timeSpan = afterRegenerate - beforeRegenerate;
+            Debug.Log("Regenerating NavMesh took " + timeSpan.Milliseconds);
             buildNavMeshAfterUpdate = false;
         }
     }

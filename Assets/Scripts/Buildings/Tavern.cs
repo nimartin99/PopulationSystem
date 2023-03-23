@@ -23,6 +23,9 @@ public class Tavern : MonoBehaviour, IBuilding {
         resident.tavernSatisfaction = 100f;
         resident.EnableResident();
         resident.CompleteTask();
+        if (resident.role == "Alcoholic") {
+            resident.Drunk();
+        }
     }
 
     public void ResidentLeave(Resident resident) {}

@@ -42,7 +42,7 @@ public class BuildingGhost : MonoBehaviour {
         DestroyVisual();
         BuildingObject currentBuildingObject = gridBuildingSystem.building;
         if (currentBuildingObject != null) {
-            _visual = Instantiate(currentBuildingObject.visual, Vector3.zero, Quaternion.identity);
+            _visual = Instantiate(currentBuildingObject.prefab, Vector3.zero, Quaternion.identity);
             _visual.parent = transform;
             SetLayerRecursively(gameObject, 8);
             _visual.localPosition = Vector3.zero;

@@ -17,6 +17,7 @@ public class Resident : MonoBehaviour {
 
     public bool sleeping = false;
     public bool workedToday = false;
+    private bool _drowsy;
     public AvailableTasks currentTask = AvailableTasks.None;
     [SerializeField] public List<AvailableTasks> tasks;
     private NavMeshAgent _navMeshAgent;
@@ -24,11 +25,12 @@ public class Resident : MonoBehaviour {
     private CapsuleCollider _collider;
     private House _home;
     [SerializeField] private Transform positionIndicator;
+    [SerializeField] private Transform drowsyIndicator;
     [SerializeField] private Workplace workplace;
     private AvailableTasks _previousCompletedTask = AvailableTasks.None;
     
     // Animation
-    [SerializeField] private Animator _animator;
+    [SerializeField] private Animator animator;
 
     public float satisfaction = 0f;
     public float happiness = 0f;
@@ -38,6 +40,7 @@ public class Resident : MonoBehaviour {
     private TimeController _timeController;
     private UIControl _uiControl;
 
+    // Priorities
     public float _lowestPriority = 1f;
     // Overall priority
     public float workPriority;
@@ -46,6 +49,7 @@ public class Resident : MonoBehaviour {
     public float religionPriority;
     // Happiness
     public float tavernPriority;
+    public string role = "";
 
     public List<float> overallSatisfactionMeasurements = new List<float>();
     public List<float> foodSatisfactionMeasurements = new List<float>();
@@ -61,7 +65,7 @@ public class Resident : MonoBehaviour {
     public List<string> riotingReasons = new List<string>();
     public bool rioting;
     [SerializeField] private Transform riotPrefab;
-    [HideInInspector] public int riotCooldown = 0;
+    [HideInInspector] public int riotCooldown = 16;
 
     private void Awake() {
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -108,7 +112,7 @@ public class Resident : MonoBehaviour {
                     newRiot.GetComponent<Riot>().riotingReasons = riotingReasons;
                 }
             }
-        } else if(currentTask == AvailableTasks.None) {
+        } else if(currentTask == AvailableTasks.None && !_drowsy) {
             if (tasks.Count > 0) {
                 ExecuteTask();
             } else if (tasks.Count == 0) {
@@ -121,19 +125,24 @@ public class Resident : MonoBehaviour {
             }
         }
 
-        if (gameObject.name == "Test") {
-            Debug.Log("current destination: " + _navMeshAgent.destination);
+        if (currentTask != AvailableTasks.None && _navMeshAgent.hasPath && _navMeshAgent.pathStatus == NavMeshPathStatus.PathPartial) {
+            CantCompleteTask();
         }
         // Decrease satisfactions
         CalculateSatisfactions();
         // Rotate indicator
         positionIndicator.Rotate(0, 60 * Time.deltaTime, 0);
+        if (drowsyIndicator.gameObject.activeSelf) {
+            drowsyIndicator.GetChild(0).Rotate(0, 60 * Time.deltaTime, 0);
+            drowsyIndicator.GetChild(1).Rotate(0, 60 * Time.deltaTime, 0);
+            drowsyIndicator.GetChild(2).Rotate(0, 60 * Time.deltaTime, 0);
+        }
         
         if (_navMeshAgent.velocity.x != 0f || _navMeshAgent.velocity.z != 0f) {
-            _animator.SetFloat("Speed_f", 1f);
+            animator.SetFloat("Speed_f", 1f);
         }
         else {
-            _animator.SetFloat("Speed_f", 0f);
+            animator.SetFloat("Speed_f", 0f);
         }
     }
 
@@ -228,20 +237,20 @@ public class Resident : MonoBehaviour {
             }
         }
         if (foodSatisfaction > 0) {
-            foodSatisfaction -= Time.deltaTime * 1.5f;
+            foodSatisfaction -= Time.deltaTime * (1.5f - (role == "Religious" && religionSatisfaction > 65 ? 0.5f : 0f));
             if (foodSatisfaction < 0) {
                 foodSatisfaction = 0f;
             }
         }
         if (tavernSatisfaction > 0) {
-            tavernSatisfaction -= Time.deltaTime * 0.3f;
+            tavernSatisfaction -= Time.deltaTime * (0.3f - (role == "Religious" && religionSatisfaction > 65 ? 0.1f : 0f));
             if (tavernSatisfaction < 0) {
                 tavernSatisfaction = 0f;
             }
         }
 
         satisfaction = foodSatisfaction * 0.6f + religionSatisfaction * 0.4f;
-        happiness = (100f - _uiControl.currentTaxes) * 0.3f + tavernSatisfaction * 0.7f;
+        happiness = (100f - _uiControl.currentTaxes) * 0.3f + (8 - _timeController.workHours) / 8f * 0.3f * 100f + tavernSatisfaction * 0.4f;
     }
 
     private void MeasureSatisfactions(object sender, EventArgs e) {
@@ -286,8 +295,8 @@ public class Resident : MonoBehaviour {
                 reasonsToRiot.Add("tavern");
             }
         
-            if (reasonsToRiot.Count > 0 && averageOverallSatisfaction < 60) {
-                int probabilityToRiot = Random.Range(reasonsToRiot.Count, 7);
+            if (reasonsToRiot.Count > 0 && averageOverallSatisfaction < 40) {
+                int probabilityToRiot = Random.Range(reasonsToRiot.Count, 9);
                 if (probabilityToRiot > 3) {
                     rioting = true;
                     riotingReasons.Clear();
@@ -305,6 +314,7 @@ public class Resident : MonoBehaviour {
 
     public void ResidentConstructor(House home) {
         _home = home;
+        sleeping = TimeController.Instance.sleepTime;
     }
 
     public void AddTask(AvailableTasks task) {
@@ -326,7 +336,6 @@ public class Resident : MonoBehaviour {
     }
 
     public void DisableResident() {
-        // _navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
         _navMeshAgent.enabled = false;
         _collider.enabled = false;
         skinnedMeshRenderer.enabled = false;
@@ -334,7 +343,7 @@ public class Resident : MonoBehaviour {
     }
     
     public void EnableResident() {
-        // _navMeshAgent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        drowsyIndicator.gameObject.SetActive(false);
         _navMeshAgent.enabled = true;
         _collider.enabled = true;
         skinnedMeshRenderer.enabled = true;
@@ -360,29 +369,90 @@ public class Resident : MonoBehaviour {
     }
 
     private void CalculatePriorities() {
+        List<float> priorities = new List<float>();
+        float priority = Random.Range(0.15f, 0.35f);
+        float overallPriority = 1f - priority;
+        priorities.Add(priority);
+        priority = Random.Range(overallPriority * 0.33f, overallPriority * 0.66f);
+        priorities.Add(priority);
+        overallPriority -= priority;
+        priority = Random.Range(overallPriority * 0.33f, overallPriority * 0.66f);
+        priorities.Add(priority);
+        overallPriority -= priority;
+        priority = overallPriority;
+        priorities.Add(priority);
+
+        List<string> necessities = new List<string>();
+        necessities.Add("work");
+        necessities.Add("food");
+        necessities.Add("religion");
+        necessities.Add("tavern");
+        for (int i = Random.Range(0, priorities.Count - 1); priorities.Count > 0; i = Random.Range(0, priorities.Count - 1)) {
+            int j = Random.Range(0, necessities.Count - 1);
+            switch (necessities[j]) {
+                case "work": workPriority = priorities[i]; break;
+                case "food": foodPriority = priorities[i]; break;
+                case "religion": religionPriority = priorities[i]; break;
+                case "tavern": tavernPriority = priorities[i]; break;
+            }
+            necessities.RemoveAt(j);
+            priorities.RemoveAt(i);
+        }
+
+        const float roleThreshold = 0.32f;
+        if (workPriority > foodPriority && workPriority > religionPriority && workPriority > tavernPriority) {
+            if (workPriority > roleThreshold) {
+                role = "Workaholic";
+            }
+        } else if (foodPriority > workPriority && foodPriority > religionPriority && foodPriority > tavernPriority) {
+            if (foodPriority > roleThreshold) {
+                role = "Glutton";
+                _navMeshAgent.speed = 1.25f;
+            }
+        } else if (religionPriority > workPriority && religionPriority > foodPriority && religionPriority > tavernPriority) {
+            if (religionPriority > roleThreshold) {
+                role = "Religious";
+            }
+        } else if (tavernPriority > workPriority && tavernPriority > religionPriority && tavernPriority > foodPriority) {
+            if (tavernPriority > roleThreshold) {
+                role = "Alcoholic";
+            }
+        }
+        
+        foreach (float prio in priorities) {
+            if (_lowestPriority > prio) {
+                _lowestPriority = prio;
+            }
+        }
+        
         foodSatisfaction = Random.Range(20, 101);
         religionSatisfaction = Random.Range(0, 101);
         tavernSatisfaction = Random.Range(0, 101);
-        
-        List<float> priorities = new List<float>();
-        float overallPriority = 1f;
-        workPriority = Random.Range(0.2f, 0.45f);
-        overallPriority -= workPriority;
-        foodPriority = Random.Range(overallPriority * 0.25f, overallPriority * 0.75f);
-        overallPriority -= foodPriority;
-        religionPriority = Random.Range(overallPriority * 0.25f, overallPriority * 0.75f);
-        overallPriority -= religionPriority;
-        tavernPriority = overallPriority;
-        
-        priorities.Add(workPriority);
-        priorities.Add(religionPriority);
-        priorities.Add(foodPriority);
-        priorities.Add(tavernPriority);
-        foreach (float priority in priorities) {
-            if (_lowestPriority > priority) {
-                _lowestPriority = priority;
+    }
+
+    public void Drunk() {
+        InvokeRepeating(nameof(RandomDrowsy), 1f, 3f);
+    }
+
+    private void RandomDrowsy() {
+        if (tavernSatisfaction < 60f) {
+            CancelInvoke(nameof(RandomDrowsy));
+        } else {
+            int rndNumber = Random.Range(0, 4);
+            if (rndNumber <= 1 && _navMeshAgent.enabled) {
+                CantCompleteTask();
+                _navMeshAgent.enabled = false;
+                drowsyIndicator.gameObject.SetActive(true);
+                _drowsy = true;
+                CancelInvoke(nameof(RandomDrowsy));
+                Invoke(nameof(StopDrowsy), 10);
             }
         }
+    }
+
+    private void StopDrowsy() {
+        _drowsy = false;
+        EnableResident();
     }
 
     private void OnDestroy() {
