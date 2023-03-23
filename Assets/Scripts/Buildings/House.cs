@@ -190,7 +190,7 @@ public class House : MonoBehaviour, IBuilding {
             for (int j = 0; j < 4 + 2 * i; j++) {
                 Vector3 topRowPosition = new Vector3(currentSquare.x + j, 0, currentSquare.z);
                 GridBuildingSystem.GridObject topRowGridObject =
-                    _gridBuildingSystem._grid.GetGridObject(topRowPosition);
+                    _gridBuildingSystem.Grid.GetGridObject(topRowPosition);
                 if (topRowGridObject != null && topRowGridObject.GetPlacedObject() != null && topRowGridObject.GetPlacedObjectType() == "Path") {
                     int thisPathDirections = CountNeighbourPaths(topRowPosition);
                     if (thisPathDirections > bestCrossroadDirections && 
@@ -205,7 +205,7 @@ public class House : MonoBehaviour, IBuilding {
                 
                 Vector3 bottomRowPosition = new Vector3(currentSquare.x + j, 0, currentSquare.z - 3 - i * 2);
                 GridBuildingSystem.GridObject bottomRowGridObject =
-                    _gridBuildingSystem._grid.GetGridObject(bottomRowPosition);
+                    _gridBuildingSystem.Grid.GetGridObject(bottomRowPosition);
                 if (bottomRowGridObject != null && bottomRowGridObject.GetPlacedObject() != null && bottomRowGridObject.GetPlacedObjectType() == "Path") {
                     int thisPathDirections = CountNeighbourPaths(bottomRowPosition);
                     if (thisPathDirections > bestCrossroadDirections && 
@@ -221,7 +221,7 @@ public class House : MonoBehaviour, IBuilding {
                 if (j > 0 && j < 3 + 2 * i) {
                     Vector3 leftColumnPosition = new Vector3(currentSquare.x, 0, currentSquare.z - j);
                     GridBuildingSystem.GridObject leftColumnGridObject =
-                        _gridBuildingSystem._grid.GetGridObject(leftColumnPosition);
+                        _gridBuildingSystem.Grid.GetGridObject(leftColumnPosition);
                     if (leftColumnGridObject != null && leftColumnGridObject.GetPlacedObject() != null && leftColumnGridObject.GetPlacedObjectType() == "Path") {
                         int thisPathDirections = CountNeighbourPaths(leftColumnPosition);
                         if (thisPathDirections > bestCrossroadDirections && 
@@ -236,7 +236,7 @@ public class House : MonoBehaviour, IBuilding {
                 
                     Vector3 rightColumnPosition = new Vector3(currentSquare.x + 3 + 2 * i, 0, currentSquare.z - j);
                     GridBuildingSystem.GridObject rightColumnGridObject =
-                        _gridBuildingSystem._grid.GetGridObject(rightColumnPosition);
+                        _gridBuildingSystem.Grid.GetGridObject(rightColumnPosition);
                     if (rightColumnGridObject != null && rightColumnGridObject.GetPlacedObject() != null && rightColumnGridObject.GetPlacedObjectType() == "Path") {
                         int thisPathDirections = CountNeighbourPaths(rightColumnPosition);
                         if (thisPathDirections > bestCrossroadDirections && 
@@ -257,24 +257,24 @@ public class House : MonoBehaviour, IBuilding {
 
     private int CountNeighbourPaths(Vector3 pos) {
         int thisPathDirections = 0;
-        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)) != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)).GetPlacedObjectType() != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)).GetPlacedObjectType() == "Path") {
+        if (_gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)) != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x + 1, pos.y, pos.z)).GetPlacedObjectType() == "Path") {
             thisPathDirections++;
         }
-        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)) != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)).GetPlacedObjectType() != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)).GetPlacedObjectType() == "Path") {
+        if (_gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)) != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x - 1, pos.y, pos.z)).GetPlacedObjectType() == "Path") {
             thisPathDirections++;
         }
-        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)) != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)).GetPlacedObjectType() != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)).GetPlacedObjectType() == "Path") {
+        if (_gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)) != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z + 1)).GetPlacedObjectType() == "Path") {
             thisPathDirections++;
         }
-        if (_gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)) != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)).GetPlacedObjectType() != null &&
-            _gridBuildingSystem._grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)).GetPlacedObjectType() == "Path") {
+        if (_gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)) != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)).GetPlacedObjectType() != null &&
+            _gridBuildingSystem.Grid.GetGridObject(new Vector3(pos.x, pos.y, pos.z - 1)).GetPlacedObjectType() == "Path") {
             thisPathDirections++;
         }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -26,7 +25,7 @@ public class GridBuildingSystem : MonoBehaviour {
     public event Action<bool> OnGridChanged;
     public event Action<string> OnBuildingPlaced;
 
-    public Grid<GridObject> _grid;
+    public Grid<GridObject> Grid;
 
     private void Awake() {
         if (Instance != null && Instance != this) { 
@@ -36,20 +35,20 @@ public class GridBuildingSystem : MonoBehaviour {
             Instance = this; 
         } 
         
-        _grid = new Grid<GridObject>(width, height, cellSize, Vector3.zero, gridHelper,
+        Grid = new Grid<GridObject>(width, height, cellSize, Vector3.zero, gridHelper,
             (Grid<GridObject> g, int x, int z) => new GridObject(g, x, z));
         building = buildingList[0].buildingVariants[0];
     }
 
     public void PlaceBuilding(Vector3 mousePosition, bool dontRegenerateNavMesh = false) {
         // Get the position where the Ray hits the grid
-        _grid.GetXZ(mousePosition, out int x, out int z);
+        Grid.GetXZ(mousePosition, out int x, out int z);
         // Gets the list of x and z coordinates in the grid the building needs to be placed
         List<Vector2Int> occupyingGridObjectCoordinates = building.GetGridPositionList(new Vector2Int(x, z), direction);
         bool gridCoordinatesFree = true;
         // Checks if the needed grid coordinates are occupied
         foreach (Vector2Int position in occupyingGridObjectCoordinates) {
-            GridObject gridObject = _grid.GetGridObject(position.x, position.y);
+            GridObject gridObject = Grid.GetGridObject(position.x, position.y);
             if (!gridObject.CanBuild()) {
                 // Debug.Log("Cannot build here!");
                 gridCoordinatesFree = false;
@@ -59,7 +58,7 @@ public class GridBuildingSystem : MonoBehaviour {
 
         if (gridCoordinatesFree) {
             Vector2Int rotationOffset = building.GetRotationOffset(direction);
-            Vector3 worldPosition = _grid.GetWorldPosition(x, z) +
+            Vector3 worldPosition = Grid.GetWorldPosition(x, z) +
                                     new Vector3(rotationOffset.x, 0, rotationOffset.y) * cellSize;
             PlacedObject placedObject = PlacedObject.Create(
                 worldPosition,
@@ -72,7 +71,7 @@ public class GridBuildingSystem : MonoBehaviour {
             // spawnedBuilding.transform.localScale = spawnedBuilding.transform.localScale * cellSize;
             // Set the building to every Grid coordinate
             foreach (Vector2Int position in occupyingGridObjectCoordinates) {
-                GridObject gridObject = _grid.GetGridObject(position.x, position.y);
+                GridObject gridObject = Grid.GetGridObject(position.x, position.y);
                 gridObject.SetPlacedObject(placedObject);
             }
             OnBuildingPlaced?.Invoke(building.nameString);
@@ -83,7 +82,7 @@ public class GridBuildingSystem : MonoBehaviour {
 
     public void DestroyBuilding(Vector3 mousePosition, bool dontRegenerateNavMesh = false) {
         // Get the position where the Ray hits the grid
-        PlacedObject placedObject = _grid.GetGridObject(mousePosition).GetPlacedObject();
+        PlacedObject placedObject = Grid.GetGridObject(mousePosition).GetPlacedObject();
         if (placedObject != null) {
             IBuilding buildingToDestroy = placedObject.gameObject.GetComponent<IBuilding>();
             if (buildingToDestroy != null) {
@@ -92,7 +91,7 @@ public class GridBuildingSystem : MonoBehaviour {
             placedObject.DestroySelf();
             List<Vector2Int> occupyingGridObjectCoordinates = placedObject.GetGridPositionList();
             foreach (Vector2Int position in occupyingGridObjectCoordinates) {
-                _grid.GetGridObject(position.x, position.y).ClearPlacedObject();
+                Grid.GetGridObject(position.x, position.y).ClearPlacedObject();
             }
             // Trigger OnGridChanged event
             OnGridChanged?.Invoke(dontRegenerateNavMesh);
@@ -131,7 +130,6 @@ public class GridBuildingSystem : MonoBehaviour {
 
         public override string ToString() {
             return "(" + _x + ", " + _z + ")";
-            // return "(" + _x + ", " + _z + "): " + _placedObject;
         }
 
         public void SetPlacedObject(PlacedObject placedObject) {

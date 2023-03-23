@@ -1,12 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class CameraSystem : MonoBehaviour {
-    [SerializeField] private CinemachineVirtualCamera _cinemachineVirtualCamera;
+    [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
     
     [SerializeField] private float moveSpeed = 50f;
     [SerializeField] private float rotateSpeed = 300f;
@@ -24,7 +20,7 @@ public class CameraSystem : MonoBehaviour {
     private Vector3 _followOffset;
 
     private void Awake() {
-        _followOffset = _cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
+        _followOffset = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
     }
 
     // Update is called once per frame
@@ -105,8 +101,8 @@ public class CameraSystem : MonoBehaviour {
         }
 
         _followOffset.y = Mathf.Clamp(_followOffset.y, followOffsetMin, followOffsetMax);
-        _cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = 
-            Vector3.Lerp(_cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset,
+        cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = 
+            Vector3.Lerp(cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset,
             _followOffset, Time.deltaTime * zoomSpeed);
     }
 }

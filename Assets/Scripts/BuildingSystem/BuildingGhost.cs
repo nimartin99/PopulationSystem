@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Timeline;
 
 public class BuildingGhost : MonoBehaviour {
 
-    public Transform _visual;
+    public Transform visual;
     private BuildingObject _buildingObject;
     [SerializeField] private Camera mainCamera;
 
@@ -27,9 +23,9 @@ public class BuildingGhost : MonoBehaviour {
     public void LateUpdate() {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, groundLayerMask)) {
-            gridBuildingSystem._grid.GetXZ(hit.point, out int x, out int z);
+            gridBuildingSystem.Grid.GetXZ(hit.point, out int x, out int z);
             Vector2Int rotationOffset = gridBuildingSystem.building.GetRotationOffset(gridBuildingSystem.direction);
-            Vector3 targetPos = gridBuildingSystem._grid.GetWorldPosition(x, z) +
+            Vector3 targetPos = gridBuildingSystem.Grid.GetWorldPosition(x, z) +
                                 new Vector3(rotationOffset.x, 0, rotationOffset.y) * gridBuildingSystem.cellSize;
             transform.position = Vector3.Lerp(transform.position, targetPos,
                 Time.deltaTime * 15f);
@@ -42,18 +38,18 @@ public class BuildingGhost : MonoBehaviour {
         DestroyVisual();
         BuildingObject currentBuildingObject = gridBuildingSystem.building;
         if (currentBuildingObject != null) {
-            _visual = Instantiate(currentBuildingObject.prefab, Vector3.zero, Quaternion.identity);
-            _visual.parent = transform;
+            visual = Instantiate(currentBuildingObject.prefab, Vector3.zero, Quaternion.identity);
+            visual.parent = transform;
             SetLayerRecursively(gameObject, 8);
-            _visual.localPosition = Vector3.zero;
-            _visual.localEulerAngles = Vector3.zero;
+            visual.localPosition = Vector3.zero;
+            visual.localEulerAngles = Vector3.zero;
         }
     }
 
     public void DestroyVisual() {
-        if (_visual != null) {
-            Destroy(_visual.gameObject);
-            _visual = null;
+        if (visual != null) {
+            Destroy(visual.gameObject);
+            visual = null;
         }
     }
 

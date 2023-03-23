@@ -1,16 +1,13 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class Church : MonoBehaviour, IBuilding
 {
     private List<Transform> _visitors;
     [SerializeField] private int churchDuration;
     [SerializeField] public Transform entrance;
-
-    [SerializeField] public const float ChurchRange = 25;
+    public const float ChurchRange = 25;
 
     public void BuildingPlaced() {}
 

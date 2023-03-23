@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PresettingGenerator : MonoBehaviour {
@@ -11,13 +8,16 @@ public class PresettingGenerator : MonoBehaviour {
     [SerializeField] private InputControl inputControl;
     [SerializeField] private BuildingGhost buildingGhost;
 
-// public int counter = 100;
+    // public int counter = 100;
     private void Start() {
         _gridBuildingSystem = GridBuildingSystem.Instance;
         _width = _gridBuildingSystem.width;
         _height = _gridBuildingSystem.height;
     }
-
+    
+    /// <summary>
+    /// Presetting with smaller layout
+    /// </summary>
     public void GeneratePresettingOne() {
         _gridBuildingSystem.SelectBuilding(0);
         for (int i = 0; i < _width; i++) {
@@ -55,7 +55,9 @@ public class PresettingGenerator : MonoBehaviour {
         _gridBuildingSystem.PlaceBuilding(new Vector3(11, 0, 8), true);
         _gridBuildingSystem.RotateBuilding();
         _gridBuildingSystem.PlaceBuilding(new Vector3(32, 0, 3), true);
-
+        _gridBuildingSystem.SelectBuilding(4);
+        _gridBuildingSystem.PlaceBuilding(new Vector3(32, 0, 8), true);
+        _gridBuildingSystem.PlaceBuilding(new Vector3(7, 0, 15), true);
         _gridBuildingSystem.SelectBuilding(1);
         for (int j = 0; j < 14; j++) {
             for (int i = 0; i < 32; i++) {
@@ -66,6 +68,9 @@ public class PresettingGenerator : MonoBehaviour {
         AfterGenerate();
     }
     
+    /// <summary>
+    /// Presetting with one Resident that has everything
+    /// </summary>
     public void GeneratePresettingTwo() {
         _gridBuildingSystem.SelectBuilding(0);
         for (int j = 0; j < _height; j++) {
@@ -95,47 +100,10 @@ public class PresettingGenerator : MonoBehaviour {
         AfterGenerate();
     }
 
+    /// <summary>
+    /// 4 Residents that instantly starting to riot
+    /// </summary>
     public void GeneratePresettingThree() {
-        _gridBuildingSystem.SelectBuilding(0);
-        for (int j = 0; j < _height; j++) {
-            for (int i = 0; i < _width; i++) {
-                switch (j) {
-                    case 2 when i < 30:
-                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j));
-                        break;
-                }
-            }
-        }
-        _gridBuildingSystem.SelectBuilding(2);
-        _gridBuildingSystem.RotateBuilding();
-        _gridBuildingSystem.RotateBuilding();
-        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 0f, 0f, 0.5f + 3f));
-        _gridBuildingSystem.SelectBuilding(3);
-        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 4f, 0f, 0.5f + 3f));
-        _gridBuildingSystem.SelectBuilding(4);
-        _gridBuildingSystem.RotateBuilding();
-        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 8f, 0f, 0.5f + 3f));
-        _gridBuildingSystem.SelectBuilding(1);
-        _gridBuildingSystem.RotateBuilding();
-        _gridBuildingSystem.RotateBuilding();
-        _gridBuildingSystem.RotateBuilding();
-        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 18f, 0f, 0.5f + 3f));
-        Resident firstResident = FindObjectOfType<Resident>();
-        firstResident.riotingReasons.Add("food");
-        firstResident.riotingReasons.Add("religion");
-        firstResident.riotingReasons.Add("tavern");
-        firstResident.rioting = true;
-        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 20f, 0f, 0.5f + 3f));
-        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 22f, 0f, 0.5f + 3f));
-        // _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 24f, 0f, 0.5f + 3f));
-        foreach (Resident resident in FindObjectsOfType<Resident>()) {
-            resident.rioting = true;
-        }
-        
-        AfterGenerate();
-    }
-    
-    public void GeneratePresettingFour() {
         _gridBuildingSystem.SelectBuilding(0);
         for (int j = 0; j < _height; j++) {
             for (int i = 0; i < _width; i++) {
@@ -164,6 +132,71 @@ public class PresettingGenerator : MonoBehaviour {
         AfterGenerate();
     }
     
+    /// <summary>
+    /// 4 Residents with all roles
+    /// </summary>
+    public void GeneratePresettingFour() {
+        _gridBuildingSystem.SelectBuilding(0);
+        for (int j = 0; j < _height; j++) {
+            for (int i = 0; i < _width; i++) {
+                switch (j) {
+                    case 2 when i < 20:
+                        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + i, 0, 0.5f + j));
+                        break;
+                }
+            }
+        }
+        _gridBuildingSystem.SelectBuilding(2);
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 0f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.SelectBuilding(3);
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 4f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.SelectBuilding(4);
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 8f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.SelectBuilding(1);
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.RotateBuilding();
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 12f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 14f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 16f, 0f, 0.5f + 3f));
+        _gridBuildingSystem.PlaceBuilding(new Vector3(0.5f + 18f, 0f, 0.5f + 3f));
+        
+        Invoke(nameof(SetRolesAndPriority), 0.05f);
+        AfterGenerate();
+    }
+
+    private void SetRolesAndPriority() {
+        int k = 0;
+        float priority = 0.45f;
+        foreach (Resident resident in FindObjectsOfType<Resident>()) {
+            switch (k) {
+                case 0:
+                    resident.role = "Alcoholic";
+                    resident.tavernPriority = priority;
+                    break;
+                case 1:
+                    resident.role = "Workaholic";
+                    resident.workPriority = priority;
+                    break;
+                case 2:
+                    resident.role = "Glutton";
+                    resident.foodPriority = priority;
+                    break;
+                case 3:
+                    resident.role = "Religious";
+                    resident.religionPriority = priority;
+                    break;
+            }
+            k++;
+        }
+    }
+    
+    /// <summary>
+    /// Generate a 50x50 Layout with a lot of residents
+    /// </summary>
     public void GeneratePresettingFive() {
         _gridBuildingSystem.SelectBuilding(3);
         _gridBuildingSystem.PlaceBuilding(new Vector3(8, 0, 8), true);

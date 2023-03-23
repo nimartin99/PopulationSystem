@@ -41,7 +41,7 @@ public class Resident : MonoBehaviour {
     private UIControl _uiControl;
 
     // Priorities
-    public float _lowestPriority = 1f;
+    public float lowestPriority = 1f;
     // Overall priority
     public float workPriority;
     // Needs
@@ -218,7 +218,7 @@ public class Resident : MonoBehaviour {
                 mostImportantNeedValue = need.Value;
             }
         }
-        if (mostImportantNeedValue < _lowestPriority * 100) {
+        if (mostImportantNeedValue < lowestPriority * 100) {
             return _home.residentsCurrentlyInHome.Contains(transform) ? AvailableTasks.None : AvailableTasks.Home;
         }
 
@@ -381,6 +381,12 @@ public class Resident : MonoBehaviour {
         overallPriority -= priority;
         priority = overallPriority;
         priorities.Add(priority);
+        
+        foreach (float prio in priorities) {
+            if (lowestPriority > prio) {
+                lowestPriority = prio;
+            }
+        }
 
         List<string> necessities = new List<string>();
         necessities.Add("work");
@@ -418,13 +424,7 @@ public class Resident : MonoBehaviour {
                 role = "Alcoholic";
             }
         }
-        
-        foreach (float prio in priorities) {
-            if (_lowestPriority > prio) {
-                _lowestPriority = prio;
-            }
-        }
-        
+
         foodSatisfaction = Random.Range(20, 101);
         religionSatisfaction = Random.Range(0, 101);
         tavernSatisfaction = Random.Range(0, 101);

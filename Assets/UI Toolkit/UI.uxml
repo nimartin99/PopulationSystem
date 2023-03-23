@@ -148,12 +148,12 @@
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="presettingSelection" class="defaultContainer" style="position: absolute; left: 50%; top: 50%; width: auto; translate: -50% -50%; flex-direction: row; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; display: flex; max-width: 450px; flex-wrap: wrap; justify-content: flex-start;">
+    <ui:VisualElement name="presettingSelection" class="defaultContainer" style="position: absolute; left: 50%; top: 50%; width: auto; translate: -50% -50%; flex-direction: row; padding-left: 8px; padding-right: 8px; padding-top: 8px; padding-bottom: 8px; display: flex; max-width: 50%; flex-wrap: wrap; justify-content: flex-start;">
         <ui:Button text="Free Play" display-tooltip-when-elided="true" name="freePlay" class="defaultButton" />
-        <ui:Button text="Presetting 1" display-tooltip-when-elided="true" name="presettingOne" class="defaultButton" />
+        <ui:Button text="Presetting 1" display-tooltip-when-elided="true" name="presettingOne" tooltip="Test" enable-rich-text="true" class="defaultButton" />
         <ui:Button text="Presetting 2" display-tooltip-when-elided="true" name="presettingTwo" class="defaultButton" style="display: flex;" />
         <ui:Button text="Presetting 3" display-tooltip-when-elided="true" name="presettingThree" class="defaultButton" style="display: flex;" />
-        <ui:Button text="Presetting 4" display-tooltip-when-elided="true" name="presettingFour" class="defaultButton" style="display: flex;" />
-        <ui:Button text="Presetting 5" display-tooltip-when-elided="true" name="presettingFive" class="defaultButton" style="display: flex; justify-content: center; margin-top: 8px;" />
+        <ui:Button text="Presetting 4" display-tooltip-when-elided="true" name="presettingFour" class="defaultButton" style="display: flex; margin-top: 1px;" />
+        <ui:Button text="Presetting 5" display-tooltip-when-elided="true" name="presettingFive" class="defaultButton" style="display: flex; justify-content: center; margin-top: 1px;" />
     </ui:VisualElement>
 </ui:UXML>

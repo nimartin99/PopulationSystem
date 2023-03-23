@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Grid<TGridObject> {
@@ -9,9 +7,9 @@ public class Grid<TGridObject> {
     private readonly float _cellSize;
     private readonly Vector3 _originPosition;
     private LineRenderer _lineRenderer;
-    private readonly TGridObject[,] _gridArray; // 2D Array
-    private TextMesh[,] _gridTextArray;
-    private bool debug = false;
+    private readonly TGridObject[,] _gridArray;
+    private readonly TextMesh[,] _gridTextArray;
+    private const bool Debug = false;
 
     public Grid(int width, int height, float cellSize, Vector3 originPosition, GridHelper gridHelper,
         Func<Grid<TGridObject>, int, int, TGridObject> createGridObject) {
@@ -27,7 +25,7 @@ public class Grid<TGridObject> {
                 // Create Objects
                 _gridArray[x, z] = createGridObject(this, x, z);
 
-                if (debug) {
+                if (Debug) {
                     _gridTextArray[x, z] = Utils.CreateWorldText("GridObject\n" + _gridArray[x, z].ToString(), null,
                         GetWorldPosition(x, z) + new Vector3(cellSize / 2, 0, cellSize / 2), 20, Color.red,
                         TextAnchor.MiddleCenter);
@@ -94,7 +92,7 @@ public class Grid<TGridObject> {
     }
 
     public void TriggerGridObjectChanged(int x, int z) {
-        if (debug) {
+        if (Debug) {
             _gridTextArray[x, z].text = _gridArray[x, z].ToString();
         }
     }

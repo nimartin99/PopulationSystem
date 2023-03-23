@@ -1,13 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TimeController : MonoBehaviour
 {
     public static TimeController Instance { get; private set; }
     [SerializeField] private Light sun;
-    private Transform _sunTransform;
 
     public float realSecondsPerInGameDay = 10f;
     private float _percentageOfDayProgress = 0f;
@@ -30,8 +27,6 @@ public class TimeController : MonoBehaviour
         else { 
             Instance = this; 
         }
-
-        _sunTransform = sun.transform;
     }
 
     // Update is called once per frame

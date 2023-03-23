@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Unity.AI.Navigation;
 using UnityEngine;
 
@@ -27,11 +25,7 @@ public class NavMeshManager : MonoBehaviour
         }
     }
 
-    public void OnGridChanged(bool dontRegenerateNavMesh) {
+    private void OnGridChanged(bool dontRegenerateNavMesh) {
         buildNavMeshAfterUpdate = !dontRegenerateNavMesh;
-    }
-
-    private void UpdateNavMesh() {
-        _navMeshSurface.BuildNavMesh();
     }
 }

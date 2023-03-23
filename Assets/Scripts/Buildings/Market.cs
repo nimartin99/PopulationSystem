@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Market : MonoBehaviour, IBuilding {
     public Transform entrance;
-    [SerializeField] public const float MarketRange = 25;
+    public const float MarketRange = 25;
     [SerializeField] private int marketDuration;
     private UIControl _uiControl;
 

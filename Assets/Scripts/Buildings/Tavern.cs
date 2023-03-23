@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Tavern : MonoBehaviour, IBuilding {
     [SerializeField] public Transform entrance;
     [SerializeField] private int tavernDuration;
-    [SerializeField] public const float TavernRange = 25;
+    public const float TavernRange = 25;
 
     public void BuildingPlaced() {}
 
