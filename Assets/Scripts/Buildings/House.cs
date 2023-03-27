@@ -13,15 +13,12 @@ public class House : MonoBehaviour, IBuilding {
 
     [SerializeField] private Transform positionIndicator;
     [SerializeField] private Transform sleepingIndicator;
-    [SerializeField] private Transform upgradeIndicator;
     private GridBuildingSystem _gridBuildingSystem;
 
     private TimeController _timeController;
     private UIControl _uiControl;
     [HideInInspector] public float allResidentsSatisfaction = 0f;
     [HideInInspector] public float allResidentsHappiness = 0f;
-    [SerializeField] private float upgradeThreshold;
-    [HideInInspector] public bool upgradeable = false;
 
     [SerializeField] private Transform farmerGenModel;
     [SerializeField] private List<Transform> settlerGenModel = new List<Transform>();
@@ -31,8 +28,6 @@ public class House : MonoBehaviour, IBuilding {
         _gridBuildingSystem = GridBuildingSystem.Instance;
         _timeController = TimeController.Instance;
         _uiControl = UIControl.Instance;
-        _timeController.OnNextHour += CalculateAllResidentsValuesOverTime;
-        _uiControl.OnModeSwitch += UpgradeVisual;
     }
 
     private void Update() {
@@ -53,20 +48,14 @@ public class House : MonoBehaviour, IBuilding {
             sleepingIndicator.GetChild(2).Rotate(0, 60 * Time.deltaTime, 0);
         }
         positionIndicator.Rotate(0, 60 * Time.deltaTime, 0);
-        upgradeIndicator.Rotate(0, 60 * Time.deltaTime, 0);
-        
+
         if (residentsCurrentlyInHome.Any(resident => resident.GetComponent<Resident>().sleeping) 
-            && !upgradeIndicator.gameObject.activeSelf && !_uiControl.currentlyInspectedHouse == this) {
+            && !_uiControl.currentlyInspectedHouse == this) {
             sleepingIndicator.gameObject.SetActive(true);
         } else {
             sleepingIndicator.gameObject.SetActive(false);
         }
         
-    }
-
-    public void UpgradeToNextGen() {
-        farmerGenModel.gameObject.SetActive(false);
-        settlerGenModel[Random.Range(0, settlerGenModel.Count)].gameObject.SetActive(true);
     }
 
     public void BuildingPlaced() {
@@ -286,7 +275,6 @@ public class House : MonoBehaviour, IBuilding {
         foreach (Resident resident in residents) {
             sumSatisfactionOverTime += resident.averageOverallSatisfaction;
         }
-        upgradeable = sumSatisfactionOverTime / residents.Count > upgradeThreshold;
     }
     
     public void EnableIndicator() {
@@ -295,14 +283,5 @@ public class House : MonoBehaviour, IBuilding {
     
     public void DisableIndicator() {
         positionIndicator.gameObject.SetActive(false);
-    }
-
-    private void UpgradeVisual(InputControl.InputModes type) {
-        if (type == InputControl.InputModes.UpgradeMode && upgradeable) {
-            DisableIndicator();
-            upgradeIndicator.gameObject.SetActive(true);
-        } else {
-            upgradeIndicator.gameObject.SetActive(false);
-        }
     }
 }

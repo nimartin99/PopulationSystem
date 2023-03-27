@@ -296,8 +296,8 @@ public class Resident : MonoBehaviour {
             }
         
             if (reasonsToRiot.Count > 0 && averageOverallSatisfaction < 40) {
-                int probabilityToRiot = Random.Range(reasonsToRiot.Count, 9);
-                if (probabilityToRiot > 3) {
+                int probabilityToRiot = Random.Range(0, 10 - reasonsToRiot.Count);
+                if (probabilityToRiot < 4) {
                     rioting = true;
                     riotingReasons.Clear();
                     riotingReasons = reasonsToRiot.ConvertAll(reason => reason);

@@ -7,7 +7,6 @@ public class InputControl : MonoBehaviour {
     public enum InputModes {
         ExploreMode,
         BuildingMode,
-        UpgradeMode,
         DeleteMode,
     }
     
@@ -40,9 +39,6 @@ public class InputControl : MonoBehaviour {
                 break;
             case InputModes.BuildingMode:
                 ExecuteBuildInput();
-                break;
-            case InputModes.UpgradeMode:
-                ExecuteUpgradeInput();
                 break;
             case InputModes.DeleteMode:
                 ExecuteDeleteInput();
@@ -102,19 +98,7 @@ public class InputControl : MonoBehaviour {
             uiControl.ChangeMode(InputModes.ExploreMode);
         }
     }
-    
-    private void ExecuteUpgradeInput() {
-        if (Input.GetMouseButtonDown(0)) {
-            Transform hitTransform = GetMouseObject(out bool hitSomething);
-            if (hitSomething) {
-                House house = hitTransform.GetComponent<House>();
-                if (house != null && house.upgradeable) {
-                    house.UpgradeToNextGen();
-                }
-            }
-        }
-    }
-    
+
     private void ExecuteDeleteInput() {
         if (Input.GetMouseButtonDown(0)) {
             Vector3 hitPoint = GetGroundPosition(out bool hitSomething);

@@ -33,7 +33,6 @@ public class UIControl : MonoBehaviour
     private VisualElement _toolbar;
     private Button _exploreButton;
     private Button _buildButton;
-    private Button _upgradeButton;
     private Button _deleteButton;
     
     // Inspector
@@ -61,8 +60,7 @@ public class UIControl : MonoBehaviour
     private VisualElement _inspectorHouseVisualResidents;
     private ProgressBar _inspectorHouseSatisfaction;
     private ProgressBar _inspectorHouseHappiness;
-    private Label _inspectorHouseUpgrade;
-    
+
 
     private Transform _currentlyInspected;
     public string currentlyInspectedType;
@@ -121,8 +119,6 @@ public class UIControl : MonoBehaviour
         _exploreButton.clicked += () => { ChangeMode(InputControl.InputModes.ExploreMode); };
         _buildButton = root.Q<Button>("buildButton");
         _buildButton.clicked += () => { ChangeMode(InputControl.InputModes.BuildingMode); };
-        _upgradeButton = root.Q<Button>("upgradeButton");
-        _upgradeButton.clicked += () => { ChangeMode(InputControl.InputModes.UpgradeMode); };
         _deleteButton = root.Q<Button>("deleteButton");
         _deleteButton.clicked += () => { ChangeMode(InputControl.InputModes.DeleteMode); };
         ChangeMode(InputControl.InputModes.ExploreMode);
@@ -152,8 +148,7 @@ public class UIControl : MonoBehaviour
         _inspectorHouseVisualResidents = root.Q<VisualElement>("inspectorHouseVisualResidents");
         _inspectorHouseSatisfaction = root.Q<ProgressBar>("inspectorHouseSatisfaction");
         _inspectorHouseHappiness = root.Q<ProgressBar>("inspectorHouseHappiness");
-        _inspectorHouseUpgrade = root.Q<Label>("inspectorHouseUpgrade");
-        
+
         HideInspector();
         
         // Statusbar
@@ -287,7 +282,6 @@ public class UIControl : MonoBehaviour
                     _inspectorHouseSatisfaction.value = currentlyInspectedHouse.allResidentsSatisfaction;
                     _inspectorHouseHappiness.title = Math.Floor(currentlyInspectedHouse.allResidentsHappiness) + " / 100";
                     _inspectorHouseHappiness.value = currentlyInspectedHouse.allResidentsHappiness;
-                    _inspectorHouseUpgrade.text = currentlyInspectedHouse.upgradeable ? "Yes" : "No";
                     break;
                 case "Riot":
                     _inspectorScrollRiot.style.display = DisplayStyle.Flex;
@@ -325,7 +319,6 @@ public class UIControl : MonoBehaviour
                 buildingGhost.RefreshVisual();
                 BorderVisualElement(_buildButton, 2f, 2f, 2f, 2f);
                 BorderVisualElement(_exploreButton, 1f, 1f, 1f, 1f);
-                BorderVisualElement(_upgradeButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_deleteButton, 1f, 1f, 1f, 1f);
                 break;
             case InputControl.InputModes.DeleteMode:
@@ -333,15 +326,7 @@ public class UIControl : MonoBehaviour
                 buildingGhost.DestroyVisual();
                 BorderVisualElement(_buildButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_exploreButton, 1f, 1f, 1f, 1f);
-                BorderVisualElement(_upgradeButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_deleteButton, 2f, 2f, 2f, 2f);
-                break;
-            case InputControl.InputModes.UpgradeMode:
-                _inputControl.currentMode = InputControl.InputModes.UpgradeMode;
-                BorderVisualElement(_buildButton, 1f, 1f, 1f, 1f);
-                BorderVisualElement(_exploreButton, 1f, 1f, 1f, 1f);
-                BorderVisualElement(_upgradeButton, 2f, 2f, 2f, 2f);
-                BorderVisualElement(_deleteButton, 1f, 1f, 1f, 1f);
                 break;
             default:
             case InputControl.InputModes.ExploreMode:
@@ -349,7 +334,6 @@ public class UIControl : MonoBehaviour
                 buildingGhost.DestroyVisual();
                 BorderVisualElement(_buildButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_exploreButton, 2f, 2f, 2f, 2f);
-                BorderVisualElement(_upgradeButton, 1f, 1f, 1f, 1f);
                 BorderVisualElement(_deleteButton, 1f, 1f, 1f, 1f);
                 break;
         }
