@@ -230,20 +230,22 @@ public class Resident : MonoBehaviour {
     }
     
     private void CalculateSatisfactions() {
+        float divide = sleeping ? 2 : 1;
+        
         if (religionSatisfaction > 0) {
-            religionSatisfaction -= Time.deltaTime * 0.5f;
+            religionSatisfaction -= Time.deltaTime * 0.3f / divide;
             if (religionSatisfaction < 0) {
                 religionSatisfaction = 0f;
             }
         }
         if (foodSatisfaction > 0) {
-            foodSatisfaction -= Time.deltaTime * (1.5f - (role == "Religious" && religionSatisfaction > 65 ? 0.5f : 0f));
+            foodSatisfaction -= Time.deltaTime * (0.75f - (role == "Religious" && religionSatisfaction > 65 ? 0.25f : 0f)) / divide;
             if (foodSatisfaction < 0) {
                 foodSatisfaction = 0f;
             }
         }
         if (tavernSatisfaction > 0) {
-            tavernSatisfaction -= Time.deltaTime * (0.3f - (role == "Religious" && religionSatisfaction > 65 ? 0.1f : 0f));
+            tavernSatisfaction -= Time.deltaTime * (0.2f - (role == "Religious" && religionSatisfaction > 65 ? 0.1f : 0f)) / divide;
             if (tavernSatisfaction < 0) {
                 tavernSatisfaction = 0f;
             }
