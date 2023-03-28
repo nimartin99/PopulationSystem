@@ -41,7 +41,7 @@
                     <ui:Label text="Tavern" display-tooltip-when-elided="true" style="font-size: 15px; width: 50%; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
                     <ui:ProgressBar title="0/100" name="inspectorTavern" low-value="0" style="width: 50%; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0;" />
                 </ui:VisualElement>
-                <ui:VisualElement name="inspectorResidentRoleContainer" style="flex-direction: column; align-items: center; width: 100%;">
+                <ui:VisualElement name="inspectorResidentRoleContainer" style="flex-direction: column; align-items: center; width: 100%; display: none;">
                     <ui:VisualElement name="divider" class="divider" />
                     <ui:Label text="Role" display-tooltip-when-elided="true" name="inspectorResidentRole" class="borderedText" style="font-size: 15px; margin-bottom: 0;" />
                     <ui:Label text="Description" display-tooltip-when-elided="true" name="inspectorResidentRoleDescription" style="font-size: 15px; max-height: 100%; white-space: normal;" />
