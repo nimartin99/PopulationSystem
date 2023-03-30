@@ -494,7 +494,7 @@ public class UIControl : MonoBehaviour
             string fullReason = "";
             switch (reason) {
                 case "food":
-                    fullReason = "The residents are hungry. Build more markets or increase food portions.";
+                    fullReason = "The residents are hungry. Build them more markets.";
                     break;
                 case "religion":
                     fullReason = "The residents want more churches in their village.";
